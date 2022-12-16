@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">SappModuleAds</string>
+    <string name="admod_app_id">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="admod_banner_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="admod_native_id">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="admod_interstitial_id">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="admod_app_open_ad_id">ca-app-pub-3940256099942544/3419835294</string>
+    <!-- TODO: Remove or change this placeholder text -->
+
+    <!-- MAX TEST ID -->
+    <string name="applovin_test_inter">6998873292411143</string>
+    <string name="applovin_test_banner">7c9356ccb2e34700</string>
+    <string name="applovin_test_native">8cb8abd1cfaf6a0d</string>
+    <string name="applovin_test_app_open">16e9305bc3a16dfa</string>
+</resources>
