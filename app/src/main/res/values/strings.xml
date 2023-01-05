@@ -5,6 +5,17 @@
     <string name="admod_native_id">ca-app-pub-3940256099942544/2247696110</string>
     <string name="admod_interstitial_id">ca-app-pub-3940256099942544/1033173712</string>
     <string name="admod_app_open_ad_id">ca-app-pub-3940256099942544/3419835294</string>
+
+    <string name="inter_splash" translatable="false">ca-app-pub-3940256099942544/1033173722</string>
+    <string name="inter_splash1" translatable="false">ca-app-pub-3940256099942544/1033173732</string>
+    <string name="inter_splash2" translatable="false">ca-app-pub-3940256099942544/1033173742</string>
+    <string name="inter_splash3" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+
+    <string name="native_id">ca-app-pub-3940256099942544/2247696140</string>
+    <string name="native_id1">ca-app-pub-3940256099942544/2247696130</string>
+    <string name="native_id2">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="native_id3">ca-app-pub-3940256099942544/2247696120</string>
+
     <!-- TODO: Remove or change this placeholder text -->
 
     <!-- MAX TEST ID -->

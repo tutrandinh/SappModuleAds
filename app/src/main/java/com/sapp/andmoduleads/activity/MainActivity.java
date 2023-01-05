@@ -26,6 +26,8 @@ import com.google.android.gms.ads.nativead.NativeAd;
 import com.sapp.andmoduleads.BuildConfig;
 import com.sapp.andmoduleads.R;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -142,7 +144,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadAdInterstitial() {
-        mInterstitialAd = CommonAd.getInstance().getInterstitialAds(this, idInter);
+        ArrayList<String> list = new ArrayList<>();
+        list.add(getString(R.string.inter_splash));
+        list.add(getString(R.string.inter_splash1));
+        list.add(getString(R.string.inter_splash2));
+        list.add(getString(R.string.inter_splash3));
+        mInterstitialAd = CommonAd.getInstance().getInterstitialAds(this, list);
+
     }
 
     @Override
@@ -155,7 +163,14 @@ public class MainActivity extends AppCompatActivity {
 
         if (unifiedNativeAd != null)
             return;
-        Admob.getInstance().loadNativeAd(this,BuildConfig.ad_native, new AdCallback() {
+
+        ArrayList<String> list = new ArrayList<>();
+        list.add(getString(R.string.native_id));
+        list.add(getString(R.string.native_id1));
+        list.add(getString(R.string.native_id2));
+        list.add(getString(R.string.native_id3));
+
+        Admob.getInstance().loadNativeAd(this,list, new AdCallback() {
             @Override
             public void onUnifiedNativeAdLoaded(NativeAd unifiedNativeAd) {
                 MainActivity.this.unifiedNativeAd = unifiedNativeAd;

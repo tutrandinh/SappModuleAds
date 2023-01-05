@@ -11,6 +11,15 @@ public class CommonAdConfig {
     public static final int PROVIDER_ADMOB = 0;
     public static final int PROVIDER_MAX = 1;
 
+    //switch FLOOR vs WARTER_FALL use for app
+    public static final int FLOOR = 0;
+    public static final int WARTER_FALL = 1;
+
+    /**
+     * config ad FLOOR using for app
+     */
+    private int mediationFloor = FLOOR;
+
     /**
      * config ad mediation using for app
      */
@@ -69,4 +78,11 @@ public class CommonAdConfig {
         return enableAdResume;
     }
 
+    public int getMediationFloor() {
+        return mediationFloor;
+    }
+
+    public void setMediationFloor(int mediationFloor) {
+        this.mediationFloor = mediationFloor;
+    }
 }

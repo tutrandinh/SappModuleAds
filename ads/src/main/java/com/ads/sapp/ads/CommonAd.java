@@ -53,6 +53,8 @@ import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;
 
+import java.util.ArrayList;
+
 public class CommonAd {
     public static final String TAG = "CommonAd";
     private static volatile CommonAd INSTANCE;
@@ -213,8 +215,12 @@ public class CommonAd {
 //        }
 //    }
 
-    public void loadSplashInterstitialAds(final Context context, String id, long timeOut, long timeDelay, CommonAdCallback adListener) {
+    public void loadSplashInterstitialAds(final Context context,String id, long timeOut, long timeDelay, CommonAdCallback adListener) {
         loadSplashInterstitialAds(context, id, timeOut, timeDelay, true, adListener);
+    }
+
+    public void loadSplashInterstitialAds(final Context context, ArrayList<String> listID, long timeOut, long timeDelay, CommonAdCallback adListener) {
+        loadSplashInterstitialAds(context, listID, timeOut, timeDelay, true, adListener);
     }
 
     public void loadSplashInterstitialAds(final Context context, String id, long timeOut, long timeDelay, boolean showSplashIfReady, CommonAdCallback adListener) {
@@ -312,6 +318,114 @@ public class CommonAd {
                         }
                     }
                 });
+        }
+    }
+
+    public void loadSplashInterstitialAds(final Context context, ArrayList<String> listID, long timeOut, long timeDelay, boolean showSplashIfReady, CommonAdCallback adListener) {
+        switch (adConfig.getMediationProvider()) {
+            case CommonAdConfig.PROVIDER_ADMOB:
+                switch (adConfig.getMediationFloor()){
+                    case CommonAdConfig.FLOOR:
+                        Admob.getInstance().loadSplashInterstitialAds(context, listID.get(listID.size() - 1), timeOut, timeDelay, showSplashIfReady, new AdCallback() {
+                            @Override
+                            public void onAdClosed() {
+                                super.onAdClosed();
+                                adListener.onAdClosed();
+                            }
+
+                            @Override
+                            public void onNextAction() {
+                                super.onNextAction();
+                                adListener.onNextAction();
+                            }
+
+                            @Override
+                            public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                                super.onAdFailedToLoad(i);
+                                adListener.onAdFailedToLoad(new ApAdError(i));
+
+                            }
+
+                            @Override
+                            public void onAdFailedToShow(@Nullable AdError adError) {
+                                super.onAdFailedToShow(adError);
+                                adListener.onAdFailedToShow(new ApAdError(adError));
+
+                            }
+
+                            @Override
+                            public void onAdLoaded() {
+                                super.onAdLoaded();
+                                adListener.onAdLoaded();
+                            }
+
+                            @Override
+                            public void onAdSplashReady() {
+                                super.onAdSplashReady();
+                                adListener.onAdSplashReady();
+                            }
+
+
+                            @Override
+                            public void onAdClicked() {
+                                super.onAdClicked();
+                                if (adListener != null) {
+                                    adListener.onAdClicked();
+                                }
+                            }
+                        });
+                        break;
+                    case CommonAdConfig.WARTER_FALL:
+                        Admob.getInstance().loadSplashInterstitialAds(context, listID, timeOut, timeDelay, showSplashIfReady, new AdCallback() {
+                            @Override
+                            public void onAdClosed() {
+                                super.onAdClosed();
+                                adListener.onAdClosed();
+                            }
+
+                            @Override
+                            public void onNextAction() {
+                                super.onNextAction();
+                                adListener.onNextAction();
+                            }
+
+                            @Override
+                            public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                                super.onAdFailedToLoad(i);
+                                adListener.onAdFailedToLoad(new ApAdError(i));
+
+                            }
+
+                            @Override
+                            public void onAdFailedToShow(@Nullable AdError adError) {
+                                super.onAdFailedToShow(adError);
+                                adListener.onAdFailedToShow(new ApAdError(adError));
+
+                            }
+
+                            @Override
+                            public void onAdLoaded() {
+                                super.onAdLoaded();
+                                adListener.onAdLoaded();
+                            }
+
+                            @Override
+                            public void onAdSplashReady() {
+                                super.onAdSplashReady();
+                                adListener.onAdSplashReady();
+                            }
+
+
+                            @Override
+                            public void onAdClicked() {
+                                super.onAdClicked();
+                                if (adListener != null) {
+                                    adListener.onAdClicked();
+                                }
+                            }
+                        });
+                        break;
+                }
         }
     }
 
@@ -573,6 +687,70 @@ public class CommonAd {
                 });
                 apInterstitialAd.setMaxInterstitialAd(maxInterstitialAd);
                 return apInterstitialAd;
+            default:
+                return apInterstitialAd;
+        }
+    }
+
+    /**
+     * Result a ApInterstitialAd in onInterstitialLoad
+     *
+     * @param context
+     * @param listID      admob or max mediation
+     */
+    public ApInterstitialAd getInterstitialAds(Context context, ArrayList<String> listID) {
+        ApInterstitialAd apInterstitialAd = new ApInterstitialAd();
+        switch (adConfig.getMediationProvider()) {
+            case CommonAdConfig.PROVIDER_ADMOB:
+                switch (adConfig.getMediationFloor()){
+                    case CommonAdConfig.FLOOR:
+                        if(listID.size() == 0){
+                            apInterstitialAd.setInterstitialAd(null);
+                        }
+                        if(listID.size() > 0){
+                            Admob.getInstance().getInterstitialAds(context, listID.get(listID.size() - 1), new AdCallback() {
+                                @Override
+                                public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
+                                    super.onInterstitialLoad(interstitialAd);
+                                    Log.d(TAG, "Admob onInterstitialLoad: ");
+                                    apInterstitialAd.setInterstitialAd(interstitialAd);
+                                }
+
+                                @Override
+                                public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                                    super.onAdFailedToLoad(i);
+                                }
+
+                                @Override
+                                public void onAdFailedToShow(@Nullable AdError adError) {
+                                    super.onAdFailedToShow(adError);
+                                }
+
+                            });
+                        }
+                        return apInterstitialAd;
+                    case CommonAdConfig.WARTER_FALL:
+                        Admob.getInstance().getInterstitialAds(context, listID, new AdCallback() {
+                            @Override
+                            public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
+                                super.onInterstitialLoad(interstitialAd);
+                                Log.d(TAG, "Admob onInterstitialLoad: ");
+                                apInterstitialAd.setInterstitialAd(interstitialAd);
+                            }
+
+                            @Override
+                            public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                                super.onAdFailedToLoad(i);
+                            }
+
+                            @Override
+                            public void onAdFailedToShow(@Nullable AdError adError) {
+                                super.onAdFailedToShow(adError);
+                            }
+
+                        });
+                        return apInterstitialAd;
+                }
             default:
                 return apInterstitialAd;
         }

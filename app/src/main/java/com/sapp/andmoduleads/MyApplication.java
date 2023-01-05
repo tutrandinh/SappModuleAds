@@ -29,10 +29,11 @@ public class MyApplication extends AdsMultiDexApplication {
         commonAdConfig.setVariant(BuildConfig.build_debug);
         commonAdConfig.setIdAdResume(getString(R.string.admod_app_open_ad_id));
         //listTestDevice.add("EC25F576DA9B6CE74778B268CB87E431");
+        commonAdConfig.setMediationFloor(CommonAdConfig.WARTER_FALL);
         commonAdConfig.setListDeviceTest(listTestDevice);
 
         CommonAd.getInstance().init(this, commonAdConfig, false);
-        Admob.getInstance().setOpenActivityAfterShowInterAds(false);
+        Admob.getInstance().setOpenActivityAfterShowInterAds(true);
         Admob.getInstance().setDisableAdResumeWhenClickAds(true);
 
     }
