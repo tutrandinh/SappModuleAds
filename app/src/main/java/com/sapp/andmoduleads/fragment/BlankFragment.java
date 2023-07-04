@@ -16,6 +16,7 @@ import com.ads.sapp.admob.Admob;
 import com.ads.sapp.ads.CommonAd;
 import com.ads.sapp.ads.CommonAdConfig;
 import com.ads.sapp.funtion.AdCallback;
+import com.ads.sapp.util.BannerGravity;
 import com.sapp.andmoduleads.R;
 import com.sapp.andmoduleads.activity.ContentActivity;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -57,18 +58,20 @@ public class BlankFragment extends Fragment {
         View view1 = view.findViewById(R.id.include).getRootView();
         String idBanner;
         if (CommonAd.getInstance().getMediationProvider() == CommonAdConfig.PROVIDER_ADMOB) {
-            idBanner = getString(R.string.admod_banner_id);
+            idBanner = getString(R.string.admod_banner_collap_id);
         } else {
             idBanner = getString(R.string.applovin_test_banner);
         }
 
-        CommonAd.getInstance().loadBannerFragment(requireActivity(), idBanner, view1, new AdCallback() {
-            @Override
-            public void onAdClicked() {
-                super.onAdClicked();
-                Log.e("TAG", "onAdClicked: BannerFragment");
-            }
-        });
+//        CommonAd.getInstance().loadBannerFragment(requireActivity(), idBanner, view1, new AdCallback() {
+//            @Override
+//            public void onAdClicked() {
+//                super.onAdClicked();
+//                Log.e("TAG", "onAdClicked: BannerFragment");
+//            }
+//        });
+
+        CommonAd.getInstance().loadCollapsibleBannerFragment(requireActivity(), idBanner, view1, BannerGravity.bottom);
 
         button.setOnClickListener(v -> {
             Admob.getInstance().forceShowInterstitial(getActivity(), mInterstitialAd, new AdCallback() {

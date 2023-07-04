@@ -12,6 +12,7 @@ import com.ads.sapp.ads.CommonAdCallback;
 import com.ads.sapp.ads.CommonAdConfig;
 import com.ads.sapp.ads.CommonInitCallback;
 import com.ads.sapp.applovin.AppOpenMax;
+import com.ads.sapp.funtion.AdCallback;
 import com.sapp.andmoduleads.BuildConfig;
 import com.sapp.andmoduleads.MyApplication;
 import com.sapp.andmoduleads.R;
@@ -20,7 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SplashActivity extends AppCompatActivity {
-    private CommonAdCallback adCallback  = null;
+//    private CommonAdCallback adCallback  = null;
+    private AdCallback adCallback  = null;
     private static final String TAG = "SplashActivity";
     private List<String> list = new ArrayList<>();
     private String idAdSplash;
@@ -34,31 +36,43 @@ public class SplashActivity extends AppCompatActivity {
         else
             idAdSplash = getString(R.string.applovin_test_inter);
 
-        adCallback = new CommonAdCallback() {
+//        adCallback = new CommonAdCallback() {
+//            @Override
+//            public void onNextAction() {
+//                super.onNextAction();
+//                Log.d(TAG, "onNextAction");
+//                startMain();
+//
+//                //When use Max
+//                //AppOpenMax.getInstance().loadAdResume(MyApplication.getApplication(), getString(R.string.applovin_test_app_open));
+//            }
+//        };
+
+//        ArrayList<String> list = new ArrayList<>();
+//        list.add(getString(R.string.inter_splash));
+//        list.add(getString(R.string.inter_splash1));
+//        list.add(getString(R.string.inter_splash2));
+//        list.add(getString(R.string.inter_splash3));
+//
+//        CommonAd.getInstance().loadSplashInterstitialAds(
+//                this,
+//                list,
+//                25000,
+//                5000,
+//                adCallback
+//            );
+
+        List<String> listID = new ArrayList<>();
+        listID.add("ca-app-pub-3940256099942544/3419835294");
+        adCallback = new AdCallback(){
             @Override
             public void onNextAction() {
                 super.onNextAction();
-                Log.d(TAG, "onNextAction");
-                startMain();
-
-                //When use Max
-                //AppOpenMax.getInstance().loadAdResume(MyApplication.getApplication(), getString(R.string.applovin_test_app_open));
+                startActivity(new Intent(SplashActivity.this,MainActivity.class));
+                finish();
             }
         };
-
-        ArrayList<String> list = new ArrayList<>();
-        list.add(getString(R.string.inter_splash));
-        list.add(getString(R.string.inter_splash1));
-        list.add(getString(R.string.inter_splash2));
-        list.add(getString(R.string.inter_splash3));
-
-        CommonAd.getInstance().loadSplashInterstitialAds(
-                this,
-                list,
-                25000,
-                5000,
-                adCallback
-            );
+        AppOpenManager.getInstance().loadOpenAppAdSplashFloor(this,listID,true,adCallback);
     };
 
     private void startMain() {
@@ -70,7 +84,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.e(TAG, "Splash onPause: " );
-        CommonAd.getInstance().onCheckShowSplashWhenFail(this, adCallback, 1000);
+        AppOpenManager.getInstance().onCheckShowSplashWhenFail(this,adCallback,1000);
     }
 
     @Override

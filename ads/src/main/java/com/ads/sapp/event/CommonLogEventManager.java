@@ -10,6 +10,7 @@ import com.ads.sapp.util.AppUtil;
 import com.ads.sapp.util.SharePreferenceUtils;
 import com.applovin.mediation.MaxAd;
 import com.google.android.gms.ads.AdValue;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class CommonLogEventManager {
 
@@ -21,6 +22,11 @@ public class CommonLogEventManager {
 
     public static void logPaidAdImpression(Context context, MaxAd adValue, AdType adType) {
         logEventWithAds(context, (float) adValue.getRevenue(), 0, adValue.getAdUnitId(), adValue.getNetworkName(), CommonAdConfig.PROVIDER_MAX);
+    }
+
+    public static void logPaidAdImpression(Context context, AdValue adValue, String adUnitId, String mediationAdapterClassName) {
+        Log.e("logPaidAdImpression",adValue.getCurrencyCode()+"");
+        logEventWithAds(context, (float) adValue.getValueMicros(), adValue.getPrecisionType(), adUnitId, mediationAdapterClassName,adValue.getCurrencyCode());
     }
 
     private static void logEventWithAds(Context context, float revenue, int precision, String adUnitId, String network, int mediationProvider) {
@@ -87,7 +93,6 @@ public class CommonLogEventManager {
         FirebaseAnalyticsUtil.logCurrentTotalRevenueAd(context, eventName, bundle);
     }
 
-
     public static void logTotalRevenue001Ad(Context context) {
         float revenue = AppUtil.currentTotalRevenue001Ad;
         if (revenue / 1000000 >= 0.01) {
@@ -118,4 +123,48 @@ public class CommonLogEventManager {
             SharePreferenceUtils.setPushedRevenue7Day(context);
         }
     }
+
+    private static void logEventWithAds(Context context, float revenue, int precision, String adUnitId, String network, String  mediationProvider) {
+        Log.d(TAG, String.format(
+                "Paid event of value %.0f microcents in currency USD of precision %s%n occurred for ad unit %s from ad network %s.mediation provider: %s%n",
+                revenue,
+                precision,
+                adUnitId,
+                network, mediationProvider));
+
+        Bundle params = new Bundle(); // Log ad value in micros.
+        params.putDouble("valuemicros", revenue);
+        params.putString("currency", "USD");
+        // These values below won’t be used in ROAS recipe.
+        // But log for purposes of debugging and future reference.
+        params.putInt("precision", precision);
+        params.putString("adunitid", adUnitId);
+        params.putString("network", network);
+
+        // log revenue this ad
+        logPaidAdImpressionValue(context, revenue / 1000000.0, precision, adUnitId, network, mediationProvider);
+        FirebaseAnalyticsUtil.logEventWithAds(context, params);
+        // update current tota
+        // l revenue ads
+        SharePreferenceUtils.updateCurrentTotalRevenueAd(context, (float) revenue);
+        // logCurrentTotalRevenueAd(context, "event_current_total_revenue_ad");
+
+        // update current total revenue ads for event paid_ad_impression_value_0.01
+        AppUtil.currentTotalRevenue001Ad += revenue;
+        SharePreferenceUtils.updateCurrentTotalRevenue001Ad(context, AppUtil.currentTotalRevenue001Ad);
+        logTotalRevenue001Ad(context);
+
+    }
+
+    private static void logPaidAdImpressionValue(Context context, double value, int precision, String adunitid, String network, String mediationProvider) {
+        Bundle params = new Bundle();
+        params.putDouble("value", value);
+        params.putString("currency", "USD");
+        params.putInt("precision", precision);
+        params.putString("adunitid", adunitid);
+        params.putString("network", network);
+
+        FirebaseAnalyticsUtil.logPaidAdImpressionValue(context, params);
+    }
+
 }
