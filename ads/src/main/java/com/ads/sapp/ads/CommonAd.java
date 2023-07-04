@@ -32,6 +32,7 @@ import com.ads.sapp.event.CommonLogEventManager;
 import com.ads.sapp.funtion.AdCallback;
 import com.ads.sapp.funtion.RewardCallback;
 import com.ads.sapp.util.AppUtil;
+import com.ads.sapp.util.BannerGravity;
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdListener;
 import com.applovin.mediation.MaxError;
@@ -164,6 +165,22 @@ public class CommonAd {
                 break;
             case CommonAdConfig.PROVIDER_MAX:
                 AppLovin.getInstance().loadBanner(mActivity, id);
+        }
+    }
+
+    public void loadCollapsibleBanner(final Activity mActivity, String id, String gravity) {
+        switch (adConfig.getMediationProvider()) {
+            case CommonAdConfig.PROVIDER_ADMOB:
+                Admob.getInstance().loadCollapsibleBanner(mActivity, id, gravity);
+                break;
+        }
+    }
+
+    public void loadCollapsibleBannerFragment(final Activity mActivity, String id, final View rootView, String gravity) {
+        switch (adConfig.getMediationProvider()) {
+            case CommonAdConfig.PROVIDER_ADMOB:
+                Admob.getInstance().loadCollapsibleBannerFragment(mActivity, id, rootView,gravity);
+                break;
         }
     }
 

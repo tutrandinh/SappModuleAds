@@ -9,6 +9,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -49,6 +50,7 @@ import com.ads.sapp.util.AppUtil;
 import com.applovin.mediation.AppLovinExtras;
 import com.applovin.mediation.ApplovinAdapter;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.ads.mediation.facebook.FacebookAdapter;
 import com.google.ads.mediation.facebook.FacebookExtras;
 import com.google.android.gms.ads.AdError;
@@ -105,6 +107,11 @@ public class Admob {
     private boolean openActivityAfterShowInterAds = false;
     private Context context;
 //    private AppOpenAd appOpenAd = null;
+
+    public static boolean isShowAllAds = true;
+    public static final String BANNER_INLINE_SMALL_STYLE = "BANNER_INLINE_SMALL_STYLE";
+    public static final String BANNER_INLINE_LARGE_STYLE = "BANNER_INLINE_LARGE_STYLE";
+    private static int MAX_SMALL_INLINE_BANNER_HEIGHT = 50;
 
     InterstitialAd mInterstitialSplash;
     InterstitialAd interstitialAd;
@@ -1180,6 +1187,29 @@ public class Admob {
         loadBanner(mActivity, id, adContainer, containerShimmer, callback, useInlineAdaptive);
     }
 
+    /**
+     * Load quảng cáo Collapsible Banner Trong Activity
+     */
+    public void loadCollapsibleBanner(final Activity mActivity, String id, String gravity) {
+        final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
+        final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
+        if(!isShowAllAds||!isNetworkConnected()){
+            adContainer.setVisibility(View.GONE);
+            containerShimmer.setVisibility(View.GONE);
+        }else{
+            loadCollapsibleBanner(mActivity, id, gravity, adContainer, containerShimmer);
+        }
+    }
+
+    /**
+     * Load quảng cáo Collapsible Banner Trong Fragment
+     */
+    public void loadCollapsibleBannerFragment(final Activity mActivity, String id, final View rootView, String gravity) {
+        final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
+        final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
+        loadCollapsibleBanner(mActivity, id, gravity, adContainer, containerShimmer);
+    }
+
     boolean bannerLoaded = false;
 
     private void loadBanner(final Activity mActivity, String id, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer, Boolean useInlineAdaptive) {
@@ -1303,6 +1333,94 @@ public class Admob {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void loadCollapsibleBanner(final Activity mActivity, String id, String gravity, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer) {
+
+//        if (AppPurchase.getInstance().isPurchased(mActivity)) {
+//            containerShimmer.setVisibility(View.GONE);
+//            return;
+//        }
+
+        containerShimmer.setVisibility(View.VISIBLE);
+        containerShimmer.startShimmer();
+        try {
+            AdView adView = new AdView(mActivity);
+            adView.setAdUnitId(id);
+            adContainer.addView(adView);
+            AdSize adSize = getAdSize(mActivity, false, "");
+            containerShimmer.getLayoutParams().height = (int) (adSize.getHeight() * Resources.getSystem().getDisplayMetrics().density + 0.5f);
+            adView.setAdSize(adSize);
+            adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            adView.loadAd(getAdRequestForCollapsibleBanner(gravity));
+            adView.setAdListener(new AdListener() {
+                @Override
+                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                    super.onAdFailedToLoad(loadAdError);
+                    containerShimmer.stopShimmer();
+                    adContainer.setVisibility(View.GONE);
+                    containerShimmer.setVisibility(View.GONE);
+
+                }
+
+                @Override
+                public void onAdLoaded() {
+                    Log.d(TAG, "Banner adapter class name: " + adView.getResponseInfo().getMediationAdapterClassName());
+                    containerShimmer.stopShimmer();
+                    containerShimmer.setVisibility(View.GONE);
+                    adContainer.setVisibility(View.VISIBLE);
+                    adView.setOnPaidEventListener(adValue -> {
+                        Log.d(TAG, "OnPaidEvent banner:" + adValue.getValueMicros());
+                        CommonLogEventManager.logPaidAdImpression(context,
+                                adValue,
+                                adView.getAdUnitId(), "banner");
+                    });
+
+                }
+
+                @Override
+                public void onAdClicked() {
+                    super.onAdClicked();
+                    if (disableAdResumeWhenClickAds)
+                        AppOpenManager.getInstance().disableAdResumeByClickAction();
+                    CommonLogEventManager.logClickAdsEvent(context, id);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private AdSize getAdSize(Activity mActivity, Boolean useInlineAdaptive, String inlineStyle) {
+
+        // Step 2 - Determine the screen width (less decorations) to use for the ad width.
+        Display display = mActivity.getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float widthPixels = outMetrics.widthPixels;
+        float density = outMetrics.density;
+
+        int adWidth = (int) (widthPixels / density);
+
+        // Step 3 - Get adaptive ad size and return for setting on the ad view.
+        if (useInlineAdaptive) {
+            if (inlineStyle.equalsIgnoreCase(BANNER_INLINE_LARGE_STYLE)) {
+                return AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(mActivity, adWidth);
+            } else {
+                return AdSize.getInlineAdaptiveBannerAdSize(adWidth, MAX_SMALL_INLINE_BANNER_HEIGHT);
+            }
+        }
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mActivity, adWidth);
+
+    }
+
+    private AdRequest getAdRequestForCollapsibleBanner(String gravity) {
+        AdRequest.Builder builder = new AdRequest.Builder();
+        Bundle admobExtras = new Bundle();
+        admobExtras.putString("collapsible", gravity);
+        builder.addNetworkExtrasBundle(AdMobAdapter.class, admobExtras);
+        return builder.build();
     }
 
     private AdSize getAdSize(Activity mActivity, Boolean useInlineAdaptive) {
@@ -2183,4 +2301,9 @@ public class Admob {
     private final static int REWARD_ADS = 4;
     private final static int NATIVE_ADS = 5;
 
+    /* ============================= END GET  INFO DEVICE  ==========================================*/
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
 }

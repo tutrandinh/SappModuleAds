@@ -2,8 +2,12 @@ package com.ads.sapp.event;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.ads.sapp.ads.CommonAdConfig;
+import com.ads.sapp.util.AppUtil;
+import com.ads.sapp.util.SharePreferenceUtils;
+import com.google.android.gms.ads.AdValue;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class FirebaseAnalyticsUtil {
@@ -18,6 +22,10 @@ public class FirebaseAnalyticsUtil {
             FirebaseAnalytics.getInstance(context).logEvent("max_paid_ad_impression_value", bundle);
         else
             FirebaseAnalytics.getInstance(context).logEvent("paid_ad_impression_value", bundle);
+    }
+
+    static void logPaidAdImpressionValue(Context context, Bundle bundle) {
+        FirebaseAnalytics.getInstance(context).logEvent("admob_paid_ad_impression_value", bundle);
     }
 
     public static void logClickAdsEvent(Context context, Bundle bundle) {

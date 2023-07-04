@@ -21,6 +21,7 @@ import com.ads.sapp.ads.wrapper.ApInterstitialAd;
 import com.ads.sapp.dialog.DialogExitApp1;
 import com.ads.sapp.funtion.AdCallback;
 import com.ads.sapp.funtion.DialogExitListener;
+import com.ads.sapp.util.BannerGravity;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.sapp.andmoduleads.BuildConfig;
@@ -67,7 +68,8 @@ public class MainActivity extends AppCompatActivity {
         commonNativeAdView.setLayoutCustomNativeAd(layoutNativeCustom);
         commonNativeAdView.loadNativeAd(this, idNative);
 
-        CommonAd.getInstance().loadBanner(this, idBanner);
+        //CommonAd.getInstance().loadBanner(this, idBanner);
+        CommonAd.getInstance().loadCollapsibleBanner(this, idBanner, BannerGravity.bottom);
 
         loadAdInterstitial();
 
@@ -131,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void configMediationProvider() {
         if (CommonAd.getInstance().getMediationProvider() == CommonAdConfig.PROVIDER_ADMOB) {
-            idBanner = BuildConfig.ad_banner;
+            idBanner = BuildConfig.ad_banner_collap;
             idNative = BuildConfig.ad_native;
             idInter = BuildConfig.ad_interstitial_splash;
             layoutNativeCustom = com.ads.sapp.R.layout.custom_native_admod_medium_rate;
