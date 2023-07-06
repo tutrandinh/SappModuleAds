@@ -176,10 +176,26 @@ public class CommonAd {
         }
     }
 
+    public void loadCollapsibleBannerFloor(final Activity mActivity, ArrayList<String> listID, String gravity) {
+        switch (adConfig.getMediationProvider()) {
+            case CommonAdConfig.PROVIDER_ADMOB:
+                Admob.getInstance().loadCollapsibleBannerFloor(mActivity, listID, gravity);
+                break;
+        }
+    }
+
     public void loadCollapsibleBannerFragment(final Activity mActivity, String id, final View rootView, String gravity) {
         switch (adConfig.getMediationProvider()) {
             case CommonAdConfig.PROVIDER_ADMOB:
                 Admob.getInstance().loadCollapsibleBannerFragment(mActivity, id, rootView,gravity);
+                break;
+        }
+    }
+
+    public void loadCollapsibleBannerFragmentFloor(final Activity mActivity, ArrayList<String> listID, final View rootView, String gravity) {
+        switch (adConfig.getMediationProvider()) {
+            case CommonAdConfig.PROVIDER_ADMOB:
+                Admob.getInstance().loadCollapsibleBannerFragmentFloor(mActivity,listID,rootView, gravity);
                 break;
         }
     }
@@ -446,7 +462,6 @@ public class CommonAd {
         }
     }
 
-
     public void onShowSplash(AppCompatActivity activity, CommonAdCallback adListener) {
         switch (adConfig.getMediationProvider()) {
             case CommonAdConfig.PROVIDER_ADMOB:
@@ -561,6 +576,18 @@ public class CommonAd {
                 }, timeDelay);
         }
     }
+
+    public void loadOpenAppAdSplashFloor(Context context, ArrayList<String> listIDResume, boolean isShowAdIfReady, AdCallback adCallback) {
+        switch (adConfig.getMediationProvider()) {
+            case CommonAdConfig.PROVIDER_ADMOB:
+                AppOpenManager.getInstance().loadOpenAppAdSplashFloor(context,listIDResume,isShowAdIfReady,adCallback);
+            case CommonAdConfig.PROVIDER_MAX:
+                return;
+            default:
+                return;
+        }
+    }
+
 
     /**
      * Result a ApInterstitialAd in onInterstitialLoad

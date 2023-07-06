@@ -826,7 +826,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
     }
 
-    public void loadOpenAppAdSplashFloor(Context context, List<String> listIDResume, boolean isShowAdIfReady, AdCallback adCallback) {
+    public void loadOpenAppAdSplashFloor(Context context, ArrayList<String> listIDResume, boolean isShowAdIfReady, AdCallback adCallback) {
         if(!isNetworkConnected(context)){
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -842,6 +842,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                 return;
             }
             Log.e("AppOpenManager", "load ID :" + listIDResume.get(0));
+            if(listIDResume.size()>0){
+                Log.e("AppOpenManager", "load ID :" + listIDResume.get(0));
+            }
             if (listIDResume.size() < 1) {
                 adCallback.onAdFailedToLoad(null);
                 adCallback.onNextAction();

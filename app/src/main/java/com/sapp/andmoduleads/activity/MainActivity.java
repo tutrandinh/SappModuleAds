@@ -69,7 +69,15 @@ public class MainActivity extends AppCompatActivity {
         commonNativeAdView.loadNativeAd(this, idNative);
 
         //CommonAd.getInstance().loadBanner(this, idBanner);
-        CommonAd.getInstance().loadCollapsibleBanner(this, idBanner, BannerGravity.bottom);
+        //CommonAd.getInstance().loadCollapsibleBanner(this, idBanner, BannerGravity.bottom);
+
+        ArrayList<String> listID = new ArrayList<>();
+        listID.add("1");
+        listID.add("2");
+        listID.add("3");
+        listID.add(BuildConfig.ad_banner_collap);
+
+        CommonAd.getInstance().loadCollapsibleBannerFloor(this, listID, BannerGravity.bottom);
 
         loadAdInterstitial();
 

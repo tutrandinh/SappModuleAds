@@ -62,8 +62,12 @@ public class SplashActivity extends AppCompatActivity {
 //                adCallback
 //            );
 
-        List<String> listID = new ArrayList<>();
+        ArrayList<String> listID = new ArrayList<>();
+        listID.add("ca-app-pub-3940256099942544/34198352941");
+        listID.add("ca-app-pub-3940256099942544/34198352941");
+        listID.add("ca-app-pub-3940256099942544/34198352941");
         listID.add("ca-app-pub-3940256099942544/3419835294");
+
         adCallback = new AdCallback(){
             @Override
             public void onNextAction() {
@@ -72,7 +76,9 @@ public class SplashActivity extends AppCompatActivity {
                 finish();
             }
         };
-        AppOpenManager.getInstance().loadOpenAppAdSplash(this,"ca-app-pub-3940256099942544/3419835294",3000,10000,true,adCallback);
+        //AppOpenManager.getInstance().loadOpenAppAdSplash(this,"ca-app-pub-3940256099942544/3419835294",3000,10000,true,adCallback);
+        CommonAd.getInstance().loadOpenAppAdSplashFloor(this,listID,true,adCallback);
+
     };
 
     private void startMain() {

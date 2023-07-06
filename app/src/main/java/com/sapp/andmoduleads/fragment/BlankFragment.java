@@ -22,6 +22,8 @@ import com.sapp.andmoduleads.activity.ContentActivity;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 
+import java.util.ArrayList;
+
 
 public class BlankFragment extends Fragment {
     InterstitialAd mInterstitialAd;
@@ -71,7 +73,14 @@ public class BlankFragment extends Fragment {
 //            }
 //        });
 
-        CommonAd.getInstance().loadCollapsibleBannerFragment(requireActivity(), idBanner, view1, BannerGravity.bottom);
+        //CommonAd.getInstance().loadCollapsibleBannerFragment(requireActivity(), idBanner, view1, BannerGravity.bottom);
+
+        ArrayList<String> listID = new ArrayList<>();
+        listID.add("1");
+        listID.add("2");
+        listID.add(getString(R.string.admod_banner_collap_id));
+
+        CommonAd.getInstance().loadCollapsibleBannerFragmentFloor(requireActivity(),listID,view, BannerGravity.bottom);
 
         button.setOnClickListener(v -> {
             Admob.getInstance().forceShowInterstitial(getActivity(), mInterstitialAd, new AdCallback() {
