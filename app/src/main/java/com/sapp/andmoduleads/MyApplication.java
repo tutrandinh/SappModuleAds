@@ -28,6 +28,7 @@ public class MyApplication extends AdsMultiDexApplication {
     private void initAds() {
 
         CommonProcess.getInstance().setBranch("develop");
+        CommonProcess.getInstance().setToken("somethings");
         CommonProcess.getInstance().setFileName("ca-app-pub-3940256099942544~3347511713");
 
         commonAdConfig.setMediationProvider(CommonAdConfig.PROVIDER_ADMOB);
