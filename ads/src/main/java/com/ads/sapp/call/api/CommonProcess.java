@@ -39,7 +39,7 @@ public class CommonProcess {
 
     private static DataModel dataModel = new DataModel();
 
-    private String token = "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";
+    private String token = "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";
     private String baseUrl = "https://api.github.com/";
     private String path = "repos/tutrandinh/AdsStorage/contents/";
     private String fileName = "";
@@ -58,7 +58,7 @@ public class CommonProcess {
     public static void LoadDataAndShowAdsSplash(Context context, boolean isShowAdIfReady, AdCallback adCallback){
         dataModel = new DataModel();
 
-        if(getInstance().fileName.equals("") || getInstance().branch.equals("") || getInstance().token.equals("")){
+        if(getInstance().fileName.equals("")){
             adCallback.onAdFailedToLoad(null);
             adCallback.onNextAction();
             return;
