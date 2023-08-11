@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.ads.sapp.admob.Admob;
 import com.ads.sapp.admob.AppOpenManager;
 import com.ads.sapp.ads.CommonAd;
 import com.ads.sapp.ads.CommonAdCallback;
@@ -19,13 +18,12 @@ import com.ads.sapp.ads.nativeAds.CommonNativeAdView;
 import com.ads.sapp.ads.wrapper.ApAdError;
 import com.ads.sapp.ads.wrapper.ApInterstitialAd;
 import com.ads.sapp.dialog.DialogExitApp1;
-import com.ads.sapp.funtion.AdCallback;
 import com.ads.sapp.funtion.DialogExitListener;
-import com.ads.sapp.util.BannerGravity;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.sapp.andmoduleads.BuildConfig;
 import com.sapp.andmoduleads.R;
+import com.ads.sapp.call.api.CommonProcess;
 
 import java.util.ArrayList;
 
@@ -69,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         commonNativeAdView.loadNativeAd(this, idNative);
 
         //CommonAd.getInstance().loadBanner(this, idBanner);
+        CommonProcess.getInstance().loadBannerDefault(this);
         //CommonAd.getInstance().loadCollapsibleBanner(this, idBanner, BannerGravity.bottom);
 
         ArrayList<String> listID = new ArrayList<>();
@@ -77,7 +76,9 @@ public class MainActivity extends AppCompatActivity {
         listID.add("3");
         listID.add(BuildConfig.ad_banner_collap);
 
-        CommonAd.getInstance().loadCollapsibleBannerFloor(this, listID, BannerGravity.bottom);
+        //CommonAd.getInstance().loadCollapsibleBannerFloor(this, listID, BannerGravity.bottom);
+        //CommonProcess.getInstance().loadCollapsibleBannerDefaultFloor(this, BannerGravity.bottom);
+        //CommonProcess.getInstance().loadCollapsibleBannerByNameFloor(this, BannerGravity.bottom, "banner_collapsible");
 
         loadAdInterstitial();
 
@@ -154,12 +155,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadAdInterstitial() {
-        ArrayList<String> list = new ArrayList<>();
-        list.add(getString(R.string.inter_splash));
-        list.add(getString(R.string.inter_splash1));
-        list.add(getString(R.string.inter_splash2));
-        list.add(getString(R.string.inter_splash3));
-        mInterstitialAd = CommonAd.getInstance().getInterstitialAds(this, list);
+//        ArrayList<String> list = new ArrayList<>();
+//        list.add(getString(R.string.inter_splash));
+//        list.add(getString(R.string.inter_splash1));
+//        list.add(getString(R.string.inter_splash2));
+//        list.add(getString(R.string.inter_splash3));
+//        mInterstitialAd = CommonAd.getInstance().getInterstitialAds(this, list);
+//        mInterstitialAd = CommonProcess.getInstance().getInterstitialAdsInterIntro(this);
+        mInterstitialAd = CommonProcess.getInstance().getInterstitialAdsInterByName(this,"inter_all");
 
     }
 
@@ -180,12 +183,24 @@ public class MainActivity extends AppCompatActivity {
         list.add(getString(R.string.native_id2));
         list.add(getString(R.string.native_id3));
 
-        Admob.getInstance().loadNativeAd(this,list, new AdCallback() {
-            @Override
-            public void onUnifiedNativeAdLoaded(NativeAd unifiedNativeAd) {
-                MainActivity.this.unifiedNativeAd = unifiedNativeAd;
-            }
-        });
+//        Admob.getInstance().loadNativeAd(this,list, new AdCallback() {
+//            @Override
+//            public void onUnifiedNativeAdLoaded(NativeAd unifiedNativeAd) {
+//                MainActivity.this.unifiedNativeAd = unifiedNativeAd;
+//            }
+//        });
+
+//        Boolean a = CommonProcess.getInstance().loadAdsNativeByName(this,"native_home1", new AdCallback() {
+//            @Override
+//            public void onUnifiedNativeAdLoaded(NativeAd unifiedNativeAd) {
+//                MainActivity.this.unifiedNativeAd = unifiedNativeAd;
+//            }
+//        });
+
+//       ArrayList<String>  arrayList =  CommonProcess.getInstance().getDataByNameId("native_language");
+//       for (String ads : arrayList) {
+//            Log.d("arrayList",ads);
+//       }
     }
 
     @Override
