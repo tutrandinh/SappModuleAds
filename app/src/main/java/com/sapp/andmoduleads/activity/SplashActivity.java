@@ -8,14 +8,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ads.sapp.admob.AppOpenManager;
 import com.ads.sapp.ads.CommonAd;
-import com.ads.sapp.ads.CommonAdCallback;
 import com.ads.sapp.ads.CommonAdConfig;
-import com.ads.sapp.ads.CommonInitCallback;
-import com.ads.sapp.applovin.AppOpenMax;
 import com.ads.sapp.funtion.AdCallback;
 import com.sapp.andmoduleads.BuildConfig;
-import com.sapp.andmoduleads.MyApplication;
 import com.sapp.andmoduleads.R;
+import com.ads.sapp.call.api.CommonProcess;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +28,9 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+
+
         if (CommonAd.getInstance().getMediationProvider() == CommonAdConfig.PROVIDER_ADMOB)
             idAdSplash = BuildConfig.ad_interstitial_splash;
         else
@@ -77,8 +77,10 @@ public class SplashActivity extends AppCompatActivity {
             }
         };
         //AppOpenManager.getInstance().loadOpenAppAdSplash(this,"ca-app-pub-3940256099942544/3419835294",3000,10000,true,adCallback);
-        CommonAd.getInstance().loadOpenAppAdSplashFloor(this,listID,true,adCallback);
+        //CommonAd.getInstance().loadOpenAppAdSplashFloor(this,listID,true,adCallback);
 
+        CommonProcess.getInstance().LoadDataAndShowAdsSplash(this,true,adCallback);
+        //CommonProcess.getInstance().loadOpenAppAdSplashFloor(this,true,adCallback);
     };
 
     private void startMain() {

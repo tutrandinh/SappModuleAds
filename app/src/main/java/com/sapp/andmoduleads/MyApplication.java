@@ -6,6 +6,7 @@ import com.ads.sapp.application.AdsMultiDexApplication;
 import com.ads.sapp.admob.Admob;
 import com.ads.sapp.admob.AppOpenManager;
 import com.sapp.andmoduleads.activity.SplashActivity;
+import com.ads.sapp.call.api.CommonProcess;
 
 
 public class MyApplication extends AdsMultiDexApplication {
@@ -25,6 +26,10 @@ public class MyApplication extends AdsMultiDexApplication {
     }
 
     private void initAds() {
+
+        CommonProcess.getInstance().setBranch("develop");
+        CommonProcess.getInstance().setFileName("ca-app-pub-3940256099942544~3347511713");
+
         commonAdConfig.setMediationProvider(CommonAdConfig.PROVIDER_ADMOB);
         commonAdConfig.setVariant(BuildConfig.build_debug);
         commonAdConfig.setIdAdResume(getString(R.string.admod_app_open_ad_id));
