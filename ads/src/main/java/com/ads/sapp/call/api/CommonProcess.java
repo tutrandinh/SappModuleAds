@@ -39,7 +39,7 @@ public class CommonProcess {
 
     private static DataModel dataModel = new DataModel();
 
-    private String token = "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";
+    private String token = "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";
     private String baseUrl = "https://api.github.com/";
     private String path = "repos/tutrandinh/AdsStorage/contents/";
     private String fileName = "";
