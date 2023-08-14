@@ -113,6 +113,9 @@ public class Admob {
     public static final String BANNER_INLINE_LARGE_STYLE = "BANNER_INLINE_LARGE_STYLE";
     private static int MAX_SMALL_INLINE_BANNER_HEIGHT = 50;
 
+    private boolean checkLoadBanner = false;
+    private boolean checkLoadBannerCollap = false;
+
     InterstitialAd mInterstitialSplash;
     InterstitialAd interstitialAd;
 
@@ -1109,6 +1112,33 @@ public class Admob {
         loadBanner(mActivity, id, adContainer, containerShimmer, false);
     }
 
+    public void loadBannerFloor(final Activity mActivity, List<String> listID) {
+        Log.e("Admob","Load Native ID Floor");
+        final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
+        final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
+        if(!isShowAllAds||!isNetworkConnected()){
+            adContainer.setVisibility(View.GONE);
+            containerShimmer.setVisibility(View.GONE);
+        }else{
+            if(listID==null){
+                adContainer.setVisibility(View.GONE);
+                containerShimmer.setVisibility(View.GONE);
+                return;
+            }
+            if(listID.size()==0){
+                adContainer.setVisibility(View.GONE);
+                containerShimmer.setVisibility(View.GONE);
+                return;
+            }
+            List idNew  = new ArrayList();
+            for (String id :listID){
+                idNew.add(id);
+            }
+            checkLoadBanner = false;
+            loadBannerFloor(mActivity, idNew, adContainer, containerShimmer, null, false, BANNER_INLINE_LARGE_STYLE);
+        }
+    }
+
     /**
      * Load quảng cáo Banner Trong Activity
      *
@@ -1210,6 +1240,91 @@ public class Admob {
         loadCollapsibleBanner(mActivity, id, gravity, adContainer, containerShimmer);
     }
 
+    private void loadBannerFloor(final Activity mActivity, List<String> listID, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer, final AdCallback callback, Boolean useInlineAdaptive, String inlineStyle) {
+        if(checkLoadBanner){
+            return;
+        }
+//        if (AppPurchase.getInstance().isPurchased(mActivity)) {
+//            containerShimmer.stopShimmer();
+//            adContainer.setVisibility(View.GONE);
+//            containerShimmer.setVisibility(View.GONE);
+//            return;
+//        }
+        if (listID.size()==0) {
+            containerShimmer.stopShimmer();
+            adContainer.setVisibility(View.GONE);
+            containerShimmer.setVisibility(View.GONE);
+            return;
+        }
+        Log.e("Admob","load banner ID : "+listID.get(0));
+        containerShimmer.setVisibility(View.VISIBLE);
+        containerShimmer.startShimmer();
+        try {
+            AdView adView = new AdView(mActivity);
+            adView.setAdUnitId(listID.get(0));
+            adContainer.addView(adView);
+            AdSize adSize = getAdSize(mActivity, useInlineAdaptive, inlineStyle);
+            int adHeight;
+            if (useInlineAdaptive && inlineStyle.equalsIgnoreCase(BANNER_INLINE_SMALL_STYLE)) {
+                adHeight = MAX_SMALL_INLINE_BANNER_HEIGHT;
+            } else {
+                adHeight = adSize.getHeight();
+            }
+            containerShimmer.getLayoutParams().height = (int) (adHeight * Resources.getSystem().getDisplayMetrics().density + 0.5f);
+            adView.setAdSize(adSize);
+            adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            adView.setAdListener(new AdListener() {
+                @Override
+                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                    if(listID.size()>0){
+                        listID.remove(0);
+                        loadBannerFloor(mActivity,listID,adContainer,containerShimmer,callback,useInlineAdaptive,inlineStyle);
+                    }else{
+                        containerShimmer.stopShimmer();
+                        adContainer.setVisibility(View.GONE);
+                        containerShimmer.setVisibility(View.GONE);
+                    }
+                }
+
+
+                @Override
+                public void onAdLoaded() {
+                    checkLoadBanner = true;
+                    Log.d(TAG, "Banner adapter class name: " + adView.getResponseInfo().getMediationAdapterClassName());
+                    containerShimmer.stopShimmer();
+                    containerShimmer.setVisibility(View.GONE);
+                    adContainer.setVisibility(View.VISIBLE);
+                    if (adView != null) {
+                        adView.setOnPaidEventListener(adValue -> {
+                            Log.d(TAG, "OnPaidEvent banner:" + adValue.getValueMicros());
+
+                            CommonLogEventManager.logPaidAdImpression(context,
+                                    adValue,
+                                    adView.getAdUnitId(),String.valueOf(AdType.BANNER));
+                        });
+                    }
+                }
+
+                @Override
+                public void onAdClicked() {
+                    super.onAdClicked();
+                    if (disableAdResumeWhenClickAds)
+                        AppOpenManager.getInstance().disableAdResumeByClickAction();
+                    CommonLogEventManager.logClickAdsEvent(context, listID.get(0));
+                }
+
+                @Override
+                public void onAdImpression() {
+                    super.onAdImpression();
+                }
+            });
+
+            adView.loadAd(getAdRequest());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void loadCollapsibleBannerFloor(final Activity mActivity, ArrayList<String> listID, String gravity) {
         final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
@@ -1231,6 +1346,8 @@ public class Admob {
             for (String id :listID){
                 idNew.add(id);
             }
+
+            checkLoadBannerCollap = false;
             loadCollapsibleBannerFloor(mActivity, idNew, gravity, adContainer, containerShimmer);
         }
 
@@ -1257,6 +1374,8 @@ public class Admob {
             for (String id :listID){
                 idNew.add(id);
             }
+
+            checkLoadBannerCollap = false;
             loadCollapsibleBannerFloor(mActivity, idNew, gravity, adContainer, containerShimmer);
         }
     }
@@ -1448,6 +1567,10 @@ public class Admob {
 //            return;
 //        }
 
+        if(checkLoadBannerCollap){
+            return;
+        }
+
         containerShimmer.setVisibility(View.VISIBLE);
         containerShimmer.startShimmer();
         try {
@@ -1478,6 +1601,7 @@ public class Admob {
                 @Override
                 public void onAdLoaded() {
                     Log.d(TAG, "Banner adapter class name: " + adView.getResponseInfo().getMediationAdapterClassName());
+                    checkLoadBannerCollap = true;
                     containerShimmer.stopShimmer();
                     containerShimmer.setVisibility(View.GONE);
                     adContainer.setVisibility(View.VISIBLE);
