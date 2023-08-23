@@ -1780,15 +1780,19 @@ public class Admob {
                         @Override
                         public void onNativeAdLoaded(@NonNull NativeAd nativeAd) {
                             callback.onUnifiedNativeAdLoaded(nativeAd);
-                            nativeAd.setOnPaidEventListener(adValue -> {
-                                Log.d(TAG +"NativeAd", "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
+                            try{
+                                nativeAd.setOnPaidEventListener(adValue -> {
+                                    Log.d(TAG +"NativeAd", "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
 
-                                CommonLogEventManager.logPaidAdImpression(context,
-                                        adValue,
-                                        listID.get(0),
-                                        nativeAd.getResponseInfo().getMediationAdapterClassName(), AdType.NATIVE);
-                            });
-                            Log.d(TAG +"NativeAd", "NativeAd onNativeAdLoaded: " + listID.get(0));
+                                    CommonLogEventManager.logPaidAdImpression(context,
+                                            adValue,
+                                            listID.get(0),
+                                            nativeAd.getResponseInfo().getMediationAdapterClassName(), AdType.NATIVE);
+                                });
+                                Log.d(TAG +"NativeAd", "NativeAd onNativeAdLoaded: " + listID.get(0));
+                            }catch (Exception e){
+                                Log.d(TAG +"NativeAd", "NativeAd onNativeAdLoaded: Exception");
+                            }
                         }
                     })
                     .withAdListener(new AdListener() {
