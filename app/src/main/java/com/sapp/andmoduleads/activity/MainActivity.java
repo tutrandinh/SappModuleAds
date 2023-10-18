@@ -89,6 +89,11 @@ public class MainActivity extends AppCompatActivity {
 
                 CommonAd.getInstance().showInterstitialAdByTimes(this, mInterstitialAd, new CommonAdCallback() {
                     @Override
+                    public void onAdClosedByTime() {
+                        super.onAdClosedByTime();
+                    }
+
+                    @Override
                     public void onNextAction() {
                         Log.i(TAG, "onNextAction: start content and finish main");
                         startActivity(new Intent(MainActivity.this, ContentActivity.class));
@@ -115,6 +120,11 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btForceShowAds).setOnClickListener(v -> {
             if (mInterstitialAd.isReady()) {
                 CommonAd.getInstance().forceShowInterstitial(this, mInterstitialAd, new CommonAdCallback() {
+                    @Override
+                    public void onAdClosedByTime() {
+                        super.onAdClosedByTime();
+                    }
+
                     @Override
                     public void onNextAction() {
                         Log.i(TAG, "onAdClosed: start content and finish main");

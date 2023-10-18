@@ -628,6 +628,8 @@ public class Admob {
             @Override
             public void onAdDismissedFullScreenContent() {
                 Log.d(TAG, " Splash:onAdDismissedFullScreenContent ");
+                //Call when ads close have time
+                adListener.onAdClosedByTime();
                 AppOpenManager.getInstance().setInterstitialShowing(false);
                 mInterstitialSplash = null;
                 if (adListener != null) {
@@ -960,7 +962,8 @@ public class Admob {
             public void onAdDismissedFullScreenContent() {
                 super.onAdDismissedFullScreenContent();
                 // Called when fullscreen content is dismissed.
-
+                //Call when ads close have time
+                callback.onAdClosedByTime();
                 AppOpenManager.getInstance().setInterstitialShowing(false);
                 if (callback != null) {
                     if (!openActivityAfterShowInterAds) {

@@ -18,6 +18,8 @@ public class AdCallback {
     public void onAdClosed() {
     }
 
+    public void onAdClosedByTime() {
+    }
 
     public void onAdFailedToLoad(@Nullable LoadAdError i) {
     }
