@@ -1103,6 +1103,8 @@ public class Admob {
         }else{
             timeStep = Math.abs(System.currentTimeMillis() - timeOnClose);
         }
+        Log.d("CheckAction","timeStep: " + timeStep);
+        Log.d("CheckAction","timeCheck: "+ timeCheck);
 
         if (AdmodHelper.getNumClickAdsPerDay(context, mInterstitialAd.getAdUnitId()) < maxClickAds && timeStep > timeCheck) {
             showInterstitialAd(context, mInterstitialAd, callback);
