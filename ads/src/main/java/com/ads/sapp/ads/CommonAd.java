@@ -63,6 +63,8 @@ public class CommonAd {
     private CommonInitCallback initCallback;
     private Boolean initAdSuccess = false;
 
+    public static long time_old = 0;
+
     public static synchronized CommonAd getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new CommonAd();
@@ -919,6 +921,149 @@ public class CommonAd {
                     }
                 };
                 Admob.getInstance().forceShowInterstitial(context, mInterstitialAd.getInterstitialAd(), adCallback);
+                break;
+            case CommonAdConfig.PROVIDER_MAX:
+                AppLovin.getInstance().forceShowInterstitial(context, mInterstitialAd.getMaxInterstitialAd(), new AdCallback() {
+                    @Override
+                    public void onAdClosed() {
+                        super.onAdClosed();
+                        callback.onAdClosed();
+                        callback.onNextAction();
+                        if (shouldReloadAds)
+                            mInterstitialAd.getMaxInterstitialAd().loadAd();
+
+                    }
+
+                    @Override
+                    public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
+                        super.onInterstitialLoad(interstitialAd);
+                        Log.d(TAG, "Max inter onAdLoaded:");
+                    }
+
+                    @Override
+                    public void onAdFailedToShow(@Nullable AdError adError) {
+                        super.onAdFailedToShow(adError);
+                        callback.onAdFailedToShow(new ApAdError(adError));
+                        if (shouldReloadAds)
+                            mInterstitialAd.getMaxInterstitialAd().loadAd();
+                    }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        if (callback != null) {
+                            callback.onAdClicked();
+                        }
+                    }
+                }, false);
+        }
+    }
+
+    public void forceShowInterstitialByTime(@NonNull Context context, ApInterstitialAd mInterstitialAd, long intervalInter,
+                                      @NonNull final CommonAdCallback callback, boolean shouldReloadAds) {
+
+        if(System.currentTimeMillis() - time_old <= intervalInter * 1000){
+            callback.onNextAction();
+            return;
+        }
+
+        if (mInterstitialAd == null || mInterstitialAd.isNotReady()) {
+            Log.e(TAG, "forceShowInterstitial: ApInterstitialAd is not ready");
+            callback.onNextAction();
+            return;
+        }
+        switch (adConfig.getMediationProvider()) {
+            case CommonAdConfig.PROVIDER_ADMOB:
+                AdCallback adCallback = new AdCallback() {
+                    @Override
+                    public void onAdClosedByTime() {
+                        super.onAdClosedByTime();
+                        callback.onAdClosedByTime();
+                    }
+
+                    @Override
+                    public void onAdClosed() {
+                        super.onAdClosed();
+                        Log.d(TAG, "onAdClosed: ");
+                        callback.onAdClosed();
+                        if (shouldReloadAds) {
+                            Admob.getInstance().getInterstitialAds(context, mInterstitialAd.getInterstitialAd().getAdUnitId(), new AdCallback() {
+                                @Override
+                                public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
+                                    super.onInterstitialLoad(interstitialAd);
+                                    Log.d(TAG, "Admob shouldReloadAds success");
+                                    mInterstitialAd.setInterstitialAd(interstitialAd);
+                                    callback.onInterstitialLoad(mInterstitialAd);
+                                }
+
+                                @Override
+                                public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                                    super.onAdFailedToLoad(i);
+                                    mInterstitialAd.setInterstitialAd(null);
+                                    callback.onAdFailedToLoad(new ApAdError(i));
+                                }
+
+                                @Override
+                                public void onAdFailedToShow(@Nullable AdError adError) {
+                                    super.onAdFailedToShow(adError);
+                                    callback.onAdFailedToShow(new ApAdError(adError));
+                                }
+
+                            });
+                        } else {
+                            mInterstitialAd.setInterstitialAd(null);
+                        }
+                    }
+
+                    @Override
+                    public void onNextAction() {
+                        super.onNextAction();
+                        Log.d(TAG, "onNextAction: ");
+                        callback.onNextAction();
+                    }
+
+                    @Override
+                    public void onAdFailedToShow(@Nullable AdError adError) {
+                        super.onAdFailedToShow(adError);
+                        Log.d(TAG, "onAdFailedToShow: ");
+                        callback.onAdFailedToShow(new ApAdError(adError));
+                        if (shouldReloadAds) {
+                            Admob.getInstance().getInterstitialAds(context, mInterstitialAd.getInterstitialAd().getAdUnitId(), new AdCallback() {
+                                @Override
+                                public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
+                                    super.onInterstitialLoad(interstitialAd);
+                                    Log.d(TAG, "Admob shouldReloadAds success");
+                                    mInterstitialAd.setInterstitialAd(interstitialAd);
+                                    callback.onInterstitialLoad(mInterstitialAd);
+                                }
+
+                                @Override
+                                public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                                    super.onAdFailedToLoad(i);
+                                    callback.onAdFailedToLoad(new ApAdError(i));
+                                }
+
+                                @Override
+                                public void onAdFailedToShow(@Nullable AdError adError) {
+                                    super.onAdFailedToShow(adError);
+                                    callback.onAdFailedToShow(new ApAdError(adError));
+                                }
+
+                            });
+                        } else {
+                            mInterstitialAd.setInterstitialAd(null);
+                        }
+                    }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        if (callback != null) {
+                            callback.onAdClicked();
+                        }
+                    }
+                };
+                Admob.getInstance().forceShowInterstitialByTime(context, mInterstitialAd.getInterstitialAd(), intervalInter, adCallback);
                 break;
             case CommonAdConfig.PROVIDER_MAX:
                 AppLovin.getInstance().forceShowInterstitial(context, mInterstitialAd.getMaxInterstitialAd(), new AdCallback() {

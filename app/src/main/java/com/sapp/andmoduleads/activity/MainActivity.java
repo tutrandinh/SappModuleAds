@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.btForceShowAds).setOnClickListener(v -> {
             if (mInterstitialAd.isReady()) {
-                CommonAd.getInstance().forceShowInterstitial(this, mInterstitialAd, new CommonAdCallback() {
+                CommonAd.getInstance().forceShowInterstitialByTime(this, mInterstitialAd,20, new CommonAdCallback() {
                     @Override
                     public void onAdClosedByTime() {
                         super.onAdClosedByTime();
