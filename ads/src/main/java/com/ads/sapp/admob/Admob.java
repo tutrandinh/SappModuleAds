@@ -1097,7 +1097,12 @@ public class Admob {
             }
         });
 
-        long timeStep = Math.abs(timeOnClose - timeOnShow);
+        long timeStep = 0;
+        if(timeOnClose == 0){
+            timeStep = timeCheck + 1;
+        }else{
+            timeStep = Math.abs(System.currentTimeMillis() - timeOnClose);
+        }
 
         if (AdmodHelper.getNumClickAdsPerDay(context, mInterstitialAd.getAdUnitId()) < maxClickAds && timeStep > timeCheck) {
             showInterstitialAd(context, mInterstitialAd, callback);
