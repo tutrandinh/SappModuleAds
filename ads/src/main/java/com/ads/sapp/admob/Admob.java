@@ -94,6 +94,11 @@ public class Admob {
     private int numShowAds = 3;
 
     private int maxClickAds = 100;
+
+    private static long timeOnShow = 0;
+    private static long timeOnClose = 0;
+    private static long timeCheck = 10*1000;
+
     private Handler handlerTimeout;
     private Runnable rdTimeout;
     private PrepareLoadingAdsDialog dialog;
@@ -1023,6 +1028,86 @@ public class Admob {
         }
     }
 
+    public void showInterstitialAdByInterval(final Context context, InterstitialAd mInterstitialAd, final AdCallback callback) {
+        AdmodHelper.setupAdmodData(context);
+        if (mInterstitialAd == null) {
+            if (callback != null) {
+                callback.onNextAction();
+            }
+            return;
+        }
+
+        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+
+            @Override
+            public void onAdDismissedFullScreenContent() {
+                super.onAdDismissedFullScreenContent();
+                // Called when fullscreen content is dismissed.
+                //Call when ads close have time
+                timeOnClose = System.currentTimeMillis();
+                callback.onAdClosedByTime();
+                AppOpenManager.getInstance().setInterstitialShowing(false);
+                if (callback != null) {
+                    if (!openActivityAfterShowInterAds) {
+                        callback.onNextAction();
+                    }
+                    callback.onAdClosed();
+                }
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                Log.e(TAG, "onAdDismissedFullScreenContent");
+            }
+
+            @Override
+            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                super.onAdFailedToShowFullScreenContent(adError);
+                Log.e(TAG, "onAdFailedToShowFullScreenContent: " + adError.getMessage());
+                // Called when fullscreen content failed to show.
+                if (callback != null) {
+                    callback.onAdFailedToShow(adError);
+                    if (!openActivityAfterShowInterAds) {
+                        callback.onNextAction();
+                    }
+
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+                }
+            }
+
+            @Override
+            public void onAdShowedFullScreenContent() {
+                super.onAdShowedFullScreenContent();
+                timeOnShow = System.currentTimeMillis();
+                Log.e(TAG, "onAdShowedFullScreenContent ");
+                AppOpenManager.getInstance().setInterstitialShowing(true);
+                // Called when fullscreen content is shown.
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                if (disableAdResumeWhenClickAds)
+                    AppOpenManager.getInstance().disableAdResumeByClickAction();
+                if (callback != null) {
+                    callback.onAdClicked();
+                }
+                CommonLogEventManager.logClickAdsEvent(context, mInterstitialAd.getAdUnitId());
+            }
+        });
+
+        long timeStep = Math.abs(timeOnClose - timeOnShow);
+
+        if (AdmodHelper.getNumClickAdsPerDay(context, mInterstitialAd.getAdUnitId()) < maxClickAds && timeStep > timeCheck) {
+            showInterstitialAd(context, mInterstitialAd, callback);
+            return;
+        }
+        if (callback != null) {
+            callback.onNextAction();
+        }
+    }
+
 
     /**
      * Bắt buộc hiển thị  ads full và callback result
@@ -1034,6 +1119,11 @@ public class Admob {
     public void forceShowInterstitial(Context context, InterstitialAd mInterstitialAd, final AdCallback callback) {
         currentClicked = numShowAds;
         showInterstitialAdByTimes(context, mInterstitialAd, callback);
+    }
+
+    public void forceShowInterstitialByTime(Context context, InterstitialAd mInterstitialAd, final AdCallback callback) {
+        currentClicked = numShowAds;
+        showInterstitialAdByInterval(context, mInterstitialAd, callback);
     }
 
     /**
