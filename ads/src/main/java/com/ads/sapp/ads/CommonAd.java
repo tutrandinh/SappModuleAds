@@ -958,7 +958,7 @@ public class CommonAd {
         }
     }
 
-    public void forceShowInterstitialByTime(@NonNull Context context, ApInterstitialAd mInterstitialAd, long timeInterval,
+    public void forceShowInterstitialByTime(@NonNull Context context, ApInterstitialAd mInterstitialAd,
                                       @NonNull final CommonAdCallback callback, boolean shouldReloadAds) {
         if (mInterstitialAd == null || mInterstitialAd.isNotReady()) {
             Log.e(TAG, "forceShowInterstitial: ApInterstitialAd is not ready");
