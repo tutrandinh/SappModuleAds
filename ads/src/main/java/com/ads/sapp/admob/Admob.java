@@ -98,6 +98,7 @@ public class Admob {
     private static long timeOnShow = 0;
     private static long timeOnClose = 0;
     private static long timeCheck = 10*1000;
+    private boolean isClose = true;
 
     private Handler handlerTimeout;
     private Runnable rdTimeout;
@@ -1045,6 +1046,7 @@ public class Admob {
                 // Called when fullscreen content is dismissed.
                 //Call when ads close have time
                 timeOnClose = System.currentTimeMillis();
+                isClose = true;
                 callback.onAdClosedByTime();
                 AppOpenManager.getInstance().setInterstitialShowing(false);
                 if (callback != null) {
@@ -1083,6 +1085,7 @@ public class Admob {
                 Log.e(TAG, "onAdShowedFullScreenContent ");
                 AppOpenManager.getInstance().setInterstitialShowing(true);
                 // Called when fullscreen content is shown.
+                isClose = false;
             }
 
             @Override
@@ -1097,16 +1100,16 @@ public class Admob {
             }
         });
 
-        long timeStep = 0;
-        if(timeOnClose == 0){
-            timeStep = timeCheck + 1;
-        }else{
-            timeStep = Math.abs(System.currentTimeMillis() - timeOnClose);
-        }
-        Log.d("CheckAction","timeStep: " + timeStep);
-        Log.d("CheckAction","timeCheck: "+ timeCheck);
+//        long timeStep = 0;
+//        if(timeOnClose == 0){
+//            timeStep = timeCheck + 1;
+//        }else{
+//            timeStep = Math.abs(System.currentTimeMillis() - timeOnClose);
+//        }
+//        Log.d("CheckAction","timeStep: " + timeStep);
+//        Log.d("CheckAction","timeCheck: "+ timeCheck);
 
-        if (AdmodHelper.getNumClickAdsPerDay(context, mInterstitialAd.getAdUnitId()) < maxClickAds && timeStep > timeCheck) {
+        if (AdmodHelper.getNumClickAdsPerDay(context, mInterstitialAd.getAdUnitId()) < maxClickAds) {
             showInterstitialAd(context, mInterstitialAd, callback);
             return;
         }
@@ -1129,8 +1132,13 @@ public class Admob {
     }
 
     public void forceShowInterstitialByTime(Context context, InterstitialAd mInterstitialAd, final AdCallback callback) {
-        currentClicked = numShowAds;
-        showInterstitialAdByInterval(context, mInterstitialAd, callback);
+        if(isClose){
+            currentClicked = numShowAds;
+            showInterstitialAdByInterval(context, mInterstitialAd, callback);
+        }else{
+            callback.onNextAction();
+        }
+
     }
 
     /**
