@@ -92,14 +92,8 @@ public class Admob {
     private int currentClicked = 0;
     private String nativeId;
     private int numShowAds = 3;
-
     private int maxClickAds = 100;
-
-    private static long timeOnShow = 0;
-    private static long timeOnClose = 0;
-    private static long timeCheck = 10*1000;
     private boolean isClose = true;
-
     private Handler handlerTimeout;
     private Runnable rdTimeout;
     private PrepareLoadingAdsDialog dialog;
@@ -1045,7 +1039,6 @@ public class Admob {
                 super.onAdDismissedFullScreenContent();
                 // Called when fullscreen content is dismissed.
                 //Call when ads close have time
-                timeOnClose = System.currentTimeMillis();
                 isClose = true;
                 callback.onAdClosedByTime();
                 AppOpenManager.getInstance().setInterstitialShowing(false);
@@ -1064,6 +1057,7 @@ public class Admob {
             @Override
             public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
                 super.onAdFailedToShowFullScreenContent(adError);
+                isClose = true;
                 Log.e(TAG, "onAdFailedToShowFullScreenContent: " + adError.getMessage());
                 // Called when fullscreen content failed to show.
                 if (callback != null) {
@@ -1081,7 +1075,6 @@ public class Admob {
             @Override
             public void onAdShowedFullScreenContent() {
                 super.onAdShowedFullScreenContent();
-                timeOnShow = System.currentTimeMillis();
                 Log.e(TAG, "onAdShowedFullScreenContent ");
                 AppOpenManager.getInstance().setInterstitialShowing(true);
                 // Called when fullscreen content is shown.
@@ -1099,15 +1092,6 @@ public class Admob {
                 CommonLogEventManager.logClickAdsEvent(context, mInterstitialAd.getAdUnitId());
             }
         });
-
-//        long timeStep = 0;
-//        if(timeOnClose == 0){
-//            timeStep = timeCheck + 1;
-//        }else{
-//            timeStep = Math.abs(System.currentTimeMillis() - timeOnClose);
-//        }
-//        Log.d("CheckAction","timeStep: " + timeStep);
-//        Log.d("CheckAction","timeCheck: "+ timeCheck);
 
         if (AdmodHelper.getNumClickAdsPerDay(context, mInterstitialAd.getAdUnitId()) < maxClickAds) {
             showInterstitialAd(context, mInterstitialAd, callback);
