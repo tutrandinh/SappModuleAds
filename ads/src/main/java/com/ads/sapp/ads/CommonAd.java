@@ -257,6 +257,10 @@ public class CommonAd {
         loadSplashInterstitialAds(context, listID, timeOut, timeDelay, true, adListener);
     }
 
+    public void loadSplashInterstitialAdsNew(final Context context, ArrayList<String> listID, long timeOut, long timeDelay, CommonAdCallback adListener) {
+        loadSplashInterstitialAdsNew(context, listID, timeOut, timeDelay, true, adListener);
+    }
+
     public void loadSplashInterstitialAds(final Context context, String id, long timeOut, long timeDelay, boolean showSplashIfReady, CommonAdCallback adListener) {
         switch (adConfig.getMediationProvider()) {
             case CommonAdConfig.PROVIDER_ADMOB:
