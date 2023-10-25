@@ -463,6 +463,115 @@ public class CommonAd {
         }
     }
 
+    public void loadSplashInterstitialAdsNew(final Context context, ArrayList<String> listID, long timeOut, long timeDelay, boolean showSplashIfReady, CommonAdCallback adListener) {
+        switch (adConfig.getMediationProvider()) {
+            case CommonAdConfig.PROVIDER_ADMOB:
+                switch (adConfig.getMediationFloor()){
+                    case CommonAdConfig.FLOOR:
+                        Admob.getInstance().loadSplashInterstitialAds(context, listID.get(listID.size() - 1), timeOut, timeDelay, showSplashIfReady, new AdCallback() {
+                            @Override
+                            public void onAdClosed() {
+                                super.onAdClosed();
+                                adListener.onAdClosed();
+                            }
+
+                            @Override
+                            public void onNextAction() {
+                                super.onNextAction();
+                                adListener.onNextAction();
+                            }
+
+                            @Override
+                            public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                                super.onAdFailedToLoad(i);
+                                adListener.onAdFailedToLoad(new ApAdError(i));
+
+                            }
+
+                            @Override
+                            public void onAdFailedToShow(@Nullable AdError adError) {
+                                super.onAdFailedToShow(adError);
+                                adListener.onAdFailedToShow(new ApAdError(adError));
+
+                            }
+
+                            @Override
+                            public void onAdLoaded() {
+                                super.onAdLoaded();
+                                adListener.onAdLoaded();
+                            }
+
+                            @Override
+                            public void onAdSplashReady() {
+                                super.onAdSplashReady();
+                                adListener.onAdSplashReady();
+                            }
+
+
+                            @Override
+                            public void onAdClicked() {
+                                super.onAdClicked();
+                                if (adListener != null) {
+                                    adListener.onAdClicked();
+                                }
+                            }
+                        });
+                        break;
+                    case CommonAdConfig.WARTER_FALL:
+                        Admob.getInstance().loadSplashInterstitialAdsNew(context, listID, timeOut, timeDelay, showSplashIfReady, new AdCallback() {
+                            @Override
+                            public void onAdClosed() {
+                                super.onAdClosed();
+                                adListener.onAdClosed();
+                            }
+
+                            @Override
+                            public void onNextAction() {
+                                super.onNextAction();
+                                adListener.onNextAction();
+                            }
+
+                            @Override
+                            public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                                super.onAdFailedToLoad(i);
+                                adListener.onAdFailedToLoad(new ApAdError(i));
+
+                            }
+
+                            @Override
+                            public void onAdFailedToShow(@Nullable AdError adError) {
+                                super.onAdFailedToShow(adError);
+                                adListener.onAdFailedToShow(new ApAdError(adError));
+
+                            }
+
+                            @Override
+                            public void onAdLoaded() {
+                                super.onAdLoaded();
+                                adListener.onAdLoaded();
+                            }
+
+                            @Override
+                            public void onAdSplashReady() {
+                                super.onAdSplashReady();
+                                adListener.onAdSplashReady();
+                            }
+
+
+                            @Override
+                            public void onAdClicked() {
+                                super.onAdClicked();
+                                if (adListener != null) {
+                                    adListener.onAdClicked();
+                                }
+                            }
+                        });
+                        break;
+                }
+        }
+    }
+
+
     public void onShowSplash(AppCompatActivity activity, CommonAdCallback adListener) {
         switch (adConfig.getMediationProvider()) {
             case CommonAdConfig.PROVIDER_ADMOB:
