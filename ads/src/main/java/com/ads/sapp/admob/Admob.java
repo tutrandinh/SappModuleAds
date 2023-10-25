@@ -1053,10 +1053,14 @@ public class Admob {
                         // Handle the error
                         Log.i(TAG, loadAdError.getMessage());
                         if(listID.size() > 0){
-                            Log.i(TAG +"CheckID", "InterstitialAds onAdLoaded Fail: "+ listID.get(0));
-                            listID.remove(0);
-                            Log.i(TAG, "InterstitialAds onAdLoaded");
-                            getInterstitialAds(context,listID,adCallback);
+                            if(listID.size() == 1){
+                                adCallback.onAdFailedToLoad(loadAdError);
+                            }else{
+                                Log.i(TAG +"CheckID", "InterstitialAds onAdLoaded Fail: "+ listID.get(0));
+                                listID.remove(0);
+                                Log.i(TAG, "InterstitialAds onAdLoaded");
+                                getInterstitialAds(context,listID,adCallback);
+                            }
                         }
                         if(listID.size() == 0){
                             if (adCallback != null)
