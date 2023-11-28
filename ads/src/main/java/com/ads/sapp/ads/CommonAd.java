@@ -850,6 +850,42 @@ public class CommonAd {
         }
     }
 
+    public ApInterstitialAd getInterstitialAdsMax(Context context, String id) {
+        ApInterstitialAd apInterstitialAd = new ApInterstitialAd();
+        MaxInterstitialAd maxInterstitialAd = AppLovin.getInstance().getInterstitialAds(context, id);
+        maxInterstitialAd.setListener(new MaxAdListener() {
+
+            @Override
+            public void onAdLoaded(MaxAd ad) {
+                Log.d(TAG, "Max onInterstitialLoad: ");
+                apInterstitialAd.setMaxInterstitialAd(maxInterstitialAd);
+            }
+
+            @Override
+            public void onAdDisplayed(MaxAd ad) {
+
+            }
+
+            @Override
+            public void onAdHidden(MaxAd ad) {
+            }
+
+            @Override
+            public void onAdClicked(MaxAd ad) {
+            }
+
+            @Override
+            public void onAdLoadFailed(String adUnitId, MaxError error) {
+            }
+
+            @Override
+            public void onAdDisplayFailed(MaxAd ad, MaxError error) {
+            }
+        });
+        apInterstitialAd.setMaxInterstitialAd(maxInterstitialAd);
+        return apInterstitialAd;
+    }
+
     /**
      * Result a ApInterstitialAd in onInterstitialLoad
      *
@@ -1351,6 +1387,55 @@ public class CommonAd {
                     }
                 }, false);
         }
+    }
+
+    public void showInterstitialAdByTimesMax(Context context, ApInterstitialAd mInterstitialAd,
+                                          final CommonAdCallback callback, boolean shouldReloadAds) {
+        if (mInterstitialAd.isNotReady()) {
+            Log.e(TAG, "forceShowInterstitial: ApInterstitialAd is not ready");
+            callback.onAdFailedToShow(new ApAdError("ApInterstitialAd is not ready"));
+            return;
+        }
+
+        AppLovin.getInstance().showInterstitialAdByTimes(context, mInterstitialAd.getMaxInterstitialAd(), new AdCallback() {
+
+            @Override
+            public void onAdClosedByTime() {
+                super.onAdClosedByTime();
+            }
+
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                callback.onAdClosed();
+                callback.onNextAction();
+                if (shouldReloadAds)
+                    mInterstitialAd.getMaxInterstitialAd().loadAd();
+
+            }
+
+            @Override
+            public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
+                super.onInterstitialLoad(interstitialAd);
+                Log.d(TAG, "Max inter onAdLoaded:");
+            }
+
+            @Override
+            public void onAdFailedToShow(@Nullable AdError adError) {
+                super.onAdFailedToShow(adError);
+                callback.onAdFailedToShow(new ApAdError(adError));
+                if (shouldReloadAds)
+                    mInterstitialAd.getMaxInterstitialAd().loadAd();
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                if (callback != null) {
+                    callback.onAdClicked();
+                }
+            }
+        }, false);
     }
 
     /**

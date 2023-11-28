@@ -554,6 +554,7 @@ public class AppLovin {
                 AppOpenMax.getInstance().setInterstitialShowing(false);
                 if (callback != null && ((AppCompatActivity) context).getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
                     callback.onAdClosed();
+                    callback.onAdClosedByTime();
                     if (shouldReloadAds) {
                         requestInterstitialAds(interstitialAd);
                     }
@@ -576,7 +577,7 @@ public class AppLovin {
 
             @Override
             public void onAdLoadFailed(String adUnitId, MaxError error) {
-
+                //callback.onAdClosedByTime();
             }
 
             @Override
@@ -584,6 +585,7 @@ public class AppLovin {
                 Log.e(TAG, "onAdDisplayFailed: " + error.getMessage());
                 if (callback != null) {
                     callback.onAdClosed();
+                    callback.onAdClosedByTime();
                     if (dialog != null) {
                         dialog.dismiss();
                     }
@@ -596,6 +598,7 @@ public class AppLovin {
         }
         if (callback != null) {
             callback.onAdClosed();
+            callback.onAdClosedByTime();
         }
     }
 

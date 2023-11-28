@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
                 ApInterstitialAd inter = CommonAd.getInstance().getInterstitialAds(this, idInter);
 
-                CommonAd.getInstance().showInterstitialAdByTimes(this, mInterstitialAd, new CommonAdCallback() {
+                CommonAd.getInstance().showInterstitialAdByTimesMax(this, mInterstitialAd, new CommonAdCallback() {
                     @Override
                     public void onAdClosedByTime() {
                         super.onAdClosedByTime();
@@ -170,9 +170,10 @@ public class MainActivity extends AppCompatActivity {
 //        list.add(getString(R.string.inter_splash1));
 //        list.add(getString(R.string.inter_splash2));
 //        list.add(getString(R.string.inter_splash3));
-//        mInterstitialAd = CommonAd.getInstance().getInterstitialAds(this, list);
+//     mInterstitialAd = CommonAd.getInstance().getInterstitialAds(this, list);
 //        mInterstitialAd = CommonProcess.getInstance().getInterstitialAdsInterIntro(this);
-        mInterstitialAd = CommonProcess.getInstance().getInterstitialAdsInterByName(this,"inter_all");
+        //mInterstitialAd = CommonProcess.getInstance().getInterstitialAdsInterByName(this,"inter_all");
+        mInterstitialAd = CommonAd.getInstance().getInterstitialAdsMax(this,getString(R.string.applovin_test_inter));
 
     }
 
