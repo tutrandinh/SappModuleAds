@@ -1244,6 +1244,53 @@ public class CommonAd {
         }
     }
 
+    public void forceShowInterstitialByTimeMax(@NonNull Context context, ApInterstitialAd mInterstitialAd,
+                                            @NonNull final CommonAdCallback callback, boolean shouldReloadAds) {
+        if (mInterstitialAd == null || mInterstitialAd.isNotReady()) {
+            Log.e(TAG, "forceShowInterstitial: ApInterstitialAd is not ready");
+            callback.onNextAction();
+            return;
+        }
+        AppLovin.getInstance().forceShowInterstitial(context, mInterstitialAd.getMaxInterstitialAd(), new AdCallback() {
+            @Override
+            public void onAdClosedByTime() {
+                super.onAdClosedByTime();
+            }
+
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                callback.onAdClosed();
+                callback.onNextAction();
+                if (shouldReloadAds)
+                    mInterstitialAd.getMaxInterstitialAd().loadAd();
+
+            }
+
+            @Override
+            public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
+                super.onInterstitialLoad(interstitialAd);
+                Log.d(TAG, "Max inter onAdLoaded:");
+            }
+
+            @Override
+            public void onAdFailedToShow(@Nullable AdError adError) {
+                super.onAdFailedToShow(adError);
+                callback.onAdFailedToShow(new ApAdError(adError));
+                if (shouldReloadAds)
+                    mInterstitialAd.getMaxInterstitialAd().loadAd();
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                if (callback != null) {
+                    callback.onAdClicked();
+                }
+            }
+        }, false);
+    }
+
     /**
      * Called force show ApInterstitialAd when reach the number of clicks show ads
      *
