@@ -253,6 +253,10 @@ public class CommonAd {
         loadSplashInterstitialAds(context, id, timeOut, timeDelay, true, adListener);
     }
 
+    public void loadSplashInterstitialAdsMax(final Context context,String id, long timeOut, long timeDelay, CommonAdCallback adListener) {
+        loadSplashInterstitialAdsMax(context, id, timeOut, timeDelay, true, adListener);
+    }
+
     public void loadSplashInterstitialAds(final Context context, ArrayList<String> listID, long timeOut, long timeDelay, CommonAdCallback adListener) {
         loadSplashInterstitialAds(context, listID, timeOut, timeDelay, true, adListener);
     }
@@ -357,6 +361,51 @@ public class CommonAd {
                     }
                 });
         }
+    }
+
+    public void loadSplashInterstitialAdsMax(final Context context, String id, long timeOut, long timeDelay, boolean showSplashIfReady, CommonAdCallback adListener) {
+        AppLovin.getInstance().loadSplashInterstitialAds(context, id, timeOut, timeDelay, showSplashIfReady, new AppLovinCallback() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                adListener.onAdClosed();
+                adListener.onNextAction();
+            }
+
+            @Override
+            public void onAdFailedToLoad(@Nullable MaxError i) {
+                super.onAdFailedToLoad(i);
+                adListener.onAdFailedToLoad(new ApAdError(i));
+                adListener.onNextAction();
+            }
+
+            @Override
+            public void onAdFailedToShow(@Nullable MaxError adError) {
+                super.onAdFailedToShow(adError);
+                adListener.onAdFailedToShow(new ApAdError(adError));
+                adListener.onNextAction();
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                adListener.onAdLoaded();
+            }
+
+            @Override
+            public void onAdSplashReady() {
+                super.onAdSplashReady();
+                adListener.onAdSplashReady();
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                if (adListener != null) {
+                    adListener.onAdClicked();
+                }
+            }
+        });
     }
 
     public void loadSplashInterstitialAds(final Context context, ArrayList<String> listID, long timeOut, long timeDelay, boolean showSplashIfReady, CommonAdCallback adListener) {

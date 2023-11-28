@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.btForceShowAds).setOnClickListener(v -> {
             if (mInterstitialAd.isReady()) {
-                CommonAd.getInstance().forceShowInterstitial(this, mInterstitialAd, new CommonAdCallback() {
+                CommonAd.getInstance().forceShowInterstitialByTimeMax(this, mInterstitialAd, new CommonAdCallback() {
                     @Override
                     public void onAdClosedByTime() {
                         super.onAdClosedByTime();
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
 //     mInterstitialAd = CommonAd.getInstance().getInterstitialAds(this, list);
 //        mInterstitialAd = CommonProcess.getInstance().getInterstitialAdsInterIntro(this);
         //mInterstitialAd = CommonProcess.getInstance().getInterstitialAdsInterByName(this,"inter_all");
-        mInterstitialAd = CommonAd.getInstance().getInterstitialAdsMax(this,getString(R.string.applovin_test_inter));
+        mInterstitialAd = CommonAd.getInstance().getInterstitialAdsMax(this,"62d68af9086fc062");
 
     }
 
