@@ -1304,6 +1304,7 @@ public class CommonAd {
             @Override
             public void onAdClosedByTime() {
                 super.onAdClosedByTime();
+                callback.onAdClosedByTime();
             }
 
             @Override
@@ -1498,6 +1499,7 @@ public class CommonAd {
             @Override
             public void onAdClosedByTime() {
                 super.onAdClosedByTime();
+                callback.onAdClosedByTime();
             }
 
             @Override
