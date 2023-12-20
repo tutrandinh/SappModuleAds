@@ -82,4 +82,7 @@ dependencies {
 
     implementation group: 'commons-codec', name: 'commons-codec', version: '1.5'
 
+    //Google User Messaging Platform SDK
+    implementation("com.google.android.ump:user-messaging-platform:2.1.0")
+
 }
