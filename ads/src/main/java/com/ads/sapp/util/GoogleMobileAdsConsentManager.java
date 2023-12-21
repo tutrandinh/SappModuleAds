@@ -25,6 +25,8 @@ public final class GoogleMobileAdsConsentManager {
   public boolean canReset = false;
   public String deviceHashedId = "";
   public boolean testDebug = false;
+  public boolean setTagForUnderAge = true;
+
 
   /** Private constructor */
   private GoogleMobileAdsConsentManager(Context context) {
@@ -78,6 +80,8 @@ public final class GoogleMobileAdsConsentManager {
       if(testDebug && !deviceHashedId.equals("")){
           paramsBuild.setConsentDebugSettings(debugSettings);
       }
+
+      paramsBuild.setTagForUnderAgeOfConsent(setTagForUnderAge);
 
       ConsentRequestParameters params = paramsBuild.build();
 
@@ -204,5 +208,13 @@ public final class GoogleMobileAdsConsentManager {
 
     public void setTestDebug(boolean testDebug) {
         this.testDebug = testDebug;
+    }
+
+    public boolean isSetTagForUnderAge() {
+        return setTagForUnderAge;
+    }
+
+    public void setSetTagForUnderAge(boolean setTagForUnderAge) {
+        this.setTagForUnderAge = setTagForUnderAge;
     }
 }
