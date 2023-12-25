@@ -118,6 +118,62 @@ public final class GoogleMobileAdsConsentManager {
     }
   }
 
+    public void gatherConsentNext(
+            Activity activity, OnConsentGatheringCompleteListener onConsentGatheringCompleteListener) {
+
+        // For testing purposes, you can force a DebugGeography of EEA or NOT_EEA.
+        ConsentDebugSettings debugSettings = new ConsentDebugSettings.Builder(activity)
+                .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
+                // Check your logcat output for the hashed device ID e.g.
+                // "Use new ConsentDebugSettings.Builder().addTestDeviceHashedId("ABCDEF012345")" to use
+                // the debug functionality.
+                .addTestDeviceHashedId(deviceHashedId)
+                .build();
+
+        ConsentRequestParameters.Builder paramsBuild = new ConsentRequestParameters.Builder();
+        //paramsBuild.setTagForUnderAgeOfConsent(false);
+
+        if(testDebug && !deviceHashedId.equals("")){
+            paramsBuild.setConsentDebugSettings(debugSettings);
+        }
+
+        paramsBuild.setTagForUnderAgeOfConsent(setTagForUnderAge);
+
+        ConsentRequestParameters params = paramsBuild.build();
+
+        if(canReset){
+            consentInformation.reset();
+        }
+        // Requesting an update to consent information should be called on every app launch.
+        consentInformation.requestConsentInfoUpdate(
+                activity,
+                params,
+                () ->
+                        UserMessagingPlatform.loadAndShowConsentFormIfRequired(
+                                activity,
+                                formError -> {
+                                    // Consent has been gathered.
+                                    if (formError != null) {
+                                        Log.e("GoogleMobileAdsConsent", "onConsentInfoUpdateSuccess: " + formError.getMessage());
+                                    }else onConsentGatheringCompleteListener.consentGatheringComplete(false);
+
+                                    if (!this.isMobileAdsInitializeCalled.getAndSet(true)) {
+                                        onConsentGatheringCompleteListener.consentGatheringComplete(getConsentResult(activity));
+                                    }else onConsentGatheringCompleteListener.consentGatheringComplete(false);
+                                }),
+                (requestConsentError ->{
+                    if (!isMobileAdsInitializeCalled.getAndSet(true)) {
+                        Log.e("GoogleMobileAdsConsent", "onConsentInfoUpdateFailure: " + requestConsentError.getMessage());
+                        onConsentGatheringCompleteListener.consentGatheringComplete(getConsentResult(activity));
+                    }else onConsentGatheringCompleteListener.consentGatheringComplete(false);
+                }));
+
+        // This sample attempts to load ads using consent obtained in the previous session.
+        if (consentInformation.canRequestAds() && !this.isMobileAdsInitializeCalled.getAndSet(true)) {
+            onConsentGatheringCompleteListener.consentGatheringComplete(getConsentResult(activity));
+        }else onConsentGatheringCompleteListener.consentGatheringComplete(false);
+    }
+
   public void gatherConsent(
           Activity activity,Boolean reset, Boolean debug, String testDeviceHashedId,OnConsentGatheringCompleteListener onConsentGatheringCompleteListener) {
 
