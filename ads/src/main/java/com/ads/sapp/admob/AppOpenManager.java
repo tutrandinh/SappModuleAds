@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -22,6 +23,9 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
+import com.adjust.sdk.Adjust;
+import com.adjust.sdk.AdjustAdRevenue;
+import com.adjust.sdk.AdjustConfig;
 import com.ads.sapp.R;
 import com.ads.sapp.dialog.PrepareLoadingAdsDialog;
 import com.ads.sapp.dialog.ResumeLoadingDialog;
@@ -31,6 +35,8 @@ import com.ads.sapp.funtion.AdType;
 import com.google.android.gms.ads.AdActivity;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdValue;
+import com.google.android.gms.ads.AdapterResponseInfo;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.appopen.AppOpenAd;
@@ -229,6 +235,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         if (!isSplash) {
                             AppOpenManager.this.appResumeAd = ad;
                             AppOpenManager.this.appResumeAd.setOnPaidEventListener(adValue -> {
+                                //Log revenue adjust
+                                trackRevenue(AppOpenManager.this.splashAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                                //Log firebase
                                 CommonLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         ad.getAdUnitId(),
@@ -239,6 +248,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         } else {
                             AppOpenManager.this.splashAd = ad;
                             AppOpenManager.this.splashAd.setOnPaidEventListener(adValue -> {
+                                //Log revenue adjust
+                                trackRevenue(AppOpenManager.this.splashAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                                //Log firebase
                                 CommonLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         ad.getAdUnitId(),
@@ -576,6 +588,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             AppOpenManager.this.splashAd = appOpenAd;
                             splashLoadTime = new Date().getTime();
                             appOpenAd.setOnPaidEventListener(adValue -> {
+                                //Log revenue adjust
+                                trackRevenue(AppOpenManager.this.splashAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                                //Log firebase
                                 CommonLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         appOpenAd.getAdUnitId(),
@@ -807,6 +822,8 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                     AppOpenManager.this.splashAd = appOpenAd;
                     AppOpenManager.this.splashAd.setOnPaidEventListener((adValue) -> {
                         //log value
+                        //Log revenue adjust
+                        trackRevenue(AppOpenManager.this.splashAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                     });
                     if (isShowAdIfReady) {
                         long elapsedTime = System.currentTimeMillis() - currentTimeMillis;
@@ -875,6 +892,8 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         AppOpenManager.this.splashAd = appOpenAd;
                         AppOpenManager.this.splashAd.setOnPaidEventListener((adValue) -> {
                             //log value
+                            //Log revenue adjust
+                            trackRevenue(AppOpenManager.this.splashAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                         });
                         if (isShowAdIfReady) {
                             AppOpenManager.this.showAppOpenSplash(context, adCallback);
@@ -903,6 +922,23 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     private boolean isNetworkConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
+
+    private void trackRevenue(@Nullable AdapterResponseInfo loadedAdapterResponseInfo, AdValue adValue) {
+        try{
+            String adName = "";
+            if (loadedAdapterResponseInfo != null)
+                adName = loadedAdapterResponseInfo.getAdSourceName();
+            double valueMicros = adValue.getValueMicros() / 1000000d;
+            Log.d("AdjustRevenue", "adName: " + adName + " - valueMicros: " + valueMicros);
+            // send ad revenue info to Adjust
+            AdjustAdRevenue adRevenue = new AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB);
+            adRevenue.setRevenue(valueMicros, adValue.getCurrencyCode());
+            adRevenue.setAdRevenueNetwork(adName);
+            Adjust.trackAdRevenue(adRevenue);
+        }catch (Exception ex){
+            Log.d("AdjustRevenue", "Exception: trackRevenue");
+        }
     }
 }
 

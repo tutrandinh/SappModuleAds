@@ -85,4 +85,7 @@ dependencies {
     //Google User Messaging Platform SDK
     implementation("com.google.android.ump:user-messaging-platform:2.1.0")
 
+    //adjust
+    implementation 'com.adjust.sdk:adjust-android:4.38.0'
+
 }
