@@ -27,6 +27,7 @@ import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAdRevenue;
 import com.adjust.sdk.AdjustConfig;
 import com.ads.sapp.R;
+import com.ads.sapp.call.api.event.EventCommon;
 import com.ads.sapp.dialog.PrepareLoadingAdsDialog;
 import com.ads.sapp.dialog.ResumeLoadingDialog;
 import com.ads.sapp.event.CommonLogEventManager;
@@ -243,6 +244,10 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                         ad.getAdUnitId(),
                                         ad.getResponseInfo()
                                                 .getMediationAdapterClassName(),AdType.APP_OPEN);
+
+                                //Log revenue gg
+                                EventCommon.eventLogData(myApplication.getApplicationContext(),adValue.getValueMicros(),adValue.getPrecisionType(),ad.getAdUnitId());
+
                             });
                             AppOpenManager.this.appResumeLoadTime = (new Date()).getTime();
                         } else {
@@ -256,6 +261,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                         ad.getAdUnitId(),
                                         ad.getResponseInfo()
                                                 .getMediationAdapterClassName(),AdType.APP_OPEN);
+                                //Log revenue gg
+                                EventCommon.eventLogData(myApplication.getApplicationContext(),adValue.getValueMicros(),adValue.getPrecisionType(),ad.getAdUnitId());
+
                             });
                             AppOpenManager.this.splashLoadTime = (new Date()).getTime();
                         }
@@ -596,6 +604,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                         appOpenAd.getAdUnitId(),
                                         appOpenAd.getResponseInfo()
                                                 .getMediationAdapterClassName(), AdType.APP_OPEN);
+                                //Log revenue gg
+                                EventCommon.eventLogData(myApplication.getApplicationContext(),adValue.getValueMicros(),adValue.getPrecisionType(),appOpenAd.getAdUnitId());
+
                             });
 
                             showAdIfAvailable(true);
@@ -824,6 +835,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         //log value
                         //Log revenue adjust
                         trackRevenue(AppOpenManager.this.splashAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                        //Log revenue gg
+                        EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),splashAd.getAdUnitId());
+
                     });
                     if (isShowAdIfReady) {
                         long elapsedTime = System.currentTimeMillis() - currentTimeMillis;
@@ -894,6 +908,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             //log value
                             //Log revenue adjust
                             trackRevenue(AppOpenManager.this.splashAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+
+                            //Log revenue gg
+                            EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),splashAd.getAdUnitId());
                         });
                         if (isShowAdIfReady) {
                             AppOpenManager.this.showAppOpenSplash(context, adCallback);

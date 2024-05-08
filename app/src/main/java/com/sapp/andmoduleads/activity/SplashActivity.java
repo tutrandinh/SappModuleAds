@@ -1,5 +1,12 @@
 package com.sapp.andmoduleads.activity;
 
+import static com.ads.sapp.call.api.event.EventCommon.COST;
+import static com.ads.sapp.call.api.event.EventCommon.DEFAULT_VALUE;
+import static com.ads.sapp.call.api.event.EventCommon.ROAS;
+import static com.ads.sapp.call.api.event.EventCommon.cost;
+import static com.ads.sapp.call.api.event.EventCommon.defaultValue;
+import static com.ads.sapp.call.api.event.EventCommon.roas;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +17,7 @@ import com.ads.sapp.admob.AppOpenManager;
 import com.ads.sapp.ads.CommonAd;
 import com.ads.sapp.ads.CommonAdCallback;
 import com.ads.sapp.ads.CommonAdConfig;
+import com.ads.sapp.call.api.event.EventCommon;
 import com.ads.sapp.funtion.AdCallback;
 import com.sapp.andmoduleads.BuildConfig;
 import com.sapp.andmoduleads.R;
@@ -31,7 +39,10 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-
+        //Set default event
+        EventCommon.roas = ROAS;
+        EventCommon.cost = COST;
+        EventCommon.defaultValue = DEFAULT_VALUE;
 
         if (CommonAd.getInstance().getMediationProvider() == CommonAdConfig.PROVIDER_ADMOB)
             idAdSplash = BuildConfig.ad_interstitial_splash;
@@ -50,6 +61,8 @@ public class SplashActivity extends AppCompatActivity {
             }
         };
 
+        //Load data event
+        EventCommon.getInstance().LoadDataEvent(this);
 
         ArrayList<String> list = new ArrayList<>();
         list.add(getString(R.string.inter_splash));
@@ -84,6 +97,12 @@ public class SplashActivity extends AppCompatActivity {
 
         //CommonProcess.getInstance().LoadDataAndShowAdsSplash(this,true,adCallback);
         //CommonProcess.getInstance().loadOpenAppAdSplashFloor(this,true,adCallback);
+
+        //Check load event Data
+        Log.d("EventModel",roas.toString() +"_S___1");
+        Log.d("EventModel",cost.toString() +"_S___2");
+        Log.d("EventModel",defaultValue.toString() +"_S___3");
+
     };
 
     private void startMain() {

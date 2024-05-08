@@ -43,6 +43,7 @@ import com.ads.sapp.R;
 import com.ads.sapp.ads.nativeAds.AdmobRecyclerAdapter;
 import com.ads.sapp.ads.nativeAds.CommonAdPlacer;
 import com.ads.sapp.ads.nativeAds.CommonAdPlacerSettings;
+import com.ads.sapp.call.api.event.EventCommon;
 import com.ads.sapp.dialog.PrepareLoadingAdsDialog;
 import com.ads.sapp.event.CommonLogEventManager;
 import com.ads.sapp.funtion.AdCallback;
@@ -711,6 +712,8 @@ public class Admob {
                     mInterstitialSplash.getAdUnitId(),
                     mInterstitialSplash.getResponseInfo()
                             .getMediationAdapterClassName(), AdType.INTERSTITIAL);
+            //Log revenue gg
+            EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),mInterstitialSplash.getAdUnitId());
         });
 
         if (handlerTimeout != null && rdTimeout != null) {
@@ -877,6 +880,8 @@ public class Admob {
                                 interstitialAd.getAdUnitId(),
                                 interstitialAd.getResponseInfo()
                                         .getMediationAdapterClassName(), AdType.INTERSTITIAL);
+                        //Log revenue gg
+                        EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),interstitialAd.getAdUnitId());
                     });
                 }
             }
@@ -946,6 +951,8 @@ public class Admob {
                                     interstitialAd.getAdUnitId(),
                                     interstitialAd.getResponseInfo()
                                             .getMediationAdapterClassName(), AdType.INTERSTITIAL);
+                            //Log revenue gg
+                            EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),interstitialAd.getAdUnitId());
                         });
                         Log.i(TAG, "InterstitialAds onAdLoaded");
                     }
@@ -1002,6 +1009,8 @@ public class Admob {
                                     interstitialAd.getAdUnitId(),
                                     interstitialAd.getResponseInfo()
                                             .getMediationAdapterClassName(), AdType.INTERSTITIAL);
+                            //Log revenue gg
+                            EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),interstitialAd.getAdUnitId());
                         });
                         Log.i(TAG, "InterstitialAds onAdLoaded");
                         Log.i(TAG +"CheckID", "InterstitialAds onAdLoaded: "+ interstitialAd.getAdUnitId());
@@ -1060,6 +1069,8 @@ public class Admob {
                                     interstitialAd.getAdUnitId(),
                                     interstitialAd.getResponseInfo()
                                             .getMediationAdapterClassName(), AdType.INTERSTITIAL);
+                            //Log revenue gg
+                            EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),interstitialAd.getAdUnitId());
                         });
                         Log.i(TAG, "InterstitialAds onAdLoaded");
                         Log.i(TAG +"CheckID", "InterstitialAds onAdLoaded: "+ interstitialAd.getAdUnitId());
@@ -1569,6 +1580,8 @@ public class Admob {
                             CommonLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     adView.getAdUnitId(),String.valueOf(AdType.BANNER));
+                            //Log revenue gg
+                            EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),adView.getAdUnitId());
                         });
                     }
                 }
@@ -1693,6 +1706,8 @@ public class Admob {
                                     adView.getAdUnitId(),
                                     adView.getResponseInfo()
                                             .getMediationAdapterClassName(), AdType.BANNER);
+                            //Log revenue gg
+                            EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),adView.getAdUnitId());
                         });
                     }
                 }
@@ -1753,6 +1768,8 @@ public class Admob {
                                     adView.getAdUnitId(),
                                     adView.getResponseInfo()
                                             .getMediationAdapterClassName(), AdType.BANNER);
+                            //Log revenue gg
+                            EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),adView.getAdUnitId());
                         });
                     }
                 }
@@ -1819,6 +1836,8 @@ public class Admob {
                         CommonLogEventManager.logPaidAdImpression(context,
                                 adValue,
                                 adView.getAdUnitId(), "banner");
+                        //Log revenue gg
+                        EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),adView.getAdUnitId());
                     });
 
                 }
@@ -1888,6 +1907,8 @@ public class Admob {
                         CommonLogEventManager.logPaidAdImpression(context,
                                 adValue,
                                 adView.getAdUnitId(), "banner");
+                        //Log revenue gg
+                        EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),adView.getAdUnitId());
                     });
 
                 }
@@ -2013,6 +2034,8 @@ public class Admob {
                                     adValue,
                                     id,
                                     nativeAd.getResponseInfo().getMediationAdapterClassName(), AdType.NATIVE);
+                            //Log revenue gg
+                            EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),id);
                         });
                     }
                 })
@@ -2069,6 +2092,8 @@ public class Admob {
                                             adValue,
                                             listID.get(0),
                                             nativeAd.getResponseInfo().getMediationAdapterClassName(), AdType.NATIVE);
+                                    //Log revenue gg
+                                    EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),listID.get(0));
                                 });
                                 Log.d(TAG +"NativeAd", "NativeAd onNativeAdLoaded: " + listID.get(0));
                             }catch (Exception e){
@@ -2134,6 +2159,8 @@ public class Admob {
                                     adValue,
                                     id,
                                     nativeAd.getResponseInfo().getMediationAdapterClassName(), AdType.NATIVE);
+                            //Log revenue gg
+                            EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),id);
                         });
                     }
                 })
@@ -2199,6 +2226,8 @@ public class Admob {
                                     adValue,
                                     id,
                                     nativeAd.getResponseInfo().getMediationAdapterClassName(), AdType.NATIVE);
+                            //Log revenue gg
+                            EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),id);
                         });
                         populateUnifiedNativeAdView(nativeAd, adView);
                         frameLayout.removeAllViews();
@@ -2268,6 +2297,8 @@ public class Admob {
                                     adValue,
                                     id,
                                     nativeAd.getResponseInfo().getMediationAdapterClassName(), AdType.NATIVE);
+                            //Log revenue gg
+                            EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),id);
                         });
                         populateUnifiedNativeAdView(nativeAd, adView);
                         frameLayout.removeAllViews();
@@ -2462,6 +2493,8 @@ public class Admob {
                             adValue,
                             rewardedAd.getAdUnitId(), Admob.this.rewardedAd.getResponseInfo().getMediationAdapterClassName()
                             , AdType.REWARDED);
+                    //Log revenue gg
+                    EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),rewardedAd.getAdUnitId());
                 });
             }
 
@@ -2500,6 +2533,8 @@ public class Admob {
                             rewardedAd.getAdUnitId(),
                             Admob.this.rewardedAd.getResponseInfo().getMediationAdapterClassName()
                             , AdType.REWARDED);
+                    //Log revenue gg
+                    EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),rewardedAd.getAdUnitId());
                 });
 
             }
@@ -2541,6 +2576,10 @@ public class Admob {
                             rewardedAd.getAdUnitId(),
                             rewardedAd.getResponseInfo().getMediationAdapterClassName()
                             , AdType.REWARDED);
+
+                    //Log revenue gg
+                    EventCommon.eventLogData(context,adValue.getValueMicros(),adValue.getPrecisionType(),rewardedAd.getAdUnitId());
+
                 });
             }
 

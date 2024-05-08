@@ -5,6 +5,7 @@ import com.ads.sapp.ads.CommonAdConfig;
 import com.ads.sapp.application.AdsMultiDexApplication;
 import com.ads.sapp.admob.Admob;
 import com.ads.sapp.admob.AppOpenManager;
+import com.ads.sapp.call.api.event.EventCommon;
 import com.sapp.andmoduleads.activity.SplashActivity;
 import com.ads.sapp.call.api.CommonProcess;
 
@@ -28,8 +29,13 @@ public class MyApplication extends AdsMultiDexApplication {
     private void initAds() {
 
         CommonProcess.getInstance().setBranch("develop");
-        CommonProcess.getInstance().setToken("somethings");
+        CommonProcess.getInstance().setToken("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");
         CommonProcess.getInstance().setFileName("ca-app-pub-3940256099942544~3347511713");
+
+        //Config load data event
+        EventCommon.getInstance().setBranch("main");
+        EventCommon.getInstance().setToken("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");
+        EventCommon.getInstance().setFileName("event-setting");
 
         commonAdConfig.setMediationProvider(CommonAdConfig.PROVIDER_ADMOB);
         commonAdConfig.setVariant(BuildConfig.build_debug);
