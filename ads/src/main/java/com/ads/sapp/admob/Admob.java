@@ -870,7 +870,7 @@ public class Admob {
                         Log.d(TAG, "OnPaidEvent loadInterstitialAds:" + adValue.getValueMicros());
 
                         //Log revenu adjust
-                        trackRevenue(mInterstitialSplash.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                        trackRevenue(interstitialAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                         //Log firebase
                         CommonLogEventManager.logPaidAdImpression(context,
                                 adValue,
@@ -939,7 +939,7 @@ public class Admob {
                         interstitialAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                             //Log revenu adjust
-                            trackRevenue(mInterstitialSplash.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                            trackRevenue(interstitialAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                             //Log firebase
                             CommonLogEventManager.logPaidAdImpression(context,
                                     adValue,
@@ -995,7 +995,7 @@ public class Admob {
                         interstitialAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                             //Log revenu adjust
-                            trackRevenue(mInterstitialSplash.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                            trackRevenue(interstitialAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                             //Log firebase
                             CommonLogEventManager.logPaidAdImpression(context,
                                     adValue,
@@ -1053,7 +1053,7 @@ public class Admob {
                         interstitialAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                             //Log revenu adjust
-                            trackRevenue(mInterstitialSplash.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                            trackRevenue(interstitialAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                             //Log firebase
                             CommonLogEventManager.logPaidAdImpression(context,
                                     adValue,
@@ -1564,7 +1564,7 @@ public class Admob {
                         adView.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent banner:" + adValue.getValueMicros());
                             //Log revenu adjust
-                            trackRevenue(mInterstitialSplash.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                            trackRevenue(adView.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                             //Log firebase
                             CommonLogEventManager.logPaidAdImpression(context,
                                     adValue,
@@ -1686,7 +1686,7 @@ public class Admob {
                         adView.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent banner:" + adValue.getValueMicros());
                             //Log revenu adjust
-                            trackRevenue(mInterstitialSplash.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                            trackRevenue(adView.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                             //Log firebase
                             CommonLogEventManager.logPaidAdImpression(context,
                                     adValue,
@@ -1746,7 +1746,7 @@ public class Admob {
                         adView.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent banner:" + adValue.getValueMicros());
                             //Log revenu adjust
-                            trackRevenue(mInterstitialSplash.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                            trackRevenue(adView.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                             //Log firebase
                             CommonLogEventManager.logPaidAdImpression(context,
                                     adValue,
@@ -1814,7 +1814,7 @@ public class Admob {
                     adView.setOnPaidEventListener(adValue -> {
                         Log.d(TAG, "OnPaidEvent banner:" + adValue.getValueMicros());
                         //Log revenu adjust
-                        trackRevenue(mInterstitialSplash.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                        trackRevenue(adView.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                         //Log firebase
                         CommonLogEventManager.logPaidAdImpression(context,
                                 adValue,
@@ -1883,7 +1883,7 @@ public class Admob {
                     adView.setOnPaidEventListener(adValue -> {
                         Log.d(TAG, "OnPaidEvent banner:" + adValue.getValueMicros());
                         //Log revenu adjust
-                        trackRevenue(mInterstitialSplash.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                        trackRevenue(adView.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                         //Log firebase
                         CommonLogEventManager.logPaidAdImpression(context,
                                 adValue,
@@ -2007,7 +2007,7 @@ public class Admob {
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                             //Log revenu adjust
-                            trackRevenue(mInterstitialSplash.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                            trackRevenue(nativeAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                             //Log firebase
                             CommonLogEventManager.logPaidAdImpression(context,
                                     adValue,
@@ -2063,7 +2063,7 @@ public class Admob {
                                 nativeAd.setOnPaidEventListener(adValue -> {
                                     Log.d(TAG +"NativeAd", "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                                     //Log revenu adjust
-                                    trackRevenue(mInterstitialSplash.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                                    trackRevenue(nativeAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                                     //Log firebase
                                     CommonLogEventManager.logPaidAdImpression(context,
                                             adValue,
@@ -2128,7 +2128,7 @@ public class Admob {
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                             //Log revenu adjust
-                            trackRevenue(mInterstitialSplash.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                            trackRevenue(nativeAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                             //Log firebase
                             CommonLogEventManager.logPaidAdImpression(context,
                                     adValue,
@@ -2193,7 +2193,7 @@ public class Admob {
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent native:" + adValue.getValueMicros());
                             //Log revenu adjust
-                            trackRevenue(mInterstitialSplash.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                            trackRevenue(nativeAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                             //Log firebase
                             CommonLogEventManager.logPaidAdImpression(context,
                                     adValue,
@@ -2262,7 +2262,7 @@ public class Admob {
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent Native:" + adValue.getValueMicros());
                             //Log revenu adjust
-                            trackRevenue(mInterstitialSplash.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                            trackRevenue(nativeAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                             //Log firebase
                             CommonLogEventManager.logPaidAdImpression(context,
                                     adValue,
@@ -2456,7 +2456,7 @@ public class Admob {
 
                     Log.d(TAG, "OnPaidEvent Reward:" + adValue.getValueMicros());
                     //Log revenu adjust
-                    trackRevenue(mInterstitialSplash.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                    trackRevenue(rewardedAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                     //Log firebase
                     CommonLogEventManager.logPaidAdImpression(context,
                             adValue,
@@ -2493,7 +2493,7 @@ public class Admob {
                 Admob.this.rewardedAd.setOnPaidEventListener(adValue -> {
                     Log.d(TAG, "OnPaidEvent Reward:" + adValue.getValueMicros());
                     //Log revenu adjust
-                    trackRevenue(mInterstitialSplash.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                    trackRevenue(rewardedAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                     //Log firebase
                     CommonLogEventManager.logPaidAdImpression(context,
                             adValue,
@@ -2534,7 +2534,7 @@ public class Admob {
                 rewardedAd.setOnPaidEventListener(adValue -> {
                     Log.d(TAG, "OnPaidEvent Reward:" + adValue.getValueMicros());
                     //Log revenu adjust
-                    trackRevenue(mInterstitialSplash.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                    trackRevenue(rewardedAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                     //Log firebase
                     CommonLogEventManager.logPaidAdImpression(context,
                             adValue,

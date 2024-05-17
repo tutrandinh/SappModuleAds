@@ -236,7 +236,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             AppOpenManager.this.appResumeAd = ad;
                             AppOpenManager.this.appResumeAd.setOnPaidEventListener(adValue -> {
                                 //Log revenue adjust
-                                trackRevenue(AppOpenManager.this.splashAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                                trackRevenue(AppOpenManager.this.appResumeAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                                 //Log firebase
                                 CommonLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
@@ -589,7 +589,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             splashLoadTime = new Date().getTime();
                             appOpenAd.setOnPaidEventListener(adValue -> {
                                 //Log revenue adjust
-                                trackRevenue(AppOpenManager.this.splashAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                                trackRevenue(appOpenAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                                 //Log firebase
                                 CommonLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
