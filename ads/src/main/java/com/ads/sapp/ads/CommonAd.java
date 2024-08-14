@@ -1,5 +1,7 @@
 package com.ads.sapp.ads;
 
+import static com.ads.sapp.util.CustomShowAds.CheckNativeInfo;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
@@ -1713,6 +1715,7 @@ public class CommonAd {
                 Admob.getInstance().populateUnifiedNativeAdView(apNativeAd.getAdmobNativeAd(), adView);
                 adPlaceHolder.removeAllViews();
                 adPlaceHolder.addView(adView);
+                CheckNativeInfo(adView);
                 break;
             case CommonAdConfig.PROVIDER_MAX:
                 adPlaceHolder.setVisibility(View.VISIBLE);

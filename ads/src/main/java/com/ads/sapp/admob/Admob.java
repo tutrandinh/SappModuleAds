@@ -1,5 +1,7 @@
 package com.ads.sapp.admob;
 
+import static com.ads.sapp.util.CustomShowAds.CheckResponsesInfo;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -994,6 +996,7 @@ public class Admob {
                         //tracking adjust
                         interstitialAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
+                            CheckResponsesInfo(interstitialAd,adValue);
                             //Log revenu adjust
                             trackRevenue(interstitialAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                             //Log firebase
