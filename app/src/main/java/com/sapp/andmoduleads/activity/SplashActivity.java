@@ -57,13 +57,13 @@ public class SplashActivity extends AppCompatActivity {
         //list.add(getString(R.string.inter_splash2));
         list.add(getString(R.string.inter_splash3));
 //
-//        CommonAd.getInstance().loadSplashInterstitialAds(
-//                this,
-//                list,
-//                25000,
-//                5000,
-//                commonAdCallback
-//            );
+        CommonAd.getInstance().loadSplashInterstitialAds(
+                this,
+                list,
+                25000,
+                5000,
+                commonAdCallback
+            );
 
         ArrayList<String> listID = new ArrayList<>();
         listID.add("ca-app-pub-3940256099942544/34198352941");
