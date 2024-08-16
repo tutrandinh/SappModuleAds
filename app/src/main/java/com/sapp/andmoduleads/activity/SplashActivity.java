@@ -52,14 +52,14 @@ public class SplashActivity extends AppCompatActivity {
 
 
         ArrayList<String> list = new ArrayList<>();
-        list.add(getString(R.string.inter_splash));
-        list.add(getString(R.string.inter_splash1));
-        list.add(getString(R.string.inter_splash2));
+        //list.add(getString(R.string.inter_splash));
+        //list.add(getString(R.string.inter_splash1));
+        //list.add(getString(R.string.inter_splash2));
         list.add(getString(R.string.inter_splash3));
 //
-        CommonAd.getInstance().loadSplashInterstitialAdsMax(
+        CommonAd.getInstance().loadSplashInterstitialAds(
                 this,
-                "62d68af9086fc062",
+                list,
                 25000,
                 5000,
                 commonAdCallback
