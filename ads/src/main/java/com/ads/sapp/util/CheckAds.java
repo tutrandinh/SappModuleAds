@@ -200,10 +200,9 @@ public class CheckAds {
                 if(text.length() > 0){
                     String[] stringTexts = text.split(":");
                     if(stringTexts.length  > 0){
-                        String textAds =stringTexts[0].toString().trim();
+                        String textAds = stringTexts[0].toString().trim();
                         Log.d("checkAds","locationCode: " + locationCode);
                         Log.d("checkAds","textAds0: " + textAds);
-                        Log.d("checkAds","textAds1: " +stringTexts[1].toString().trim());
                         if(textAds.equals(TEXT_ADS_EN)){
                             isTestAd = true;
                         }else {
@@ -260,6 +259,7 @@ public class CheckAds {
             }
         }catch (Exception ex){
             Log.d("checkAds","Error");
+            Log.d("checkAds",ex.getMessage());
         }
     }
 
