@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         //CheckAds.checkAd = false; // When show only
         ArrayList<String> list = new ArrayList<>();
         list.add(BuildConfig.ad_banner);
-        Admob.getInstance().loadBannerFloorCheck(this,list);
+        Admob.getInstance().loadBannerFloorAds(this,list);
         //CommonAd.getInstance().loadCollapsibleBanner(this, idBanner, BannerGravity.bottom);
 
         ArrayList<String> listID = new ArrayList<>();

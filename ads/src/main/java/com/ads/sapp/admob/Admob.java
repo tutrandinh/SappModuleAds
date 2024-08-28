@@ -1638,6 +1638,39 @@ public class Admob {
         }
     }
 
+    public void loadBannerFloorAds(final Activity mActivity, List<String> listID) {
+        final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
+        final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
+
+        if(!CheckAds.getInstance().isShowAds(mActivity.getApplicationContext())){
+            adContainer.setVisibility(View.GONE);
+            containerShimmer.setVisibility(View.GONE);
+            return;
+        }
+
+        if(!isShowAllAds||!isNetworkConnected()){
+            adContainer.setVisibility(View.GONE);
+            containerShimmer.setVisibility(View.GONE);
+        }else{
+            if(listID==null){
+                adContainer.setVisibility(View.GONE);
+                containerShimmer.setVisibility(View.GONE);
+                return;
+            }
+            if(listID.size()==0){
+                adContainer.setVisibility(View.GONE);
+                containerShimmer.setVisibility(View.GONE);
+                return;
+            }
+            List idNew  = new ArrayList();
+            for (String id :listID){
+                idNew.add(id);
+            }
+            checkLoadBanner = false;
+            loadBannerFloorAds(mActivity, idNew, adContainer, containerShimmer, false, BANNER_INLINE_LARGE_STYLE);
+        }
+    }
+
     /**
      * Load quảng cáo Banner Trong Activity
      *
@@ -2004,6 +2037,89 @@ public class Admob {
             e.printStackTrace();
         }
     }
+
+    private void loadBannerFloorAds(final Activity mActivity, List<String> listID, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer, Boolean useInlineAdaptive, String inlineStyle) {
+        if(checkLoadBanner){
+            return;
+        }
+        if (listID.size()==0) {
+            containerShimmer.stopShimmer();
+            adContainer.setVisibility(View.GONE);
+            containerShimmer.setVisibility(View.GONE);
+            return;
+        }
+
+        containerShimmer.setVisibility(View.VISIBLE);
+        containerShimmer.startShimmer();
+        try {
+            AdView adView = new AdView(mActivity);
+            adView.setAdUnitId(listID.get(0));
+            adContainer.addView(adView);
+            AdSize adSize = getAdSize(mActivity, useInlineAdaptive, inlineStyle);
+            int adHeight;
+            if (useInlineAdaptive && inlineStyle.equalsIgnoreCase(BANNER_INLINE_SMALL_STYLE)) {
+                adHeight = MAX_SMALL_INLINE_BANNER_HEIGHT;
+            } else {
+                adHeight = adSize.getHeight();
+            }
+            containerShimmer.getLayoutParams().height = (int) (adHeight * Resources.getSystem().getDisplayMetrics().density + 0.5f);
+            adView.setAdSize(adSize);
+            adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            adView.setAdListener(new AdListener() {
+                @Override
+                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                    if(listID.size()>0){
+                        listID.remove(0);
+                        loadBannerFloorAds(mActivity,listID,adContainer,containerShimmer,useInlineAdaptive,inlineStyle);
+                    }else{
+                        containerShimmer.stopShimmer();
+                        adContainer.setVisibility(View.GONE);
+                        containerShimmer.setVisibility(View.GONE);
+                        CheckAds.getInstance().checkBanner(mActivity, adContainer);
+                    }
+                }
+
+
+                @Override
+                public void onAdLoaded() {
+                    checkLoadBanner = true;
+                    containerShimmer.stopShimmer();
+                    containerShimmer.setVisibility(View.GONE);
+                    adContainer.setVisibility(View.VISIBLE);
+                    if (adView != null) {
+                        adView.setOnPaidEventListener(adValue -> {
+                            //Log revenu adjust
+                            //trackRevenue(adView.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                            //Log firebase
+                            CommonLogEventManager.logPaidAdImpression(context,
+                                    adValue,
+                                    adView.getAdUnitId(),String.valueOf(AdType.BANNER));
+                        });
+                    }
+                }
+
+                @Override
+                public void onAdClicked() {
+                    super.onAdClicked();
+                    if (disableAdResumeWhenClickAds)
+                        AppOpenManager.getInstance().disableAdResumeByClickAction();
+                    CommonLogEventManager.logClickAdsEvent(context, listID.get(0));
+                }
+
+                @Override
+                public void onAdImpression() {
+                    super.onAdImpression();
+                    CheckAds.getInstance().checkBanner(mActivity, adContainer);
+                }
+            });
+
+            adView.loadAd(getAdRequest());
+        } catch (Exception e) {
+            CheckAds.getInstance().checkBanner(mActivity, adContainer);
+            e.printStackTrace();
+        }
+    }
+
 
 
     public void loadCollapsibleBannerFloor(final Activity mActivity, ArrayList<String> listID, String gravity) {

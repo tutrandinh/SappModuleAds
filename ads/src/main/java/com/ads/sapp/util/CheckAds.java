@@ -4,6 +4,7 @@ import static com.applovin.impl.sdk.n.getApplicationContext;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -62,6 +63,9 @@ public class CheckAds {
     //List test common
     private static ArrayList<String> listTextAds = listTextTestAds();
 
+    //Store
+    private String testAd = "testAd";
+
     public static CheckAds getInstance() {
         if (instance == null) {
             instance = new CheckAds();
@@ -74,6 +78,7 @@ public class CheckAds {
         checkAd = checkAds;
         isTest = false;
         isTestBanner = false;
+        countCheck = 0;
         if(driveID.equals("")){
             driveID = getDeviceIdTest(context);
         }
@@ -81,22 +86,32 @@ public class CheckAds {
 
     public boolean isShowAds(Context context){
         if(checkAd){
-            if(isTestBanner){
+            if(getTestAd(context)){
                 if(isDriveTest(context)){
-                    Log.d("checkAds","isShowAds: true");
+                    Log.d("checkAds","Share: isShowAds: true");
                     return true;
                 }else {
-                    Log.d("checkAds","isShowAds: false");
+                    Log.d("checkAds","Share: isShowAds: false");
+                    return false;
+                }
+            }
+
+            if(isTestBanner){
+                if(isDriveTest(context)){
+                    Log.d("checkAds","isTestBanner: isShowAds: true");
+                    return true;
+                }else {
+                    Log.d("checkAds","isTestBanner: isShowAds: false");
                     return false;
                 }
             }
 
             if(isTest){
                 if(isDriveTest(context)){
-                    Log.d("checkAds","isShowAds: true");
+                    Log.d("checkAds","isTest: isShowAds: true");
                     return true;
                 }else {
-                    Log.d("checkAds","isShowAds: false");
+                    Log.d("checkAds","isTest: isShowAds: false");
                     return false;
                 }
             } else return true;
@@ -427,13 +442,39 @@ public class CheckAds {
                 }, (long) timeDelay);
             }
 
+            // Next when ads store
+            if(getTestAd(context)){
+                Log.d("checkAds", "Share: Skip check");
+
+                (new Handler(context.getMainLooper())).postDelayed(new Runnable() {
+                    public void run() {
+                        callback.onCheckComplete();
+                    }
+                }, (long) timeDelay);
+
+                return;
+            }
+
+            if(countCheck > 10){
+                countCheck = 1;
+            }
+
             countCheck += 1;
+
             Log.d("checkAds", "countCheck: " + countCheck);
+
+            // Next when ads recheck
             if(isTestBanner == true && countCheck > 1){
                 Log.d("checkAds", "Skip check");
                 return;
             }
             Log.d("checkAds", "Next check");
+
+            // Stop check if limit 5 times
+            if(countCheck > 5){
+                Log.d("checkAds", "Stop check");
+                return;
+            }
 
             Bitmap bitmap = getBitmapFromView(adContainer);
             TextRecognizer textRecognizer = new TextRecognizer.Builder(context).build();
@@ -450,10 +491,17 @@ public class CheckAds {
 
             if(isTestBanner!= true && imageText.contains(TEXT_ADS_EN)){
                 isTestBanner = true;
+                storeTestAd(context);
                 Log.d("checkAds","textAdsBaner: " +imageText + ", Text common: " +TEXT_ADS_EN);
                 Log.d("checkAds","textAdsBaner: "+isTestBanner.toString());
-                callback.onCheckComplete();
+
+                (new Handler(context.getMainLooper())).postDelayed(new Runnable() {
+                    public void run() {
+                        callback.onCheckComplete();
+                    }
+                }, (long) timeDelay);
                 return;
+
             }
 
             for(String textDefault: listTextAds){
@@ -465,6 +513,7 @@ public class CheckAds {
                             if(textcontentHead[0] !=null){
                                 if(imageText.contains(textcontentHead[0].trim())){
                                     isTestBanner = true;
+                                    storeTestAd(context);
                                     Log.d("checkAds","textAdsBaner: " + imageText + ", Text common: " +contentHead[1].trim());
                                     Log.d("checkAds","textAdsBaner: " + isTestBanner.toString());
                                     break;
@@ -490,6 +539,79 @@ public class CheckAds {
         }
     }
 
+    public void checkBanner(Context context, final FrameLayout adContainer){
+        try{
+            if(!checkAd){
+               return;
+            }
+
+            if(countCheck > 10){
+                countCheck = 1;
+            }
+
+            countCheck += 1;
+            Log.d("checkAds", "countCheck: " + countCheck);
+
+            // Next when ads store
+            if(getTestAd(context)){
+                Log.d("checkAds", "Share: Skip check");
+                return;
+            }
+
+            if(isTestBanner == true && countCheck > 1){
+                Log.d("checkAds", "Skip check");
+                return;
+            }
+            Log.d("checkAds", "Next check");
+
+            if(countCheck > 5){
+                Log.d("checkAds", "Stop check");
+                return;
+            }
+
+            Bitmap bitmap = getBitmapFromView(adContainer);
+            TextRecognizer textRecognizer = new TextRecognizer.Builder(context).build();
+            Frame imageFrame = new Frame.Builder()
+                    .setBitmap(bitmap)
+                    .build();
+            String imageText = "";
+            SparseArray<TextBlock> textBlocks = textRecognizer.detect(imageFrame);
+            for (int i = 0; i < textBlocks.size(); i++) {
+                TextBlock textBlock = textBlocks.get(textBlocks.keyAt(i));
+                imageText = imageText + "" + textBlock.getValue();
+            }
+            Log.d("imageToText", "imageToText: " + imageText);
+
+            if(isTestBanner!= true && imageText.contains(TEXT_ADS_EN)){
+                isTestBanner = true;
+                storeTestAd(context);
+                Log.d("checkAds","textAdsBaner: " +imageText + ", Text common: " +TEXT_ADS_EN);
+                Log.d("checkAds","textAdsBaner: "+isTestBanner.toString());
+                return;
+            }
+
+            for(String textDefault: listTextAds){
+                String[] contentHead = textDefault.split(SPACE);
+                if(contentHead.length > 0){
+                    if(contentHead[0].equals(getLocation())){
+                        if(contentHead[1] != null){
+                            String[] textcontentHead  = contentHead[1].split(":");
+                            if(textcontentHead[0] !=null){
+                                if(imageText.contains(textcontentHead[0].trim())){
+                                    isTestBanner = true;
+                                    storeTestAd(context);
+                                    Log.d("checkAds","textAdsBaner: " + imageText + ", Text common: " +contentHead[1].trim());
+                                    Log.d("checkAds","textAdsBaner: " + isTestBanner.toString());
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }catch (Exception ex){}
+    }
+
     public static String getLocation(){
         try{
             //Location
@@ -503,5 +625,16 @@ public class CheckAds {
         }catch (Exception ex){
             return "";
         }
+    }
+
+    public void storeTestAd(Context context){
+        SharedPreferences.Editor editor = context.getSharedPreferences("MY_PRE", Context.MODE_PRIVATE).edit();
+        editor.putBoolean(testAd, true);
+        editor.commit();
+    }
+
+    public Boolean getTestAd(Context context){
+        SharedPreferences preferences = context.getSharedPreferences("MY_PRE", Context.MODE_PRIVATE);
+        return preferences.getBoolean(testAd, false);
     }
 }
