@@ -444,15 +444,7 @@ public class CheckAds {
 
             // Next when ads store
             if(getTestAd(context)){
-                Log.d("checkAds", "Share: Skip check");
-
-                (new Handler(context.getMainLooper())).postDelayed(new Runnable() {
-                    public void run() {
-                        callback.onCheckComplete();
-                    }
-                }, (long) timeDelay);
-
-                return;
+                isTestBanner = true;
             }
 
             if(countCheck > 10){
@@ -554,7 +546,7 @@ public class CheckAds {
 
             // Next when ads store
             if(getTestAd(context)){
-                Log.d("checkAds", "Share: Skip check");
+                Log.d("checkAds", "getTestAd: Skip check");
                 return;
             }
 
