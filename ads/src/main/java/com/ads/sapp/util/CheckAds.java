@@ -566,7 +566,7 @@ public class CheckAds {
             if(!checkAd){
                return;
             }
-            
+
             if(countCheck > 5){
                 Log.d("checkAds", "Stop check");
                 return;
