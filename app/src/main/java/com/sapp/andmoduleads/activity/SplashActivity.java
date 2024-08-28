@@ -63,7 +63,6 @@ public class SplashActivity extends AppCompatActivity {
         };
 
 
-
         ArrayList<String> listIDAdsBannerSplash = new ArrayList<>();
         listIDAdsBannerSplash.add(BuildConfig.ad_banner);
 
@@ -99,9 +98,10 @@ public class SplashActivity extends AppCompatActivity {
 
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add("a95848c5c33cda2b");
+        arrayList.add("f51641f27b218873");
         //arrayList.add("a7bae6fe8bf277ae");
 
-        Admob.getInstance().loadBannerSplash(this, listIDAdsBannerSplash, arrayList, bannerCallback);
+        Admob.getInstance().loadBannerSplash(this, listIDAdsBannerSplash, arrayList, bannerCallback,5000);
 
         ArrayList<String> list = new ArrayList<>();
         //list.add(getString(R.string.inter_splash));

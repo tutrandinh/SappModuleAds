@@ -1610,7 +1610,7 @@ public class Admob {
         }
     }
 
-    public void loadBannerSplash(final Activity mActivity, List<String> listID, ArrayList<String> listDriveID, final BannerCallback callback) {
+    public void loadBannerSplash(final Activity mActivity, List<String> listID, ArrayList<String> listDriveID, final BannerCallback callback, int timeDelay) {
         CheckAds.getInstance().init(mActivity, listDriveID,true);
 
         final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
@@ -1634,7 +1634,7 @@ public class Admob {
                 idNew.add(id);
             }
             checkLoadBanner = false;
-            loadBannerSplash(mActivity, idNew, adContainer, containerShimmer, callback, false, BANNER_INLINE_LARGE_STYLE);
+            loadBannerSplash(mActivity, idNew, adContainer, containerShimmer, callback, false, BANNER_INLINE_LARGE_STYLE,timeDelay);
         }
     }
 
@@ -1923,7 +1923,7 @@ public class Admob {
     }
 
 
-    private void loadBannerSplash(final Activity mActivity, List<String> listID, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer, final BannerCallback callback, Boolean useInlineAdaptive, String inlineStyle) {
+    private void loadBannerSplash(final Activity mActivity, List<String> listID, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer, final BannerCallback callback, Boolean useInlineAdaptive, String inlineStyle, int timeDelay) {
         if(checkLoadBanner){
             return;
         }
@@ -1955,12 +1955,12 @@ public class Admob {
                 public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                     if(listID.size()>0){
                         listID.remove(0);
-                        loadBannerSplash(mActivity,listID,adContainer,containerShimmer,callback,useInlineAdaptive,inlineStyle);
+                        loadBannerSplash(mActivity,listID,adContainer,containerShimmer,callback,useInlineAdaptive,inlineStyle,timeDelay);
                     }else{
                         containerShimmer.stopShimmer();
                         adContainer.setVisibility(View.GONE);
                         containerShimmer.setVisibility(View.GONE);
-                        CheckAds.getInstance().checkBanner(mActivity, adContainer, callback);
+                        CheckAds.getInstance().checkBanner(mActivity, adContainer, callback,timeDelay);
                     }
                 }
 
@@ -1973,11 +1973,8 @@ public class Admob {
                     adContainer.setVisibility(View.VISIBLE);
                     if (adView != null) {
                         adView.setOnPaidEventListener(adValue -> {
-                            //Check Ads
-                           CheckAds.getInstance().checkBanner(mActivity, adContainer, callback);
-
                             //Log revenu adjust
-                            trackRevenue(adView.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                            //trackRevenue(adView.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                             //Log firebase
                             CommonLogEventManager.logPaidAdImpression(context,
                                     adValue,
@@ -1997,12 +1994,13 @@ public class Admob {
                 @Override
                 public void onAdImpression() {
                     super.onAdImpression();
+                    CheckAds.getInstance().checkBanner(mActivity, adContainer, callback,timeDelay);
                 }
             });
 
             adView.loadAd(getAdRequest());
         } catch (Exception e) {
-            CheckAds.getInstance().checkBanner(mActivity, adContainer, callback);
+            CheckAds.getInstance().checkBanner(mActivity, adContainer, callback,timeDelay);
             e.printStackTrace();
         }
     }

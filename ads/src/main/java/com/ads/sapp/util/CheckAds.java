@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.util.SparseArray;
@@ -18,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.ads.sapp.R;
+import com.ads.sapp.admob.AppOpenManager;
 import com.ads.sapp.funtion.BannerCallback;
 import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.android.gms.vision.Frame;
@@ -209,15 +211,12 @@ public class CheckAds {
                                 String[] contentHead = textDefault.split(SPACE);
                                 if(contentHead.length > 0){
                                     if(contentHead[0].equals(locationCode)){
-                                        //Log.d("checkAds","contentHead0: " + contentHead[0].toString().trim());
-                                        //Log.d("checkAds","contentHead1: " + contentHead[1].toString().trim());
-
                                         if(contentHead[1] != null){
                                             String[] textcontentHead  = contentHead[1].split(":");
                                             if(textcontentHead[0] !=null){
                                                 if(textAds.equals(textcontentHead[0].trim())){
-                                                    Log.d("checkAds","textAds: " +textAds + ", Text common: " +contentHead[1].trim());
                                                     isTestAd = true;
+                                                    Log.d("checkAds","textAds: " +textAds + ", Text common: " +contentHead[1].trim());
                                                     break;
                                             }
                                             }
@@ -418,10 +417,14 @@ public class CheckAds {
         return returnedBitmap;
     }
 
-    public void checkBanner(Context context, final FrameLayout adContainer, final BannerCallback callback){
+    public void checkBanner(Context context, final FrameLayout adContainer, final BannerCallback callback, int timeDelay){
         try{
             if(!checkAd){
-                callback.onCheckComplete();
+                (new Handler(context.getMainLooper())).postDelayed(new Runnable() {
+                    public void run() {
+                        callback.onCheckComplete();
+                    }
+                }, (long) timeDelay);
             }
 
             countCheck += 1;
@@ -433,7 +436,7 @@ public class CheckAds {
             Log.d("checkAds", "Next check");
 
             Bitmap bitmap = getBitmapFromView(adContainer);
-            TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+            TextRecognizer textRecognizer = new TextRecognizer.Builder(context).build();
             Frame imageFrame = new Frame.Builder()
                     .setBitmap(bitmap)
                     .build();
@@ -472,10 +475,18 @@ public class CheckAds {
                 }
             }
             if(countCheck <= 2){
-                callback.onCheckComplete();
+                (new Handler(context.getMainLooper())).postDelayed(new Runnable() {
+                    public void run() {
+                        callback.onCheckComplete();
+                    }
+                }, (long) timeDelay);
             }
         }catch (Exception ex){
-            callback.onCheckComplete();
+            (new Handler(context.getMainLooper())).postDelayed(new Runnable() {
+                public void run() {
+                    callback.onCheckComplete();
+                }
+            }, (long) timeDelay);
         }
     }
 
