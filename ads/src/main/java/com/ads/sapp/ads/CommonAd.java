@@ -33,6 +33,7 @@ import com.ads.sapp.funtion.AdCallback;
 import com.ads.sapp.funtion.RewardCallback;
 import com.ads.sapp.util.AppUtil;
 import com.ads.sapp.util.BannerGravity;
+import com.ads.sapp.util.CheckAds;
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdListener;
 import com.applovin.mediation.MaxError;
@@ -258,6 +259,13 @@ public class CommonAd {
     }
 
     public void loadSplashInterstitialAds(final Context context, ArrayList<String> listID, long timeOut, long timeDelay, CommonAdCallback adListener) {
+        loadSplashInterstitialAds(context, listID, timeOut, timeDelay, true, adListener);
+    }
+
+    public void loadSplashInterstitialAdsCheck(final Context context, ArrayList<String> listID, long timeOut, long timeDelay, CommonAdCallback adListener) {
+        if(!CheckAds.getInstance().isShowAds(context)){
+            adListener.onNextAction();
+        }
         loadSplashInterstitialAds(context, listID, timeOut, timeDelay, true, adListener);
     }
 
@@ -997,6 +1005,30 @@ public class CommonAd {
             default:
                 return apInterstitialAd;
         }
+    }
+
+    public ApInterstitialAd getInterstitialAdsCheck(Context context, ArrayList<String> listID) {
+        ApInterstitialAd apInterstitialAd = new ApInterstitialAd();
+        Admob.getInstance().getInterstitialAdsCheck(context, listID, new AdCallback() {
+            @Override
+            public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
+                super.onInterstitialLoad(interstitialAd);
+                Log.d(TAG, "Admob onInterstitialLoad: ");
+                apInterstitialAd.setInterstitialAd(interstitialAd);
+            }
+
+            @Override
+            public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                super.onAdFailedToLoad(i);
+            }
+
+            @Override
+            public void onAdFailedToShow(@Nullable AdError adError) {
+                super.onAdFailedToShow(adError);
+            }
+
+        });
+        return apInterstitialAd;
     }
 
     /**

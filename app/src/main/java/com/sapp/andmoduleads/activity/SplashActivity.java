@@ -6,11 +6,14 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ads.sapp.admob.Admob;
 import com.ads.sapp.admob.AppOpenManager;
 import com.ads.sapp.ads.CommonAd;
 import com.ads.sapp.ads.CommonAdCallback;
 import com.ads.sapp.ads.CommonAdConfig;
 import com.ads.sapp.funtion.AdCallback;
+import com.ads.sapp.funtion.BannerCallback;
+import com.ads.sapp.util.CheckAds;
 import com.sapp.andmoduleads.BuildConfig;
 import com.sapp.andmoduleads.R;
 import com.ads.sapp.call.api.CommonProcess;
@@ -31,13 +34,13 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-
-
         if (CommonAd.getInstance().getMediationProvider() == CommonAdConfig.PROVIDER_ADMOB)
             idAdSplash = BuildConfig.ad_interstitial_splash;
         else
             idAdSplash = getString(R.string.applovin_test_inter);
 
+
+        // Inter
         commonAdCallback = new CommonAdCallback() {
             @Override
             public void onNextAction() {
@@ -50,6 +53,55 @@ public class SplashActivity extends AppCompatActivity {
             }
         };
 
+        adCallback = new AdCallback() {
+            @Override
+            public void onNextAction() {
+                super.onNextAction();
+                Log.e("Splash ads", "open success");
+                startMain();
+            }
+        };
+
+
+
+        ArrayList<String> listIDAdsBannerSplash = new ArrayList<>();
+        listIDAdsBannerSplash.add(BuildConfig.ad_banner);
+
+        BannerCallback bannerCallback = new BannerCallback(){
+            @Override
+            public void onCheckComplete() {
+                super.onCheckComplete();
+
+                // Inter
+//                ArrayList<String> list = new ArrayList<>();
+//                list.add(getString(R.string.inter_splash3));
+//                CommonAd.getInstance().loadSplashInterstitialAdsCheck(
+//                        SplashActivity.this,
+//                        list,
+//                        2500,
+//                        5000,
+//                        commonAdCallback
+//                );
+
+                // Open
+
+                ArrayList<String> listID = new ArrayList<>();
+                listID.add("ca-app-pub-3940256099942544/9257395921");
+                //CheckAds.checkAd = false; When show only
+                AppOpenManager.getInstance().loadOpenAppAdSplashFloorCheck(
+                        SplashActivity.this,
+                        listID,
+                        true,
+                        adCallback
+                );
+            }
+        };
+
+        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.add("a95848c5c33cda2b");
+        //arrayList.add("a7bae6fe8bf277ae");
+
+        Admob.getInstance().loadBannerSplash(this, listIDAdsBannerSplash, arrayList, bannerCallback);
 
         ArrayList<String> list = new ArrayList<>();
         //list.add(getString(R.string.inter_splash));
@@ -57,13 +109,13 @@ public class SplashActivity extends AppCompatActivity {
         //list.add(getString(R.string.inter_splash2));
         list.add(getString(R.string.inter_splash3));
 //
-        CommonAd.getInstance().loadSplashInterstitialAds(
-                this,
-                list,
-                25000,
-                5000,
-                commonAdCallback
-            );
+//        CommonAd.getInstance().loadSplashInterstitialAds(
+//                this,
+//                list,
+//                2500,
+//                5000,
+//                commonAdCallback
+//            );
 
         ArrayList<String> listID = new ArrayList<>();
         listID.add("ca-app-pub-3940256099942544/34198352941");

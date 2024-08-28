@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ads.sapp.admob.Admob;
 import com.ads.sapp.admob.AppOpenManager;
 import com.ads.sapp.ads.CommonAd;
 import com.ads.sapp.ads.CommonAdCallback;
@@ -19,6 +20,7 @@ import com.ads.sapp.ads.wrapper.ApAdError;
 import com.ads.sapp.ads.wrapper.ApInterstitialAd;
 import com.ads.sapp.dialog.DialogExitApp1;
 import com.ads.sapp.funtion.DialogExitListener;
+import com.ads.sapp.util.CheckAds;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.sapp.andmoduleads.BuildConfig;
@@ -67,7 +69,14 @@ public class MainActivity extends AppCompatActivity {
         commonNativeAdView.loadNativeAd(this, idNative);
 
         //CommonAd.getInstance().loadBanner(this, idBanner);
-        CommonProcess.getInstance().loadBannerDefault(this);
+        //Using API Gup
+        //CommonProcess.getInstance().loadBannerDefault(this);
+
+        // Test check
+        //CheckAds.checkAd = false; // When show only
+        ArrayList<String> list = new ArrayList<>();
+        list.add(BuildConfig.ad_banner);
+        Admob.getInstance().loadBannerFloorCheck(this,list);
         //CommonAd.getInstance().loadCollapsibleBanner(this, idBanner, BannerGravity.bottom);
 
         ArrayList<String> listID = new ArrayList<>();
@@ -119,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.btForceShowAds).setOnClickListener(v -> {
             if (mInterstitialAd.isReady()) {
-                CommonAd.getInstance().forceShowInterstitialByTimeMax(this, mInterstitialAd, new CommonAdCallback() {
+                CommonAd.getInstance().forceShowInterstitial(this, mInterstitialAd, new CommonAdCallback() {
                     @Override
                     public void onAdClosedByTime() {
                         super.onAdClosedByTime();
@@ -143,8 +152,35 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "onInterstitialShow");
                     }
                 }, true);
+
+//                CommonAd.getInstance().forceShowInterstitialByTimeMax(this, mInterstitialAd, new CommonAdCallback() {
+//                    @Override
+//                    public void onAdClosedByTime() {
+//                        super.onAdClosedByTime();
+//                    }
+//
+//                    @Override
+//                    public void onNextAction() {
+//                        Log.i(TAG, "onAdClosed: start content and finish main");
+//                        startActivity(new Intent(MainActivity.this, SimpleListActivity.class));
+//                    }
+//
+//                    @Override
+//                    public void onAdFailedToShow(@Nullable ApAdError adError) {
+//                        super.onAdFailedToShow(adError);
+//                        Log.i(TAG, "onAdFailedToShow:" + adError.getMessage());
+//                    }
+//
+//                    @Override
+//                    public void onInterstitialShow() {
+//                        super.onInterstitialShow();
+//                        Log.d(TAG, "onInterstitialShow");
+//                    }
+//                }, true);
             } else {
+
                 loadAdInterstitial();
+                startActivity(new Intent(MainActivity.this, SimpleListActivity.class));
             }
 
         });
@@ -165,15 +201,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadAdInterstitial() {
-//        ArrayList<String> list = new ArrayList<>();
-//        list.add(getString(R.string.inter_splash));
-//        list.add(getString(R.string.inter_splash1));
-//        list.add(getString(R.string.inter_splash2));
-//        list.add(getString(R.string.inter_splash3));
-//     mInterstitialAd = CommonAd.getInstance().getInterstitialAds(this, list);
+        ArrayList<String> list = new ArrayList<>();
+        //list.add(getString(R.string.inter_splash));
+        //list.add(getString(R.string.inter_splash1));
+        //list.add(getString(R.string.inter_splash2));
+        list.add(getString(R.string.inter_splash3));
+        mInterstitialAd = CommonAd.getInstance().getInterstitialAdsCheck(this, list);
 //        mInterstitialAd = CommonProcess.getInstance().getInterstitialAdsInterIntro(this);
         //mInterstitialAd = CommonProcess.getInstance().getInterstitialAdsInterByName(this,"inter_all");
-        mInterstitialAd = CommonAd.getInstance().getInterstitialAdsMax(this,"62d68af9086fc062");
+       //mInterstitialAd = CommonAd.getInstance().getInterstitialAdsMax(this,"62d68af9086fc062");
 
     }
 

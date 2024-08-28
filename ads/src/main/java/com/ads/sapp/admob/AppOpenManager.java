@@ -32,6 +32,7 @@ import com.ads.sapp.dialog.ResumeLoadingDialog;
 import com.ads.sapp.event.CommonLogEventManager;
 import com.ads.sapp.funtion.AdCallback;
 import com.ads.sapp.funtion.AdType;
+import com.ads.sapp.util.CheckAds;
 import com.google.android.gms.ads.AdActivity;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
@@ -845,6 +846,71 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
         }
 
+    }
+
+    public void loadOpenAppAdSplashFloorCheck(Context context, ArrayList<String> listIDResume, boolean isShowAdIfReady, AdCallback adCallback) {
+        if(!CheckAds.getInstance().isShowAds(context)){
+            adCallback.onAdFailedToLoad(null);
+            adCallback.onNextAction();
+            return;
+        }
+        if(!isNetworkConnected(context)){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    adCallback.onAdFailedToLoad(null);
+                    adCallback.onNextAction();
+                }
+            },3000);
+        }else{
+            if (listIDResume == null) {
+                adCallback.onAdFailedToLoad(null);
+                adCallback.onNextAction();
+                return;
+            }
+            Log.e("AppOpenManager", "load ID :" + listIDResume.get(0));
+            if(listIDResume.size()>0){
+                Log.e("AppOpenManager", "load ID :" + listIDResume.get(0));
+            }
+            if (listIDResume.size() < 1) {
+                adCallback.onAdFailedToLoad(null);
+                adCallback.onNextAction();
+            }
+            if (listIDResume.size() > 0 ) {
+                AdRequest adRequest = getAdRequest();
+                AppOpenAd.AppOpenAdLoadCallback appOpenAdLoadCallback = new AppOpenAd.AppOpenAdLoadCallback() {
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        super.onAdFailedToLoad(loadAdError);
+                        // adCallback.onAdFailedToLoad(loadAdError);
+                        listIDResume.remove(0);
+                        if (listIDResume.size() == 0) {
+                            adCallback.onAdFailedToLoad(null);
+                            adCallback.onNextAction();
+                        } else {
+                            loadOpenAppAdSplashFloorCheck(context, listIDResume, isShowAdIfReady, adCallback);
+                        }
+                    }
+
+                    @Override
+                    public void onAdLoaded(@NonNull AppOpenAd appOpenAd) {
+                        super.onAdLoaded(appOpenAd);
+                        AppOpenManager.this.splashAd = appOpenAd;
+                        AppOpenManager.this.splashAd.setOnPaidEventListener((adValue) -> {
+                            //log value
+                            //Log revenue adjust
+                            trackRevenue(AppOpenManager.this.splashAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                        });
+                        if (isShowAdIfReady) {
+                            AppOpenManager.this.showAppOpenSplash(context, adCallback);
+                        } else {
+                            adCallback.onAdSplashReady();
+                        }
+                    }
+                };
+                AppOpenAd.load(context, listIDResume.get(0), adRequest, AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, appOpenAdLoadCallback);
+            }
+        }
     }
 
     public void loadOpenAppAdSplashFloor(Context context, ArrayList<String> listIDResume, boolean isShowAdIfReady, AdCallback adCallback) {
