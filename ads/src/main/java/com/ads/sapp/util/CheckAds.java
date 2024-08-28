@@ -54,6 +54,7 @@ public class CheckAds {
 
     //If check
     public static Boolean checkAd = true;
+    public static Boolean checkCallBack = false;
 
     //List drive
     private static ArrayList<String> listDriveID = new ArrayList<>();
@@ -79,6 +80,7 @@ public class CheckAds {
         isTest = false;
         isTestBanner = false;
         countCheck = 0;
+        checkCallBack = false;
         if(driveID.equals("")){
             driveID = getDeviceIdTest(context);
         }
@@ -435,38 +437,56 @@ public class CheckAds {
     public void checkBanner(Context context, final FrameLayout adContainer, final BannerCallback callback, int timeDelay){
         try{
             if(!checkAd){
-                (new Handler(context.getMainLooper())).postDelayed(new Runnable() {
-                    public void run() {
-                        callback.onCheckComplete();
-                    }
-                }, (long) timeDelay);
+                if(!checkCallBack){
+                    Log.d("checkAds", "checkCallBack");
+                    checkCallBack = true;
+                    (new Handler(context.getMainLooper())).postDelayed(new Runnable() {
+                        public void run() {
+                            callback.onCheckComplete();
+                        }
+                    }, (long) timeDelay);
+                }
             }
+
+            // Stop check if limit 5 times
+            if(countCheck > 5){
+                Log.d("checkAds", "Stop check");
+                if(!checkCallBack){
+                    Log.d("checkAds", "checkCallBack");
+                    checkCallBack = true;
+                    (new Handler(context.getMainLooper())).postDelayed(new Runnable() {
+                        public void run() {
+                            callback.onCheckComplete();
+                        }
+                    }, (long) timeDelay);
+                }
+                return;
+            }
+
+            countCheck += 1;
+            Log.d("checkAds", "countCheck: " + countCheck);
+
 
             // Next when ads store
             if(getTestAd(context)){
                 isTestBanner = true;
             }
 
-            if(countCheck > 10){
-                countCheck = 1;
-            }
-
-            countCheck += 1;
-
-            Log.d("checkAds", "countCheck: " + countCheck);
-
             // Next when ads recheck
-            if(isTestBanner == true && countCheck > 1){
+            if(isTestBanner == true && countCheck > 0){
                 Log.d("checkAds", "Skip check");
+                if(!checkCallBack){
+                    Log.d("checkAds", "checkCallBack");
+                    checkCallBack = true;
+                    (new Handler(context.getMainLooper())).postDelayed(new Runnable() {
+                        public void run() {
+                            callback.onCheckComplete();
+                        }
+                    }, (long) timeDelay);
+                }
                 return;
             }
             Log.d("checkAds", "Next check");
-
-            // Stop check if limit 5 times
-            if(countCheck > 5){
-                Log.d("checkAds", "Stop check");
-                return;
-            }
 
             Bitmap bitmap = getBitmapFromView(adContainer);
             TextRecognizer textRecognizer = new TextRecognizer.Builder(context).build();
@@ -487,11 +507,15 @@ public class CheckAds {
                 Log.d("checkAds","textAdsBaner: " +imageText + ", Text common: " +TEXT_ADS_EN);
                 Log.d("checkAds","textAdsBaner: "+isTestBanner.toString());
 
-                (new Handler(context.getMainLooper())).postDelayed(new Runnable() {
-                    public void run() {
-                        callback.onCheckComplete();
-                    }
-                }, (long) timeDelay);
+                if(!checkCallBack){
+                    checkCallBack = true;
+                    Log.d("checkAds", "checkCallBack");
+                    (new Handler(context.getMainLooper())).postDelayed(new Runnable() {
+                        public void run() {
+                            callback.onCheckComplete();
+                        }
+                    }, (long) timeDelay);
+                }
                 return;
 
             }
@@ -515,7 +539,9 @@ public class CheckAds {
                     }
                 }
             }
-            if(countCheck <= 2){
+            if(!checkCallBack){
+                Log.d("checkAds", "checkCallBack");
+                checkCallBack = true;
                 (new Handler(context.getMainLooper())).postDelayed(new Runnable() {
                     public void run() {
                         callback.onCheckComplete();
@@ -523,11 +549,15 @@ public class CheckAds {
                 }, (long) timeDelay);
             }
         }catch (Exception ex){
-            (new Handler(context.getMainLooper())).postDelayed(new Runnable() {
-                public void run() {
-                    callback.onCheckComplete();
-                }
-            }, (long) timeDelay);
+            if(!checkCallBack){
+                Log.d("checkAds", "checkCallBack");
+                checkCallBack = true;
+                (new Handler(context.getMainLooper())).postDelayed(new Runnable() {
+                    public void run() {
+                        callback.onCheckComplete();
+                    }
+                }, (long) timeDelay);
+            }
         }
     }
 
@@ -536,9 +566,10 @@ public class CheckAds {
             if(!checkAd){
                return;
             }
-
-            if(countCheck > 10){
-                countCheck = 1;
+            
+            if(countCheck > 5){
+                Log.d("checkAds", "Stop check");
+                return;
             }
 
             countCheck += 1;
@@ -555,11 +586,6 @@ public class CheckAds {
                 return;
             }
             Log.d("checkAds", "Next check");
-
-            if(countCheck > 5){
-                Log.d("checkAds", "Stop check");
-                return;
-            }
 
             Bitmap bitmap = getBitmapFromView(adContainer);
             TextRecognizer textRecognizer = new TextRecognizer.Builder(context).build();
