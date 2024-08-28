@@ -264,9 +264,11 @@ public class CommonAd {
 
     public void loadSplashInterstitialAdsCheck(final Context context, ArrayList<String> listID, long timeOut, long timeDelay, CommonAdCallback adListener) {
         if(!CheckAds.getInstance().isShowAds(context)){
+            adListener.onAdFailedToLoad(null);
             adListener.onNextAction();
+        }else{
+            loadSplashInterstitialAds(context, listID, timeOut, timeDelay, true, adListener);
         }
-        loadSplashInterstitialAds(context, listID, timeOut, timeDelay, true, adListener);
     }
 
     public void loadSplashInterstitialAdsNew(final Context context, ArrayList<String> listID, long timeOut, long timeDelay, CommonAdCallback adListener) {
