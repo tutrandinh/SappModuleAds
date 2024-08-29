@@ -280,6 +280,94 @@ public class CheckAds {
         }
     }
 
+    public void checkAds(Context context, NativeAdView adView,String screenName){
+        Boolean isTestAd = false;
+
+        try {
+            if(!checkAd){
+                return;
+            }
+
+            //Location
+            Locale locale;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                locale = Resources.getSystem().getConfiguration().getLocales().get(0);
+            } else {
+                locale = Resources.getSystem().getConfiguration().locale;
+            }
+            String locationCode = locale.getLanguage();
+
+            //Content Check
+            String text = getNativeInfo(adView);
+            Log.d("checkAds","text: " +text);
+
+            if(text != null){
+                if(text.length() > 0){
+                    String[] stringTexts = text.split(":");
+                    if(stringTexts.length  > 0){
+                        String textAds = stringTexts[0].toString().trim();
+                        Log.d("checkAds","locationCode: " + locationCode);
+                        Log.d("checkAds","textAds0: " + textAds);
+                        if(textAds.equals(TEXT_ADS_EN)){
+                            isTestAd = true;
+                        }else {
+                            for(String textDefault: listTextAds){
+                                String[] contentHead = textDefault.split(SPACE);
+                                if(contentHead.length > 0){
+                                    if(contentHead[0].equals(locationCode)){
+                                        if(contentHead[1] != null){
+                                            String[] textcontentHead  = contentHead[1].split(":");
+                                            if(textcontentHead[0] !=null){
+                                                if(textAds.equals(textcontentHead[0].trim())){
+                                                    isTestAd = true;
+                                                    Log.d("checkAds","textAds: " +textAds + ", Text common: " +contentHead[1].trim());
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            //Re Check
+            if(!isTestAd){
+                for(String textDefault: listTextAds){
+                    String[] contentHead = textDefault.split(SPACE);
+                    if(contentHead.length > 0){
+                        if(contentHead[0].equals(locationCode)){
+                            if(text.contains(contentHead[1].trim())){
+                                isTestAd = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(isTestAd){
+                if(screenName.equals(NA)){
+                    isTestLanguage = true;
+                } else if (screenName.equals(IN)) {
+                    isTestIntro = true;
+                }else if(screenName.equals(PE)){
+                    isTestPermission = true;
+                }else if(screenName.equals(OT)){
+                    isTestOther = true;
+                }
+                isTest = true;
+                storeTestAd(context);
+                Log.d("checkAds", "isTest: " + isTestAd.toString());
+            }
+        }catch (Exception ex){
+            Log.d("checkAds","Error");
+            //Log.d("checkAds",ex.getMessage());
+        }
+    }
+
     public static String getDeviceIdTest(Context context) {
         @SuppressLint("HardwareIds") String id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         Log.d("checkAds","getDeviceIdTest: " + id);
@@ -418,7 +506,7 @@ public class CheckAds {
             TextBlock textBlock = textBlocks.get(textBlocks.keyAt(i));
             imageText = imageText + "" + textBlock.getValue();
         }
-        Log.d("imageToText", "imageToText: " + imageText);
+        //Log.d("imageToText", "imageToText: " + imageText);
         return imageText;
     }
 
@@ -581,7 +669,7 @@ public class CheckAds {
                 return;
             }
 
-            if(isTestBanner == true && countCheck > 1){
+            if(isTestBanner == true && countCheck > 0){
                 Log.d("checkAds", "Skip check");
                 return;
             }
