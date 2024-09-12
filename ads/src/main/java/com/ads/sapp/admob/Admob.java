@@ -2639,7 +2639,7 @@ public class Admob {
                 .setStartMuted(true)
                 .build();
 
-        NativeAdOptions adOptions = new NativeAdOptions.Builder()
+        com.google.android.gms.ads.nativead.NativeAdOptions adOptions = new com.google.android.gms.ads.nativead.NativeAdOptions.Builder()
                 .setVideoOptions(videoOptions)
                 .build();
         AdLoader adLoader = new AdLoader.Builder(context, id)
@@ -2695,7 +2695,7 @@ public class Admob {
                 .setStartMuted(true)
                 .build();
 
-        NativeAdOptions adOptions = new NativeAdOptions.Builder()
+        com.google.android.gms.ads.nativead.NativeAdOptions adOptions = new com.google.android.gms.ads.nativead.NativeAdOptions.Builder()
                 .setVideoOptions(videoOptions)
                 .build();
         AdLoader adLoader = new AdLoader.Builder(context, id)
@@ -2750,7 +2750,7 @@ public class Admob {
                     .setStartMuted(true)
                     .build();
 
-            NativeAdOptions adOptions = new NativeAdOptions.Builder()
+            com.google.android.gms.ads.nativead.NativeAdOptions adOptions = new com.google.android.gms.ads.nativead.NativeAdOptions.Builder()
                     .setVideoOptions(videoOptions)
                     .build();
             AdLoader adLoader = new AdLoader.Builder(context, listID.get(0))
@@ -2822,7 +2822,7 @@ public class Admob {
                     .setStartMuted(true)
                     .build();
 
-            NativeAdOptions adOptions = new NativeAdOptions.Builder()
+            com.google.android.gms.ads.nativead.NativeAdOptions adOptions = new com.google.android.gms.ads.nativead.NativeAdOptions.Builder()
                     .setVideoOptions(videoOptions)
                     .build();
             AdLoader adLoader = new AdLoader.Builder(context, listID.get(0))
@@ -2888,7 +2888,7 @@ public class Admob {
                 .setStartMuted(true)
                 .build();
 
-        NativeAdOptions adOptions = new NativeAdOptions.Builder()
+        com.google.android.gms.ads.nativead.NativeAdOptions adOptions = new com.google.android.gms.ads.nativead.NativeAdOptions.Builder()
                 .setVideoOptions(videoOptions)
                 .build();
         AdLoader adLoader = new AdLoader.Builder(context, id)
@@ -2947,7 +2947,7 @@ public class Admob {
                 .setStartMuted(true)
                 .build();
 
-        NativeAdOptions adOptions = new NativeAdOptions.Builder()
+        com.google.android.gms.ads.nativead.NativeAdOptions adOptions = new com.google.android.gms.ads.nativead.NativeAdOptions.Builder()
                 .setVideoOptions(videoOptions)
                 .build();
 
@@ -3016,7 +3016,7 @@ public class Admob {
                 .setStartMuted(true)
                 .build();
 
-        NativeAdOptions adOptions = new NativeAdOptions.Builder()
+        com.google.android.gms.ads.nativead.NativeAdOptions adOptions = new com.google.android.gms.ads.nativead.NativeAdOptions.Builder()
                 .setVideoOptions(videoOptions)
                 .build();
 
