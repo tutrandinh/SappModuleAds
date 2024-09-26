@@ -75,4 +75,11 @@ dependencies {
     // applovin
     implementation 'com.applovin:applovin-sdk:11.4.2'
 
+    //Ads call api
+    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'com.squareup.retrofit2:retrofit:2.1.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
+
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.5'
+
 }

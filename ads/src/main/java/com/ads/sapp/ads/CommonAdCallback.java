@@ -15,6 +15,9 @@ public class CommonAdCallback {
     public void onAdClosed() {
     }
 
+    public void onAdClosedByTime() {
+    }
+
     public void onAdFailedToLoad(@Nullable ApAdError adError) {
     }
 

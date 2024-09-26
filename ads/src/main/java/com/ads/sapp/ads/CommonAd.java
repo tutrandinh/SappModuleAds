@@ -831,6 +831,12 @@ public class CommonAd {
             case CommonAdConfig.PROVIDER_ADMOB:
                 AdCallback adCallback = new AdCallback() {
                     @Override
+                    public void onAdClosedByTime() {
+                        super.onAdClosedByTime();
+                        callback.onAdClosedByTime();
+                    }
+
+                    @Override
                     public void onAdClosed() {
                         super.onAdClosed();
                         Log.d(TAG, "onAdClosed: ");
@@ -969,6 +975,12 @@ public class CommonAd {
         switch (adConfig.getMediationProvider()) {
             case CommonAdConfig.PROVIDER_ADMOB:
                 AdCallback adCallback = new AdCallback() {
+                    @Override
+                    public void onAdClosedByTime() {
+                        super.onAdClosedByTime();
+                        callback.onAdClosedByTime();
+                    }
+
                     @Override
                     public void onAdClosed() {
                         super.onAdClosed();
