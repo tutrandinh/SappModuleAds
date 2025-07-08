@@ -2,14 +2,8 @@ package com.ads.sapp.manager;
 
 import android.app.Activity;
 import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
@@ -64,7 +58,6 @@ public class BannerCollapsibleCommon implements LifecycleEventObserver {
     public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
         switch (event) {
             case ON_CREATE:
-                Log.d(TAG, "BannerCommon:onStateChanged ON_CREATE");
                 loadBannerInterval();
                 break;
             case ON_RESUME:

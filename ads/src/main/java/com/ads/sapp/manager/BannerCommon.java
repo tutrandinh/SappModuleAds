@@ -1,9 +1,7 @@
 package com.ads.sapp.manager;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -54,7 +52,6 @@ public class BannerCommon implements LifecycleEventObserver {
     public void onStateChanged(@NonNull LifecycleOwner source, @NonNull Lifecycle.Event event) {
         switch (event) {
             case ON_CREATE:
-                Log.d(TAG, "BannerCommon:onStateChanged ON_CREATE");
                 loadBannerInterval();
                 break;
             case ON_RESUME:
