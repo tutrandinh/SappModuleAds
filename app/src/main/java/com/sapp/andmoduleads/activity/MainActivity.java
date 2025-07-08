@@ -80,14 +80,16 @@ public class MainActivity extends AppCompatActivity {
         // Test check
         //CheckAds.checkAd = false; // When show only
         ArrayList<String> list = new ArrayList<>();
+        list.add("1");
+        list.add("1");
         list.add(BuildConfig.ad_banner);
         //Admob.getInstance().loadBannerFloorAds(this,list);
         //CommonAd.getInstance().loadCollapsibleBanner(this, idBanner, BannerGravity.bottom);
 
         //Load banner new, time and auto reload
-//        BannerCommon bannerCommon = new BannerCommon(this, this, list, new BannerCommonCallback());
-//        bannerCommon.setTimeIntervalReload(4000);
-//        bannerCommon.setReloadAdsOnResume(true);
+        BannerCommon bannerCommon = new BannerCommon(this, this, list, new BannerCommonCallback());
+        bannerCommon.setTimeIntervalReload(4000);
+        bannerCommon.setReloadAdsOnResume(true);
 
         ArrayList<String> listID = new ArrayList<>();
         listID.add("1");
@@ -96,13 +98,15 @@ public class MainActivity extends AppCompatActivity {
         listID.add(BuildConfig.ad_banner_collap);
 
         //CommonAd.getInstance().loadCollapsibleBannerFloor(this, listID, BannerGravity.bottom);
-        Admob.getInstance().loadCollapsibleBannerFloorCheck(this, listID, BannerGravity.bottom);
+
+        //Load Banner Collapsible not reload
+        //Admob.getInstance().loadCollapsibleBannerFloorCheck(this, listID, BannerGravity.bottom);
 
         // Load Banner Collapsible new, time and auto reload
-        BannerCollapsibleCommon bannerCollapsibleCommon = new BannerCollapsibleCommon(this, this, list, new BannerCommonCallback());
-        bannerCollapsibleCommon.setTimeIntervalReload(4000);
-        bannerCollapsibleCommon.setReloadAdsOnResume(true);
-        bannerCollapsibleCommon.setRm(true);
+//        BannerCollapsibleCommon bannerCollapsibleCommon = new BannerCollapsibleCommon(this, this, listID, new BannerCommonCallback());
+//        bannerCollapsibleCommon.setTimeIntervalReload(4000);
+//        bannerCollapsibleCommon.setReloadAdsOnResume(true);
+//        bannerCollapsibleCommon.setRm(true);
 
         //Load from API githup
         //CommonProcess.getInstance().loadCollapsibleBannerDefaultFloor(this, BannerGravity.bottom);

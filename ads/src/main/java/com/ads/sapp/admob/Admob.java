@@ -2690,6 +2690,13 @@ public class Admob {
             return;
         }
 
+        if(listId.size() == 0 ){
+            containerShimmer.stopShimmer();
+            adContainer.setVisibility(View.GONE);
+            containerShimmer.setVisibility(View.GONE);
+            return;
+        }
+
         containerShimmer.setVisibility(View.VISIBLE);
         containerShimmer.startShimmer();
 
@@ -2776,6 +2783,13 @@ public class Admob {
             return;
         }
 
+        if(listId.size() == 0 ){
+            containerShimmer.stopShimmer();
+            adContainer.setVisibility(View.GONE);
+            containerShimmer.setVisibility(View.GONE);
+            bannerCommonCallback.onAdFailedToLoad();
+            return;
+        }
         containerShimmer.setVisibility(View.VISIBLE);
         containerShimmer.startShimmer();
 
