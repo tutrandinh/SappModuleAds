@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion 31
@@ -91,3 +92,29 @@ dependencies {
     implementation 'com.adjust.sdk:adjust-android:4.38.0'
 
 }
+
+publishing {
+    publications {
+        release(MavenPublication) {
+            release(MavenPublication) {
+                afterEvaluate {
+                    from components.findByName("release") // Sửa lại từ `default` thành `release`
+                }
+                groupId = "com.haiyan"
+                artifactId = "ads"
+                version = "1.0.1"
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "http://localhost:8081/repository/android-libs/"
+            allowInsecureProtocol true
+            credentials {
+                username System.getenv("NEXUS_USER") ?: "admin"
+                password System.getenv("NEXUS_PASS") ?: "admin@123"
+            }
+        }
+    }
+}
+
