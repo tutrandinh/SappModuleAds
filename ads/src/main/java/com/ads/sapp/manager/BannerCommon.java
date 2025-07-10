@@ -33,6 +33,10 @@ public class BannerCommon implements LifecycleEventObserver {
     private boolean isStop = false;
     private CountDownTimer countDownTimer;
 
+    //Setting number reload if fail
+    private int totalLoad = 1; //Count times reload
+    private int totalLoadMax = 3; // Max default 3 times
+
     //Setting loading
     private boolean isShimmer = true;
 
@@ -57,7 +61,7 @@ public class BannerCommon implements LifecycleEventObserver {
             case ON_RESUME:
                 try{
                     if (countDownTimer != null && isStop) {
-                        countDownTimer.start();
+                        startReloadBanner();
                     }
                     if (isStop && (reloadAds || reloadAdsOnResume)) {
                         reloadAds = false;
@@ -120,6 +124,15 @@ public class BannerCommon implements LifecycleEventObserver {
                     super.onStartReload();
                     startReloadBanner();
                 }
+
+                @Override
+                public void onFailToLoad() {
+                    super.onFailToLoad();
+                    if(totalLoad <= totalLoadMax){
+                        totalLoad = totalLoad + 1;
+                        startReloadBanner();
+                    }
+                }
             });
         }catch (Exception e){
             bannerCommonCallback.onAdFailedToLoad();
@@ -180,5 +193,13 @@ public class BannerCommon implements LifecycleEventObserver {
 
     public void setListID(ArrayList listID) {
         this.listID = listID;
+    }
+
+    /// ...
+    /// Set totalLoadMax = 0 when not reload on fail load Ads
+    ///
+
+    public void MaxTotalFailToLoad(int totalLoadMax) {
+        this.totalLoadMax = totalLoadMax;
     }
 }

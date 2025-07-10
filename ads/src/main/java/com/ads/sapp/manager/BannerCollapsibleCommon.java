@@ -35,6 +35,10 @@ public class BannerCollapsibleCommon implements LifecycleEventObserver {
     private boolean isStop = false;
     private CountDownTimer countDownTimer;
 
+    //Setting number reload if fail
+    private int totalLoad = 1; //Count times reload
+    private int totalLoadMax = 3; // Max default 3 times
+
     public AdView adView;
 
     //Setting loading
@@ -63,7 +67,7 @@ public class BannerCollapsibleCommon implements LifecycleEventObserver {
             case ON_RESUME:
                 try{
                     if (countDownTimer != null && isStop) {
-                        countDownTimer.start();
+                        startReloadBanner();
                     }
                     if (isStop && (reloadAds || reloadAdsOnResume)) {
                         reloadAds = false;
@@ -138,6 +142,15 @@ public class BannerCollapsibleCommon implements LifecycleEventObserver {
                     adView = adView1;
                     super.onCheckAdView(adView1);
                 }
+
+                @Override
+                public void onFailToLoad() {
+                    super.onFailToLoad();
+                    if(totalLoad <= totalLoadMax){
+                        totalLoad = totalLoad + 1;
+                        startReloadBanner();
+                    }
+                }
             });
         }catch (Exception e){
             bannerCommonCallback.onAdFailedToLoad();
@@ -202,4 +215,13 @@ public class BannerCollapsibleCommon implements LifecycleEventObserver {
     public void setRm(boolean rm) {
         isRm = rm;
     }
+
+    /// ...
+    /// Set totalLoadMax = 0 when not reload on fail load Ads
+    ///
+
+    public void MaxTotalFailToLoad(int totalLoadMax) {
+        this.totalLoadMax = totalLoadMax;
+    }
+
 }

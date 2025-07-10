@@ -7,6 +7,9 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -188,8 +191,13 @@ public class Admob {
                 WebView.setDataDirectorySuffix(processName);
             }
         }
-        MobileAds.initialize(context, initializationStatus -> {
-        });
+        new Thread(
+                () -> {
+                    // Initialize the Google Mobile Ads SDK on a background thread.
+                    MobileAds.initialize(context, initializationStatus -> {
+                    });
+                })
+                .start();
         MobileAds.setRequestConfiguration(new RequestConfiguration.Builder().setTestDeviceIds(testDeviceList).build());
 
         this.context = context;
@@ -203,12 +211,16 @@ public class Admob {
                 WebView.setDataDirectorySuffix(processName);
             }
         }
+        new Thread(
+                () -> {
+                    // Initialize the Google Mobile Ads SDK on a background thread.
+                    MobileAds.initialize(context, initializationStatus -> {
+                    });
+                })
+                .start();
 
-        MobileAds.initialize(context, initializationStatus -> {
-        });
         this.context = context;
     }
-
 
     public boolean isShowLoadingSplash() {
         return isShowLoadingSplash;
@@ -1616,9 +1628,10 @@ public class Admob {
 
         final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
-        if(!isShowAllAds||!isNetworkConnected()){
+        if(!isShowAllAds){
             adContainer.setVisibility(View.GONE);
             containerShimmer.setVisibility(View.GONE);
+            return;
         }else{
             if(listID==null){
                 adContainer.setVisibility(View.GONE);
@@ -2012,6 +2025,7 @@ public class Admob {
             containerShimmer.stopShimmer();
             adContainer.setVisibility(View.GONE);
             containerShimmer.setVisibility(View.GONE);
+            CheckAds.getInstance().checkBanner(mActivity, adContainer, callback,timeDelay);
             return;
         }
 
@@ -2788,6 +2802,7 @@ public class Admob {
             adContainer.setVisibility(View.GONE);
             containerShimmer.setVisibility(View.GONE);
             bannerCommonCallback.onAdFailedToLoad();
+            bannerIntervelCallBack.onFailToLoad();
             return;
         }
         containerShimmer.setVisibility(View.VISIBLE);
@@ -2815,6 +2830,7 @@ public class Admob {
                         adContainer.setVisibility(View.GONE);
                         containerShimmer.setVisibility(View.GONE);
                         bannerCommonCallback.onAdFailedToLoad();
+                        bannerIntervelCallBack.onFailToLoad();
                     }
 
                 }
@@ -3927,6 +3943,29 @@ public class Admob {
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
+
+    private boolean isNetworkConnectedNew() {
+        try{
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm == null) return false;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Network network = cm.getActiveNetwork();
+                if (network == null) return false;
+
+                NetworkCapabilities capabilities = cm.getNetworkCapabilities(network);
+                return capabilities != null &&
+                        (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET));
+            } else {
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                return activeNetwork != null && activeNetwork.isConnected();
+            }
+        }catch (Exception e){
+            return  false;
+        }
     }
 
     private void trackRevenue(@Nullable AdapterResponseInfo loadedAdapterResponseInfo, AdValue adValue) {

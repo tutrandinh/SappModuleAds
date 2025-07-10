@@ -8,4 +8,6 @@ public class BannerIntervelCallBack {
 
     public void onCheckAdView(AdView adView) {}
 
+    public void onFailToLoad(){}
+
 }
