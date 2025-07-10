@@ -119,30 +119,6 @@ public class MainActivity extends AppCompatActivity {
 
                 ApInterstitialAd inter = CommonAd.getInstance().getInterstitialAds(this, idInter);
 
-                CommonAd.getInstance().showInterstitialAdByTimesMax(this, mInterstitialAd, new CommonAdCallback() {
-                    @Override
-                    public void onAdClosedByTime() {
-                        super.onAdClosedByTime();
-                    }
-
-                    @Override
-                    public void onNextAction() {
-                        Log.i(TAG, "onNextAction: start content and finish main");
-                        startActivity(new Intent(MainActivity.this, ContentActivity.class));
-                    }
-
-                    @Override
-                    public void onAdFailedToShow(@Nullable ApAdError adError) {
-                        super.onAdFailedToShow(adError);
-                        Log.i(TAG, "onAdFailedToShow:" + adError.getMessage());
-                    }
-
-                    @Override
-                    public void onInterstitialShow() {
-                        super.onInterstitialShow();
-                        Log.d(TAG, "onInterstitialShow");
-                    }
-                }, true);
             } else {
                 Toast.makeText(this, "start loading ads", Toast.LENGTH_SHORT).show();
                 loadAdInterstitial();

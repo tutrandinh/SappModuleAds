@@ -48,8 +48,6 @@ public class SplashActivity extends AppCompatActivity {
                 Log.d(TAG, "onNextAction");
                 startMain();
 
-                //When use Max
-                //AppOpenMax.getInstance().loadAdResume(MyApplication.getApplication(), getString(R.string.applovin_test_app_open));
             }
         };
 

@@ -20,31 +20,14 @@ import com.ads.sapp.admob.AppOpenManager;
 import com.ads.sapp.ads.nativeAds.CommonAdAdapter;
 import com.ads.sapp.ads.nativeAds.CommonAdPlacer;
 import com.ads.sapp.ads.wrapper.ApAdError;
-import com.ads.sapp.ads.wrapper.ApAdValue;
 import com.ads.sapp.ads.wrapper.ApInterstitialAd;
 import com.ads.sapp.ads.wrapper.ApNativeAd;
 import com.ads.sapp.ads.wrapper.ApRewardAd;
 import com.ads.sapp.ads.wrapper.ApRewardItem;
-import com.ads.sapp.applovin.AppLovin;
-import com.ads.sapp.applovin.AppLovinCallback;
-import com.ads.sapp.applovin.AppOpenMax;
-import com.ads.sapp.event.CommonLogEventManager;
 import com.ads.sapp.funtion.AdCallback;
 import com.ads.sapp.funtion.RewardCallback;
 import com.ads.sapp.util.AppUtil;
-import com.ads.sapp.util.BannerGravity;
 import com.ads.sapp.util.CheckAds;
-import com.applovin.mediation.MaxAd;
-import com.applovin.mediation.MaxAdListener;
-import com.applovin.mediation.MaxError;
-import com.applovin.mediation.MaxReward;
-import com.applovin.mediation.ads.MaxInterstitialAd;
-import com.applovin.mediation.ads.MaxRewardedAd;
-import com.applovin.mediation.nativeAds.MaxNativeAdView;
-import com.applovin.mediation.nativeAds.adPlacer.MaxAdPlacer;
-import com.applovin.mediation.nativeAds.adPlacer.MaxRecyclerAdapter;
-import com.applovin.sdk.AppLovinSdk;
-import com.applovin.sdk.AppLovinSdkConfiguration;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.LoadAdError;
@@ -79,7 +62,6 @@ public class CommonAd {
      */
     public void setCountClickToShowAds(int countClickToShowAds) {
         Admob.getInstance().setNumToShowAds(countClickToShowAds);
-        AppLovin.getInstance().setNumShowAds(countClickToShowAds);
     }
 
     /**
@@ -90,7 +72,6 @@ public class CommonAd {
      */
     public void setCountClickToShowAds(int countClickToShowAds, int currentClicked) {
         Admob.getInstance().setNumToShowAds(countClickToShowAds, currentClicked);
-        AppLovin.getInstance().setNumToShowAds(countClickToShowAds, currentClicked);
     }
 
 
@@ -117,26 +98,6 @@ public class CommonAd {
 
         switch (adConfig.getMediationProvider()) {
             case CommonAdConfig.PROVIDER_MAX:
-                AppLovin.getInstance().init(context, new AppLovinCallback() {
-                    @Override
-                    public void initAppLovinSuccess() {
-                        super.initAppLovinSuccess();
-                        initAdSuccess = true;
-                        if (initCallback != null)
-                            initCallback.initAdSuccess();
-
-                        AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
-                            @Override
-                            public void onSdkInitialized(AppLovinSdkConfiguration config) {
-                                if (adConfig.isEnableAdResume()) {
-                                    Log.d(TAG, "onSdkInitialized: AppOpenMax");
-                                    AppOpenMax.getInstance().init(adConfig.getApplication(), adConfig.getIdAdResume());
-                                }
-                            }
-                        });
-                    }
-                }, enableDebugMediation);
-
                 break;
             case CommonAdConfig.PROVIDER_ADMOB:
                 Admob.getInstance().init(context, adConfig.getListDeviceTest());
@@ -166,7 +127,6 @@ public class CommonAd {
                 Admob.getInstance().loadBanner(mActivity, id);
                 break;
             case CommonAdConfig.PROVIDER_MAX:
-                AppLovin.getInstance().loadBanner(mActivity, id);
         }
     }
 
@@ -208,7 +168,6 @@ public class CommonAd {
                 Admob.getInstance().loadBanner(mActivity, id, adCallback);
                 break;
             case CommonAdConfig.PROVIDER_MAX:
-                AppLovin.getInstance().loadBanner(mActivity, id, adCallback);
         }
     }
 
@@ -218,7 +177,6 @@ public class CommonAd {
                 Admob.getInstance().loadBannerFragment(mActivity, id, rootView);
                 break;
             case CommonAdConfig.PROVIDER_MAX:
-                AppLovin.getInstance().loadBannerFragment(mActivity, id, rootView);
         }
     }
 
@@ -228,27 +186,8 @@ public class CommonAd {
                 Admob.getInstance().loadBannerFragment(mActivity, id, rootView, adCallback);
                 break;
             case CommonAdConfig.PROVIDER_MAX:
-                AppLovin.getInstance().loadBannerFragment(mActivity, id, rootView, adCallback);
         }
     }
-
-//    public void loadBanner(final Activity mActivity, String id, final CommonAdCallback callback) {
-//        switch (adConfig.getMediationProvider()) {
-//            case CommonAdConfig.PROVIDER_ADMOB:
-//                Admob.getInstance().loadBanner(mActivity, id , new AdCallback(){
-//                    @Override
-//                    public void onAdClicked() {
-//                        super.onAdClicked();
-//                        callback.onAdClicked();
-//                    }
-//                });
-//                break;
-//            case CommonAdConfig.PROVIDER_MAX:
-//                AppLovin.getInstance().loadBanner(mActivity, id, new AppLovinCallback(){
-//
-//                });
-//        }
-//    }
 
     public void loadSplashInterstitialAds(final Context context,String id, long timeOut, long timeDelay, CommonAdCallback adListener) {
         loadSplashInterstitialAds(context, id, timeOut, timeDelay, true, adListener);
@@ -328,94 +267,11 @@ public class CommonAd {
                 });
                 break;
             case CommonAdConfig.PROVIDER_MAX:
-                AppLovin.getInstance().loadSplashInterstitialAds(context, id, timeOut, timeDelay, showSplashIfReady, new AppLovinCallback() {
-                    @Override
-                    public void onAdClosed() {
-                        super.onAdClosed();
-                        adListener.onAdClosed();
-                        adListener.onNextAction();
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@Nullable MaxError i) {
-                        super.onAdFailedToLoad(i);
-                        adListener.onAdFailedToLoad(new ApAdError(i));
-                        adListener.onNextAction();
-                    }
-
-                    @Override
-                    public void onAdFailedToShow(@Nullable MaxError adError) {
-                        super.onAdFailedToShow(adError);
-                        adListener.onAdFailedToShow(new ApAdError(adError));
-                        adListener.onNextAction();
-                    }
-
-                    @Override
-                    public void onAdLoaded() {
-                        super.onAdLoaded();
-                        adListener.onAdLoaded();
-                    }
-
-                    @Override
-                    public void onAdSplashReady() {
-                        super.onAdSplashReady();
-                        adListener.onAdSplashReady();
-                    }
-
-                    @Override
-                    public void onAdClicked() {
-                        super.onAdClicked();
-                        if (adListener != null) {
-                            adListener.onAdClicked();
-                        }
-                    }
-                });
+                break;
         }
     }
 
     public void loadSplashInterstitialAdsMax(final Context context, String id, long timeOut, long timeDelay, boolean showSplashIfReady, CommonAdCallback adListener) {
-        AppLovin.getInstance().loadSplashInterstitialAds(context, id, timeOut, timeDelay, showSplashIfReady, new AppLovinCallback() {
-            @Override
-            public void onAdClosed() {
-                super.onAdClosed();
-                adListener.onAdClosed();
-                adListener.onNextAction();
-            }
-
-            @Override
-            public void onAdFailedToLoad(@Nullable MaxError i) {
-                super.onAdFailedToLoad(i);
-                adListener.onAdFailedToLoad(new ApAdError(i));
-                adListener.onNextAction();
-            }
-
-            @Override
-            public void onAdFailedToShow(@Nullable MaxError adError) {
-                super.onAdFailedToShow(adError);
-                adListener.onAdFailedToShow(new ApAdError(adError));
-                adListener.onNextAction();
-            }
-
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-                adListener.onAdLoaded();
-            }
-
-            @Override
-            public void onAdSplashReady() {
-                super.onAdSplashReady();
-                adListener.onAdSplashReady();
-            }
-
-            @Override
-            public void onAdClicked() {
-                super.onAdClicked();
-                if (adListener != null) {
-                    adListener.onAdClicked();
-                }
-            }
-        });
     }
 
     public void loadSplashInterstitialAds(final Context context, ArrayList<String> listID, long timeOut, long timeDelay, boolean showSplashIfReady, CommonAdCallback adListener) {
@@ -662,22 +518,6 @@ public class CommonAd {
                 );
                 break;
             case CommonAdConfig.PROVIDER_MAX:
-                AppLovin.getInstance().onShowSplash(activity, new AppLovinCallback() {
-                    @Override
-                    public void onAdFailedToShow(@Nullable MaxError adError) {
-                        super.onAdFailedToShow(adError);
-                        adListener.onAdFailedToShow(new ApAdError(adError));
-                    }
-
-                    @Override
-                    public void onAdClosed() {
-                        super.onAdClosed();
-                        adListener.onAdClosed();
-                        adListener.onNextAction();
-                    }
-
-                });
-
         }
     }
 
@@ -721,32 +561,7 @@ public class CommonAd {
                 }, timeDelay);
                 break;
             case CommonAdConfig.PROVIDER_MAX:
-                AppLovin.getInstance().onCheckShowSplashWhenFail(activity, new AppLovinCallback() {
-                    @Override
-                    public void onAdClosed() {
-                        super.onAdClosed();
-                        callback.onNextAction();
-                    }
-
-
-                    @Override
-                    public void onAdLoaded() {
-                        super.onAdLoaded();
-                        callback.onAdLoaded();
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@Nullable MaxError i) {
-                        super.onAdFailedToLoad(i);
-                        callback.onAdFailedToLoad(new ApAdError(i));
-                    }
-
-                    @Override
-                    public void onAdFailedToShow(@Nullable MaxError adError) {
-                        super.onAdFailedToShow(adError);
-                        callback.onAdFailedToShow(new ApAdError(adError));
-                    }
-                }, timeDelay);
+                break;
         }
     }
 
@@ -797,44 +612,6 @@ public class CommonAd {
                 });
                 return apInterstitialAd;
 
-            case CommonAdConfig.PROVIDER_MAX:
-                MaxInterstitialAd maxInterstitialAd = AppLovin.getInstance().getInterstitialAds(context, id);
-                maxInterstitialAd.setListener(new MaxAdListener() {
-
-                    @Override
-                    public void onAdLoaded(MaxAd ad) {
-                        Log.d(TAG, "Max onInterstitialLoad: ");
-                        apInterstitialAd.setMaxInterstitialAd(maxInterstitialAd);
-                        adListener.onInterstitialLoad(apInterstitialAd);
-                    }
-
-                    @Override
-                    public void onAdDisplayed(MaxAd ad) {
-
-                    }
-
-                    @Override
-                    public void onAdHidden(MaxAd ad) {
-                        adListener.onAdClosed();
-                    }
-
-                    @Override
-                    public void onAdClicked(MaxAd ad) {
-                        adListener.onAdClicked();
-                    }
-
-                    @Override
-                    public void onAdLoadFailed(String adUnitId, MaxError error) {
-                        adListener.onAdFailedToLoad(new ApAdError(error));
-                    }
-
-                    @Override
-                    public void onAdDisplayFailed(MaxAd ad, MaxError error) {
-                        adListener.onAdFailedToShow(new ApAdError(error));
-                    }
-                });
-                apInterstitialAd.setMaxInterstitialAd(maxInterstitialAd);
-                return apInterstitialAd;
             default:
                 return apInterstitialAd;
         }
@@ -871,78 +648,9 @@ public class CommonAd {
                 });
                 return apInterstitialAd;
 
-            case CommonAdConfig.PROVIDER_MAX:
-                MaxInterstitialAd maxInterstitialAd = AppLovin.getInstance().getInterstitialAds(context, id);
-                maxInterstitialAd.setListener(new MaxAdListener() {
-
-                    @Override
-                    public void onAdLoaded(MaxAd ad) {
-                        Log.d(TAG, "Max onInterstitialLoad: ");
-                        apInterstitialAd.setMaxInterstitialAd(maxInterstitialAd);
-                    }
-
-                    @Override
-                    public void onAdDisplayed(MaxAd ad) {
-
-                    }
-
-                    @Override
-                    public void onAdHidden(MaxAd ad) {
-                    }
-
-                    @Override
-                    public void onAdClicked(MaxAd ad) {
-                    }
-
-                    @Override
-                    public void onAdLoadFailed(String adUnitId, MaxError error) {
-                    }
-
-                    @Override
-                    public void onAdDisplayFailed(MaxAd ad, MaxError error) {
-                    }
-                });
-                apInterstitialAd.setMaxInterstitialAd(maxInterstitialAd);
-                return apInterstitialAd;
             default:
                 return apInterstitialAd;
         }
-    }
-
-    public ApInterstitialAd getInterstitialAdsMax(Context context, String id) {
-        ApInterstitialAd apInterstitialAd = new ApInterstitialAd();
-        MaxInterstitialAd maxInterstitialAd = AppLovin.getInstance().getInterstitialAds(context, id);
-        maxInterstitialAd.setListener(new MaxAdListener() {
-
-            @Override
-            public void onAdLoaded(MaxAd ad) {
-                Log.d(TAG, "Max onInterstitialLoad: ");
-                apInterstitialAd.setMaxInterstitialAd(maxInterstitialAd);
-            }
-
-            @Override
-            public void onAdDisplayed(MaxAd ad) {
-
-            }
-
-            @Override
-            public void onAdHidden(MaxAd ad) {
-            }
-
-            @Override
-            public void onAdClicked(MaxAd ad) {
-            }
-
-            @Override
-            public void onAdLoadFailed(String adUnitId, MaxError error) {
-            }
-
-            @Override
-            public void onAdDisplayFailed(MaxAd ad, MaxError error) {
-            }
-        });
-        apInterstitialAd.setMaxInterstitialAd(maxInterstitialAd);
-        return apInterstitialAd;
     }
 
     /**
@@ -1154,39 +862,7 @@ public class CommonAd {
                 Admob.getInstance().forceShowInterstitial(context, mInterstitialAd.getInterstitialAd(), adCallback);
                 break;
             case CommonAdConfig.PROVIDER_MAX:
-                AppLovin.getInstance().forceShowInterstitial(context, mInterstitialAd.getMaxInterstitialAd(), new AdCallback() {
-                    @Override
-                    public void onAdClosed() {
-                        super.onAdClosed();
-                        callback.onAdClosed();
-                        callback.onNextAction();
-                        if (shouldReloadAds)
-                            mInterstitialAd.getMaxInterstitialAd().loadAd();
-
-                    }
-
-                    @Override
-                    public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
-                        super.onInterstitialLoad(interstitialAd);
-                        Log.d(TAG, "Max inter onAdLoaded:");
-                    }
-
-                    @Override
-                    public void onAdFailedToShow(@Nullable AdError adError) {
-                        super.onAdFailedToShow(adError);
-                        callback.onAdFailedToShow(new ApAdError(adError));
-                        if (shouldReloadAds)
-                            mInterstitialAd.getMaxInterstitialAd().loadAd();
-                    }
-
-                    @Override
-                    public void onAdClicked() {
-                        super.onAdClicked();
-                        if (callback != null) {
-                            callback.onAdClicked();
-                        }
-                    }
-                }, false);
+                break;
         }
     }
 
@@ -1291,88 +967,8 @@ public class CommonAd {
                 Admob.getInstance().forceShowInterstitialByTime(context, mInterstitialAd.getInterstitialAd(), adCallback);
                 break;
             case CommonAdConfig.PROVIDER_MAX:
-                AppLovin.getInstance().forceShowInterstitial(context, mInterstitialAd.getMaxInterstitialAd(), new AdCallback() {
-                    @Override
-                    public void onAdClosed() {
-                        super.onAdClosed();
-                        callback.onAdClosed();
-                        callback.onNextAction();
-                        if (shouldReloadAds)
-                            mInterstitialAd.getMaxInterstitialAd().loadAd();
-
-                    }
-
-                    @Override
-                    public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
-                        super.onInterstitialLoad(interstitialAd);
-                        Log.d(TAG, "Max inter onAdLoaded:");
-                    }
-
-                    @Override
-                    public void onAdFailedToShow(@Nullable AdError adError) {
-                        super.onAdFailedToShow(adError);
-                        callback.onAdFailedToShow(new ApAdError(adError));
-                        if (shouldReloadAds)
-                            mInterstitialAd.getMaxInterstitialAd().loadAd();
-                    }
-
-                    @Override
-                    public void onAdClicked() {
-                        super.onAdClicked();
-                        if (callback != null) {
-                            callback.onAdClicked();
-                        }
-                    }
-                }, false);
+                break;
         }
-    }
-
-    public void forceShowInterstitialByTimeMax(@NonNull Context context, ApInterstitialAd mInterstitialAd,
-                                            @NonNull final CommonAdCallback callback, boolean shouldReloadAds) {
-        if (mInterstitialAd == null || mInterstitialAd.isNotReady()) {
-            Log.e(TAG, "forceShowInterstitial: ApInterstitialAd is not ready");
-            callback.onNextAction();
-            return;
-        }
-        AppLovin.getInstance().forceShowInterstitial(context, mInterstitialAd.getMaxInterstitialAd(), new AdCallback() {
-            @Override
-            public void onAdClosedByTime() {
-                super.onAdClosedByTime();
-                callback.onAdClosedByTime();
-            }
-
-            @Override
-            public void onAdClosed() {
-                super.onAdClosed();
-                callback.onAdClosed();
-                callback.onNextAction();
-                if (shouldReloadAds)
-                    mInterstitialAd.getMaxInterstitialAd().loadAd();
-
-            }
-
-            @Override
-            public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
-                super.onInterstitialLoad(interstitialAd);
-                Log.d(TAG, "Max inter onAdLoaded:");
-            }
-
-            @Override
-            public void onAdFailedToShow(@Nullable AdError adError) {
-                super.onAdFailedToShow(adError);
-                callback.onAdFailedToShow(new ApAdError(adError));
-                if (shouldReloadAds)
-                    mInterstitialAd.getMaxInterstitialAd().loadAd();
-            }
-
-            @Override
-            public void onAdClicked() {
-                super.onAdClicked();
-                if (callback != null) {
-                    callback.onAdClicked();
-                }
-            }
-        }, false);
     }
 
     /**
@@ -1484,90 +1080,8 @@ public class CommonAd {
                 Admob.getInstance().showInterstitialAdByTimes(context, mInterstitialAd.getInterstitialAd(), adCallback);
                 break;
             case CommonAdConfig.PROVIDER_MAX:
-                AppLovin.getInstance().showInterstitialAdByTimes(context, mInterstitialAd.getMaxInterstitialAd(), new AdCallback() {
-                    @Override
-                    public void onAdClosed() {
-                        super.onAdClosed();
-                        callback.onAdClosed();
-                        callback.onNextAction();
-                        if (shouldReloadAds)
-                            mInterstitialAd.getMaxInterstitialAd().loadAd();
-
-                    }
-
-                    @Override
-                    public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
-                        super.onInterstitialLoad(interstitialAd);
-                        Log.d(TAG, "Max inter onAdLoaded:");
-                    }
-
-                    @Override
-                    public void onAdFailedToShow(@Nullable AdError adError) {
-                        super.onAdFailedToShow(adError);
-                        callback.onAdFailedToShow(new ApAdError(adError));
-                        if (shouldReloadAds)
-                            mInterstitialAd.getMaxInterstitialAd().loadAd();
-                    }
-
-                    @Override
-                    public void onAdClicked() {
-                        super.onAdClicked();
-                        if (callback != null) {
-                            callback.onAdClicked();
-                        }
-                    }
-                }, false);
+                break;
         }
-    }
-
-    public void showInterstitialAdByTimesMax(Context context, ApInterstitialAd mInterstitialAd,
-                                          final CommonAdCallback callback, boolean shouldReloadAds) {
-        if (mInterstitialAd.isNotReady()) {
-            Log.e(TAG, "forceShowInterstitial: ApInterstitialAd is not ready");
-            callback.onAdFailedToShow(new ApAdError("ApInterstitialAd is not ready"));
-            return;
-        }
-
-        AppLovin.getInstance().showInterstitialAdByTimes(context, mInterstitialAd.getMaxInterstitialAd(), new AdCallback() {
-
-            @Override
-            public void onAdClosedByTime() {
-                super.onAdClosedByTime();
-                callback.onAdClosedByTime();
-            }
-
-            @Override
-            public void onAdClosed() {
-                super.onAdClosed();
-                callback.onAdClosed();
-                callback.onNextAction();
-                if (shouldReloadAds)
-                    mInterstitialAd.getMaxInterstitialAd().loadAd();
-
-            }
-
-            @Override
-            public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
-                super.onInterstitialLoad(interstitialAd);
-                Log.d(TAG, "Max inter onAdLoaded:");
-            }
-
-            @Override
-            public void onAdFailedToShow(@Nullable AdError adError) {
-                super.onAdFailedToShow(adError);
-                callback.onAdFailedToShow(new ApAdError(adError));
-                if (shouldReloadAds)
-                    mInterstitialAd.getMaxInterstitialAd().loadAd();
-            }
-
-            @Override
-            public void onAdClicked() {
-                super.onAdClicked();
-                if (callback != null) {
-                    callback.onAdClicked();
-                }
-            }
-        }, false);
     }
 
     /**
@@ -1598,19 +1112,6 @@ public class CommonAd {
                 });
                 break;
             case CommonAdConfig.PROVIDER_MAX:
-                AppLovin.getInstance().loadNativeAd(activity, id, layoutCustomNative, new AppLovinCallback() {
-                    @Override
-                    public void onUnifiedNativeAdLoaded(MaxNativeAdView unifiedNativeAd) {
-                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
-                        populateNativeAdView(activity, new ApNativeAd(layoutCustomNative, unifiedNativeAd), adPlaceHolder, containerShimmerLoading);
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@Nullable MaxError i) {
-                        super.onAdFailedToLoad(i);
-                        Log.e(TAG, "onAdFailedToLoad : NativeAd");
-                    }
-                });
                 break;
         }
     }
@@ -1644,19 +1145,6 @@ public class CommonAd {
                 });
                 break;
             case CommonAdConfig.PROVIDER_MAX:
-                AppLovin.getInstance().loadNativeAd(activity, id, layoutCustomNative, new AppLovinCallback() {
-                    @Override
-                    public void onUnifiedNativeAdLoaded(MaxNativeAdView unifiedNativeAd) {
-                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
-                        populateNativeAdView(activity, new ApNativeAd(layoutCustomNative, unifiedNativeAd), adPlaceHolder, containerShimmerLoading);
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@Nullable MaxError i) {
-                        super.onAdFailedToLoad(i);
-                        Log.e(TAG, "onAdFailedToLoad : NativeAd");
-                    }
-                });
                 break;
         }
     }
@@ -1700,25 +1188,6 @@ public class CommonAd {
                 });
                 break;
             case CommonAdConfig.PROVIDER_MAX:
-                AppLovin.getInstance().loadNativeAd(activity, id, layoutCustomNative, new AppLovinCallback() {
-                    @Override
-                    public void onUnifiedNativeAdLoaded(MaxNativeAdView unifiedNativeAd) {
-                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
-                        callback.onNativeAdLoaded(new ApNativeAd(layoutCustomNative, unifiedNativeAd));
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@Nullable MaxError i) {
-                        super.onAdFailedToLoad(i);
-                        callback.onAdFailedToLoad(new ApAdError(i));
-                    }
-
-                    @Override
-                    public void onAdClicked() {
-                        super.onAdClicked();
-                        callback.onAdClicked();
-                    }
-                });
                 break;
         }
     }
@@ -1771,13 +1240,7 @@ public class CommonAd {
                 });
                 break;
             case CommonAdConfig.PROVIDER_MAX:
-                MaxRewardedAd maxRewardedAd = AppLovin.getInstance().getRewardAd(activity, id, new AppLovinCallback() {
-                    @Override
-                    public void onAdLoaded() {
-                        super.onAdLoaded();
-                    }
-                });
-                apRewardAd.setMaxReward(maxRewardedAd);
+                break;
         }
         return apRewardAd;
     }
@@ -1797,13 +1260,7 @@ public class CommonAd {
                 });
                 break;
             case CommonAdConfig.PROVIDER_MAX:
-                MaxRewardedAd maxRewardedAd = AppLovin.getInstance().getRewardAd(activity, id, new AppLovinCallback() {
-                    @Override
-                    public void onAdLoaded() {
-                        super.onAdLoaded();
-                    }
-                });
-                apRewardAd.setMaxReward(maxRewardedAd);
+                break;
         }
         return apRewardAd;
     }
@@ -1822,15 +1279,7 @@ public class CommonAd {
                 });
                 return apRewardAd;
             case CommonAdConfig.PROVIDER_MAX:
-                MaxRewardedAd maxRewardedAd = AppLovin.getInstance().getRewardAd(activity, id, new AppLovinCallback() {
-                    @Override
-                    public void onAdLoaded() {
-                        super.onAdLoaded();
-                        callback.onAdLoaded();
-                    }
-                });
-                apRewardAd.setMaxReward(maxRewardedAd);
-                return apRewardAd;
+                break;
         }
         return apRewardAd;
     }
@@ -1849,15 +1298,7 @@ public class CommonAd {
                 });
                 return apRewardAd;
             case CommonAdConfig.PROVIDER_MAX:
-                MaxRewardedAd maxRewardedAd = AppLovin.getInstance().getRewardAd(activity, id, new AppLovinCallback() {
-                    @Override
-                    public void onAdLoaded() {
-                        super.onAdLoaded();
-                        callback.onAdLoaded();
-                    }
-                });
-                apRewardAd.setMaxReward(maxRewardedAd);
-                return apRewardAd;
+                break;
         }
         return apRewardAd;
     }
@@ -1928,35 +1369,7 @@ public class CommonAd {
                 }
                 break;
             case CommonAdConfig.PROVIDER_MAX:
-                AppLovin.getInstance().showRewardAd(activity, apRewardAd.getMaxReward(), new AppLovinCallback() {
-                    @Override
-                    public void onUserRewarded(MaxReward reward) {
-                        super.onUserRewarded(reward);
-                        callback.onUserEarnedReward(new ApRewardItem(reward));
-                    }
-
-                    @Override
-                    public void onAdClosed() {
-                        super.onAdClosed();
-                        apRewardAd.clean();
-                        callback.onNextAction();
-                    }
-
-                    @Override
-                    public void onAdFailedToShow(@Nullable MaxError adError) {
-                        super.onAdFailedToShow(adError);
-                        apRewardAd.clean();
-                        callback.onAdFailedToShow(new ApAdError(adError));
-                    }
-
-                    @Override
-                    public void onAdClicked() {
-                        super.onAdClicked();
-                        if (callback != null) {
-                            callback.onAdClicked();
-                        }
-                    }
-                });
+                break;
         }
     }
 
@@ -1975,33 +1388,6 @@ public class CommonAd {
     public CommonAdAdapter getNativeRepeatAdapter(Activity activity, String id, int layoutCustomNative, int layoutAdPlaceHolder, RecyclerView.Adapter originalAdapter,
                                                   CommonAdPlacer.Listener listener, int repeatingInterval) {
         switch (adConfig.getMediationProvider()) {
-            case CommonAdConfig.PROVIDER_MAX:
-                MaxAdPlacer.Listener maxListener = new MaxAdPlacer.Listener() {
-                    @Override
-                    public void onAdLoaded(int i) {
-                        listener.onAdLoaded(i);
-                    }
-
-                    @Override
-                    public void onAdRemoved(int i) {
-                        listener.onAdRemoved(i);
-                    }
-
-                    @Override
-                    public void onAdClicked(MaxAd maxAd) {
-                        CommonLogEventManager.logClickAdsEvent(activity, maxAd.getAdUnitId());
-                        listener.onAdClicked();
-                    }
-
-                    @Override
-                    public void onAdRevenuePaid(MaxAd maxAd) {
-                        listener.onAdRevenuePaid(new ApAdValue(maxAd));
-                    }
-                };
-                MaxRecyclerAdapter adAdapter = AppLovin.getInstance().getNativeRepeatAdapter(activity, id, layoutCustomNative,
-                        originalAdapter, maxListener, repeatingInterval);
-
-                return new CommonAdAdapter(adAdapter);
             default:
                 return new CommonAdAdapter(Admob.getInstance().getNativeRepeatAdapter(activity, id, layoutCustomNative, layoutAdPlaceHolder,
                         originalAdapter, listener, repeatingInterval));
@@ -2024,33 +1410,6 @@ public class CommonAd {
     public CommonAdAdapter getNativeFixedPositionAdapter(Activity activity, String id, int layoutCustomNative, int layoutAdPlaceHolder, RecyclerView.Adapter originalAdapter,
                                                          CommonAdPlacer.Listener listener, int position) {
         switch (adConfig.getMediationProvider()) {
-            case CommonAdConfig.PROVIDER_MAX:
-                MaxAdPlacer.Listener maxListener = new MaxAdPlacer.Listener() {
-                    @Override
-                    public void onAdLoaded(int i) {
-                        listener.onAdLoaded(i);
-                    }
-
-                    @Override
-                    public void onAdRemoved(int i) {
-                        listener.onAdRemoved(i);
-                    }
-
-                    @Override
-                    public void onAdClicked(MaxAd maxAd) {
-                        CommonLogEventManager.logClickAdsEvent(activity, maxAd.getAdUnitId());
-                        listener.onAdClicked();
-                    }
-
-                    @Override
-                    public void onAdRevenuePaid(MaxAd maxAd) {
-                        listener.onAdRevenuePaid(new ApAdValue(maxAd));
-                    }
-                };
-                MaxRecyclerAdapter adAdapter = AppLovin.getInstance().getNativeFixedPositionAdapter(activity, id, layoutCustomNative,
-                        originalAdapter, maxListener, position);
-                adAdapter.loadAds();
-                return new CommonAdAdapter(adAdapter);
             default:
                 return new CommonAdAdapter(Admob.getInstance().getNativeFixedPositionAdapter(activity, id, layoutCustomNative, layoutAdPlaceHolder,
                         originalAdapter, listener, position));

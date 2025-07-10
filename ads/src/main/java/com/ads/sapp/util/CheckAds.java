@@ -1,7 +1,5 @@
 package com.ads.sapp.util;
 
-import static com.applovin.impl.sdk.n.getApplicationContext;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -20,7 +18,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.ads.sapp.R;
-import com.ads.sapp.admob.AppOpenManager;
 import com.ads.sapp.funtion.BannerCallback;
 import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.android.gms.vision.Frame;
@@ -35,6 +32,7 @@ public class CheckAds {
     private static CheckAds instance;
     private static final String SPACE = "_____";
     private static final String TEXT_ADS_EN = "Test Ad";
+    private Context context;
 
     //Check test native
     public static Boolean isTest = false;
@@ -75,6 +73,7 @@ public class CheckAds {
     }
 
     public void init(Context context, ArrayList<String> listDriveIDs, Boolean checkAds){
+        this.context = context;
         listDriveID = listDriveIDs;
         checkAd = checkAds;
         isTest = false;
@@ -496,7 +495,7 @@ public class CheckAds {
     }
 
     public static String imageToText(Bitmap bitmap) {
-        TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+        TextRecognizer textRecognizer = new TextRecognizer.Builder(instance.context).build();
         Frame imageFrame = new Frame.Builder()
                 .setBitmap(bitmap)
                 .build();
