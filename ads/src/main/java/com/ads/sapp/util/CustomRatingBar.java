@@ -32,7 +32,7 @@ public class CustomRatingBar extends androidx.appcompat.widget.AppCompatRatingBa
     }
 
     public CustomRatingBar(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.ratingBarStyle);
+        this(context, attrs, androidx.appcompat.R.attr.ratingBarStyle);
     }
 
     public CustomRatingBar(Context context, AttributeSet attrs, int defStyleAttr) {

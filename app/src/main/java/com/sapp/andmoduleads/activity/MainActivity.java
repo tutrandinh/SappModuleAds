@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        frAds = findViewById(R.id.fl_adplaceholder);
+        frAds = findViewById(com.ads.sapp.R.id.fl_adplaceholder);
         commonNativeAdView = findViewById(R.id.commonNativeAds);
 
         configMediationProvider();
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //CommonAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom);
-        commonNativeAdView.setLayoutLoading(R.layout.loading_native_medium);
+        commonNativeAdView.setLayoutLoading(com.ads.sapp.R.layout.loading_native_medium);
         commonNativeAdView.setLayoutCustomNativeAd(layoutNativeCustom);
         commonNativeAdView.loadNativeAd(this, idNative);
 
@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
             idBanner = BuildConfig.ad_banner_collap;
             idNative = BuildConfig.ad_native;
             idInter = BuildConfig.ad_interstitial_splash;
-            layoutNativeCustom = com.ads.sapp.R.layout.custom_native_admod_medium_rate;
+            layoutNativeCustom = com.ads.sapp.R.layout.custom_native_admob_free_size;
         } else {
             idBanner = getString(R.string.applovin_test_banner);
             idNative = getString(R.string.applovin_test_native);

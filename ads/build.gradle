@@ -3,11 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'maven-publish'
 
 android {
-    compileSdkVersion 31
+    namespace 'com.ads.sapp'
+    compileSdk 35
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdk 35
         versionCode 9
         versionName "1.1.3"
     }
@@ -43,8 +44,8 @@ dependencies {
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
 
     //admob
-    implementation 'com.google.android.gms:play-services-ads:21.1.0'
-    implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
+    implementation 'com.google.android.gms:play-services-ads:24.4.0'
+    implementation 'com.google.android.gms:play-services-ads-identifier:18.2.0'
 
     //mediation admob
     implementation 'com.google.ads.mediation:facebook:6.11.0.1'
@@ -59,7 +60,7 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-vision:20.1.3'
 
-    implementation platform('com.google.firebase:firebase-bom:30.1.0')
+    implementation platform('com.google.firebase:firebase-bom:33.16.0')
     implementation 'com.google.firebase:firebase-analytics'
 
     def multidex_version = "2.0.1"
@@ -68,8 +69,8 @@ dependencies {
     implementation "com.android.billingclient:billing:$billing_version"
     implementation "com.google.guava:guava:27.1-android"
 
-    implementation 'com.google.android.gms:play-services-appset:16.0.0'
-    implementation 'com.google.android.gms:play-services-basement:17.1.1'
+    implementation 'com.google.android.gms:play-services-appset:16.1.0'
+    implementation 'com.google.android.gms:play-services-basement:18.7.1'
     implementation "androidx.core:core-ktx:1.6.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -84,7 +85,7 @@ dependencies {
     implementation group: 'commons-codec', name: 'commons-codec', version: '1.5'
 
     //Google User Messaging Platform SDK
-    implementation("com.google.android.ump:user-messaging-platform:2.1.0")
+    implementation("com.google.android.ump:user-messaging-platform:3.2.0")
 
     //adjust
     implementation 'com.adjust.sdk:adjust-android:4.38.0'

@@ -92,8 +92,8 @@ public class BlankFragment extends Fragment {
         });
 
 //        Admob.getInstance().loadNativeFragment(getActivity(),getString(R.string.admod_native_id),view);
-        FrameLayout flPlaceHolder = view.findViewById(R.id.fl_adplaceholder);
-        ShimmerFrameLayout shimmerFrameLayout = view.findViewById(R.id.shimmer_container_native);
+        FrameLayout flPlaceHolder = view.findViewById(com.ads.sapp.R.id.fl_adplaceholder);
+        ShimmerFrameLayout shimmerFrameLayout = view.findViewById(com.ads.sapp.R.id.shimmer_container_banner);
         CommonAd.getInstance().loadNativeAd(requireActivity(), getString(R.string.admod_native_id), com.ads.sapp.R.layout.custom_native_admob_free_size, flPlaceHolder, shimmerFrameLayout);
     }
 }

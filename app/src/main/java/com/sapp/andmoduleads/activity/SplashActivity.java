@@ -64,21 +64,22 @@ public class SplashActivity extends AppCompatActivity {
         ArrayList<String> listIDAdsBannerSplash = new ArrayList<>();
         listIDAdsBannerSplash.add(BuildConfig.ad_banner);
 
+        //Load banner splash
         BannerCallback bannerCallback = new BannerCallback(){
             @Override
             public void onCheckComplete() {
                 super.onCheckComplete();
 
                 // Inter
-//                ArrayList<String> list = new ArrayList<>();
-//                list.add(getString(R.string.inter_splash3));
-//                CommonAd.getInstance().loadSplashInterstitialAdsCheck(
-//                        SplashActivity.this,
-//                        list,
-//                        2500,
-//                        5000,
-//                        commonAdCallback
-//                );
+                //                ArrayList<String> list = new ArrayList<>();
+                //                list.add(getString(R.string.inter_splash3));
+                //                CommonAd.getInstance().loadSplashInterstitialAdsCheck(
+                //                        SplashActivity.this,
+                //                        list,
+                //                        2500,
+                //                        5000,
+                //                        commonAdCallback
+                //                );
 
                 // Open
 
@@ -94,6 +95,7 @@ public class SplashActivity extends AppCompatActivity {
             }
         };
 
+        // Add list id drive test
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add("a95848c5c33cda2b");
         arrayList.add("f51641f27b218873");
@@ -103,8 +105,6 @@ public class SplashActivity extends AppCompatActivity {
 
         ArrayList<String> list = new ArrayList<>();
         //list.add(getString(R.string.inter_splash));
-        //list.add(getString(R.string.inter_splash1));
-        //list.add(getString(R.string.inter_splash2));
         list.add(getString(R.string.inter_splash3));
 //
 //        CommonAd.getInstance().loadSplashInterstitialAds(

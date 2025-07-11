@@ -3425,7 +3425,7 @@ public class Admob {
                         Log.e(TAG, "Native sizeMin: " + sizeMin);
                         Log.e(TAG, "Native w/h media : " + adView.getMediaView().getWidth() + "/" + adView.getMediaView().getHeight());
                         if (adView.getMediaView().getWidth() < sizeMin || adView.getMediaView().getHeight() < sizeMin) {
-                            Toast.makeText(context, "Size media native not valid", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(context, "Size media native not valid", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -3495,18 +3495,7 @@ public class Admob {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//
-//        try {
-//            if (nativeAd.getStore() == null) {
-//                Objects.requireNonNull(adView.getStoreView()).setVisibility(View.INVISIBLE);
-//            } else {
-//                Objects.requireNonNull(adView.getStoreView()).setVisibility(View.VISIBLE);
-//                ((TextView) adView.getStoreView()).setText(nativeAd.getStore());
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
+        
         try {
             if (nativeAd.getStarRating() == null) {
                 Objects.requireNonNull(adView.getStarRatingView()).setVisibility(View.INVISIBLE);
