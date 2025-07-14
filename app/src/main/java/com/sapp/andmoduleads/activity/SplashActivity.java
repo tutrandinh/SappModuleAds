@@ -107,7 +107,7 @@ public class SplashActivity extends AppCompatActivity {
         googleMobileAdsConsentManager = GoogleMobileAdsConsentManager.getInstance(getApplicationContext());
         googleMobileAdsConsentManager.setSetTagForUnderAge(false);
         googleMobileAdsConsentManager.setTestDebug(true);
-        googleMobileAdsConsentManager.setCanReset(true);
+        //googleMobileAdsConsentManager.setCanReset(true);
         googleMobileAdsConsentManager.setDeviceHashedId("10A66C168A2774EF76E1455DF9097313");
         googleMobileAdsConsentManager.gatherConsent(this, complete -> {
             if (complete && googleMobileAdsConsentManager.canRequestAds()) {
