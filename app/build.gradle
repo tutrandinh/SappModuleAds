@@ -5,14 +5,13 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdk 35
-    //buildToolsVersion '31.0.0'
     namespace 'com.sapp.andmoduleads'
     defaultConfig {
         applicationId "com.sapp.andmoduleads"
         minSdkVersion 24
         targetSdk 35
-        versionCode 2
-        versionName "2.0"
+        versionCode 100
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

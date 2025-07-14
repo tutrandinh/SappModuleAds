@@ -4,33 +4,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.ads.sapp.admob.Admob;
 import com.ads.sapp.admob.AppOpenManager;
 import com.ads.sapp.ads.CommonAd;
 import com.ads.sapp.ads.CommonAdCallback;
-import com.ads.sapp.ads.CommonAdConfig;
 import com.ads.sapp.ads.nativeAds.CommonNativeAdView;
 import com.ads.sapp.ads.wrapper.ApAdError;
 import com.ads.sapp.ads.wrapper.ApInterstitialAd;
 import com.ads.sapp.dialog.DialogExitApp1;
 import com.ads.sapp.funtion.BannerCommonCallback;
 import com.ads.sapp.funtion.DialogExitListener;
-import com.ads.sapp.manager.BannerCollapsibleCommon;
 import com.ads.sapp.manager.BannerCommon;
-import com.ads.sapp.util.BannerGravity;
-import com.ads.sapp.util.CheckAds;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.sapp.andmoduleads.BuildConfig;
 import com.sapp.andmoduleads.R;
-import com.ads.sapp.call.api.CommonProcess;
 
 import java.util.ArrayList;
 
