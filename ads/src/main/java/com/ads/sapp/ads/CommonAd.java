@@ -112,7 +112,11 @@ public class CommonAd {
     }
 
     public int getMediationProvider() {
-        return adConfig.getMediationProvider();
+        if(adConfig == null){
+            return CommonAdConfig.PROVIDER_ADMOB;
+        }else{
+            return adConfig.getMediationProvider();
+        }
     }
 
     public void setInitCallback(CommonInitCallback initCallback) {
@@ -1128,25 +1132,19 @@ public class CommonAd {
     public void loadNativeAd(final Activity activity, String id,
                              int layoutCustomNative, FrameLayout adPlaceHolder, ShimmerFrameLayout
                                      containerShimmerLoading) {
-        switch (adConfig.getMediationProvider()) {
-            case CommonAdConfig.PROVIDER_ADMOB:
-                Admob.getInstance().loadNativeAd(((Context) activity), id, new AdCallback() {
-                    @Override
-                    public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
-                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
-                        populateNativeAdView(activity, new ApNativeAd(layoutCustomNative, unifiedNativeAd), adPlaceHolder, containerShimmerLoading);
-                    }
+        Admob.getInstance().loadNativeAd(((Context) activity), id, new AdCallback() {
+            @Override
+            public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
+                super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                populateNativeAdView(activity, new ApNativeAd(layoutCustomNative, unifiedNativeAd), adPlaceHolder, containerShimmerLoading);
+            }
 
-                    @Override
-                    public void onAdFailedToLoad(@Nullable LoadAdError i) {
-                        super.onAdFailedToLoad(i);
-                        Log.e(TAG, "onAdFailedToLoad : NativeAd");
-                    }
-                });
-                break;
-            case CommonAdConfig.PROVIDER_MAX:
-                break;
-        }
+            @Override
+            public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                super.onAdFailedToLoad(i);
+                Log.e(TAG, "onAdFailedToLoad : NativeAd");
+            }
+        });
     }
 
     /**
@@ -1159,37 +1157,31 @@ public class CommonAd {
      */
     public void loadNativeAdResultCallback(final Activity activity, String id,
                                            int layoutCustomNative, CommonAdCallback callback) {
-        switch (adConfig.getMediationProvider()) {
-            case CommonAdConfig.PROVIDER_ADMOB:
-                Admob.getInstance().loadNativeAd(((Context) activity), id, new AdCallback() {
-                    @Override
-                    public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
-                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
-                        callback.onNativeAdLoaded(new ApNativeAd(layoutCustomNative, unifiedNativeAd));
-                    }
+        Admob.getInstance().loadNativeAd(((Context) activity), id, new AdCallback() {
+            @Override
+            public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
+                super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                callback.onNativeAdLoaded(new ApNativeAd(layoutCustomNative, unifiedNativeAd));
+            }
 
-                    @Override
-                    public void onAdFailedToLoad(@Nullable LoadAdError i) {
-                        super.onAdFailedToLoad(i);
-                        callback.onAdFailedToLoad(new ApAdError(i));
-                    }
+            @Override
+            public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                super.onAdFailedToLoad(i);
+                callback.onAdFailedToLoad(new ApAdError(i));
+            }
 
-                    @Override
-                    public void onAdFailedToShow(@Nullable AdError adError) {
-                        super.onAdFailedToShow(adError);
-                        callback.onAdFailedToShow(new ApAdError(adError));
-                    }
+            @Override
+            public void onAdFailedToShow(@Nullable AdError adError) {
+                super.onAdFailedToShow(adError);
+                callback.onAdFailedToShow(new ApAdError(adError));
+            }
 
-                    @Override
-                    public void onAdClicked() {
-                        super.onAdClicked();
-                        callback.onAdClicked();
-                    }
-                });
-                break;
-            case CommonAdConfig.PROVIDER_MAX:
-                break;
-        }
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                callback.onAdClicked();
+            }
+        });
     }
 
     /**
@@ -1207,99 +1199,68 @@ public class CommonAd {
             Log.e(TAG, "populateNativeAdView failed : native is not loaded ");
             return;
         }
-        switch (adConfig.getMediationProvider()) {
-            case CommonAdConfig.PROVIDER_ADMOB:
-                @SuppressLint("InflateParams") NativeAdView adView = (NativeAdView) LayoutInflater.from(activity).inflate(apNativeAd.getLayoutCustomNative(), null);
-                containerShimmerLoading.stopShimmer();
-                containerShimmerLoading.setVisibility(View.GONE);
-                adPlaceHolder.setVisibility(View.VISIBLE);
-                Admob.getInstance().populateUnifiedNativeAdView(apNativeAd.getAdmobNativeAd(), adView);
-                adPlaceHolder.removeAllViews();
-                adPlaceHolder.addView(adView);
-                break;
-            case CommonAdConfig.PROVIDER_MAX:
-                adPlaceHolder.setVisibility(View.VISIBLE);
-                containerShimmerLoading.setVisibility(View.GONE);
-                adPlaceHolder.addView(apNativeAd.getNativeView());
-        }
+
+        @SuppressLint("InflateParams") NativeAdView adView = (NativeAdView) LayoutInflater.from(activity).inflate(apNativeAd.getLayoutCustomNative(), null);
+        containerShimmerLoading.stopShimmer();
+        containerShimmerLoading.setVisibility(View.GONE);
+        adPlaceHolder.setVisibility(View.VISIBLE);
+        Admob.getInstance().populateUnifiedNativeAdView(apNativeAd.getAdmobNativeAd(), adView);
+        adPlaceHolder.removeAllViews();
+        adPlaceHolder.addView(adView);
     }
 
 
     public ApRewardAd getRewardAd(Activity activity, String id) {
         ApRewardAd apRewardAd = new ApRewardAd();
-        switch (adConfig.getMediationProvider()) {
-            case CommonAdConfig.PROVIDER_ADMOB:
-                Admob.getInstance().initRewardAds(activity, id, new AdCallback() {
+        Admob.getInstance().initRewardAds(activity, id, new AdCallback() {
 
-                    @Override
-                    public void onRewardAdLoaded(RewardedAd rewardedAd) {
-                        super.onRewardAdLoaded(rewardedAd);
-                        Log.i(TAG, "getRewardAd AdLoaded: ");
-                        apRewardAd.setAdmobReward(rewardedAd);
-                    }
-                });
-                break;
-            case CommonAdConfig.PROVIDER_MAX:
-                break;
-        }
+            @Override
+            public void onRewardAdLoaded(RewardedAd rewardedAd) {
+                super.onRewardAdLoaded(rewardedAd);
+                Log.i(TAG, "getRewardAd AdLoaded: ");
+                apRewardAd.setAdmobReward(rewardedAd);
+            }
+        });
         return apRewardAd;
     }
 
     public ApRewardAd getRewardAdInterstitial(Activity activity, String id) {
         ApRewardAd apRewardAd = new ApRewardAd();
-        switch (adConfig.getMediationProvider()) {
-            case CommonAdConfig.PROVIDER_ADMOB:
-                Admob.getInstance().getRewardInterstitial(activity, id, new AdCallback() {
+        Admob.getInstance().getRewardInterstitial(activity, id, new AdCallback() {
 
-                    @Override
-                    public void onRewardAdLoaded(RewardedInterstitialAd rewardedAd) {
-                        super.onRewardAdLoaded(rewardedAd);
-                        Log.i(TAG, "getRewardAdInterstitial AdLoaded: ");
-                        apRewardAd.setAdmobReward(rewardedAd);
-                    }
-                });
-                break;
-            case CommonAdConfig.PROVIDER_MAX:
-                break;
-        }
+            @Override
+            public void onRewardAdLoaded(RewardedInterstitialAd rewardedAd) {
+                super.onRewardAdLoaded(rewardedAd);
+                Log.i(TAG, "getRewardAdInterstitial AdLoaded: ");
+                apRewardAd.setAdmobReward(rewardedAd);
+            }
+        });
         return apRewardAd;
     }
 
     public ApRewardAd getRewardAd(Activity activity, String id, CommonAdCallback callback) {
         ApRewardAd apRewardAd = new ApRewardAd();
-        switch (adConfig.getMediationProvider()) {
-            case CommonAdConfig.PROVIDER_ADMOB:
-                Admob.getInstance().initRewardAds(activity, id, new AdCallback() {
-                    @Override
-                    public void onRewardAdLoaded(RewardedAd rewardedAd) {
-                        super.onRewardAdLoaded(rewardedAd);
-                        apRewardAd.setAdmobReward(rewardedAd);
-                        callback.onAdLoaded();
-                    }
-                });
-                return apRewardAd;
-            case CommonAdConfig.PROVIDER_MAX:
-                break;
-        }
+        Admob.getInstance().initRewardAds(activity, id, new AdCallback() {
+            @Override
+            public void onRewardAdLoaded(RewardedAd rewardedAd) {
+                super.onRewardAdLoaded(rewardedAd);
+                apRewardAd.setAdmobReward(rewardedAd);
+                callback.onAdLoaded();
+            }
+        });
         return apRewardAd;
     }
 
     public ApRewardAd getRewardInterstitialAd(Activity activity, String id, CommonAdCallback callback) {
         ApRewardAd apRewardAd = new ApRewardAd();
-        switch (adConfig.getMediationProvider()) {
-            case CommonAdConfig.PROVIDER_ADMOB:
-                Admob.getInstance().getRewardInterstitial(activity, id, new AdCallback() {
-                    @Override
-                    public void onRewardAdLoaded(RewardedInterstitialAd rewardedAd) {
-                        super.onRewardAdLoaded(rewardedAd);
-                        apRewardAd.setAdmobReward(rewardedAd);
-                        callback.onAdLoaded();
-                    }
-                });
-                return apRewardAd;
-            case CommonAdConfig.PROVIDER_MAX:
-                break;
-        }
+        Admob.getInstance().getRewardInterstitial(activity, id, new AdCallback() {
+            @Override
+            public void onRewardAdLoaded(RewardedInterstitialAd rewardedAd) {
+                super.onRewardAdLoaded(rewardedAd);
+                apRewardAd.setAdmobReward(rewardedAd);
+                callback.onAdLoaded();
+            }
+        });
         return apRewardAd;
     }
 
@@ -1310,66 +1271,60 @@ public class CommonAd {
             callback.onNextAction();
             return;
         }
-        switch (adConfig.getMediationProvider()) {
-            case CommonAdConfig.PROVIDER_ADMOB:
-                if (apRewardAd.isRewardInterstitial()) {
-                    Admob.getInstance().showRewardInterstitial(activity, apRewardAd.getAdmobRewardInter(), new RewardCallback() {
+        if (apRewardAd.isRewardInterstitial()) {
+            Admob.getInstance().showRewardInterstitial(activity, apRewardAd.getAdmobRewardInter(), new RewardCallback() {
 
-                        @Override
-                        public void onUserEarnedReward(RewardItem var1) {
-                            callback.onUserEarnedReward(new ApRewardItem(var1));
-                        }
-
-                        @Override
-                        public void onRewardedAdClosed() {
-                            apRewardAd.clean();
-                            callback.onNextAction();
-                        }
-
-                        @Override
-                        public void onRewardedAdFailedToShow(int codeError) {
-                            apRewardAd.clean();
-                            callback.onAdFailedToShow(new ApAdError(new AdError(codeError, "note msg", "Reward")));
-                        }
-
-                        @Override
-                        public void onAdClicked() {
-                            if (callback != null) {
-                                callback.onAdClicked();
-                            }
-                        }
-                    });
-                } else {
-                    Admob.getInstance().showRewardAds(activity, apRewardAd.getAdmobReward(), new RewardCallback() {
-
-                        @Override
-                        public void onUserEarnedReward(RewardItem var1) {
-                            callback.onUserEarnedReward(new ApRewardItem(var1));
-                        }
-
-                        @Override
-                        public void onRewardedAdClosed() {
-                            apRewardAd.clean();
-                            callback.onNextAction();
-                        }
-
-                        @Override
-                        public void onRewardedAdFailedToShow(int codeError) {
-                            apRewardAd.clean();
-                            callback.onAdFailedToShow(new ApAdError(new AdError(codeError, "note msg", "Reward")));
-                        }
-
-                        @Override
-                        public void onAdClicked() {
-                            if (callback != null) {
-                                callback.onAdClicked();
-                            }
-                        }
-                    });
+                @Override
+                public void onUserEarnedReward(RewardItem var1) {
+                    callback.onUserEarnedReward(new ApRewardItem(var1));
                 }
-                break;
-            case CommonAdConfig.PROVIDER_MAX:
-                break;
+
+                @Override
+                public void onRewardedAdClosed() {
+                    apRewardAd.clean();
+                    callback.onNextAction();
+                }
+
+                @Override
+                public void onRewardedAdFailedToShow(int codeError) {
+                    apRewardAd.clean();
+                    callback.onAdFailedToShow(new ApAdError(new AdError(codeError, "note msg", "Reward")));
+                }
+
+                @Override
+                public void onAdClicked() {
+                    if (callback != null) {
+                        callback.onAdClicked();
+                    }
+                }
+            });
+        } else {
+            Admob.getInstance().showRewardAds(activity, apRewardAd.getAdmobReward(), new RewardCallback() {
+
+                @Override
+                public void onUserEarnedReward(RewardItem var1) {
+                    callback.onUserEarnedReward(new ApRewardItem(var1));
+                }
+
+                @Override
+                public void onRewardedAdClosed() {
+                    apRewardAd.clean();
+                    callback.onNextAction();
+                }
+
+                @Override
+                public void onRewardedAdFailedToShow(int codeError) {
+                    apRewardAd.clean();
+                    callback.onAdFailedToShow(new ApAdError(new AdError(codeError, "note msg", "Reward")));
+                }
+
+                @Override
+                public void onAdClicked() {
+                    if (callback != null) {
+                        callback.onAdClicked();
+                    }
+                }
+            });
         }
     }
 
@@ -1387,12 +1342,9 @@ public class CommonAd {
      */
     public CommonAdAdapter getNativeRepeatAdapter(Activity activity, String id, int layoutCustomNative, int layoutAdPlaceHolder, RecyclerView.Adapter originalAdapter,
                                                   CommonAdPlacer.Listener listener, int repeatingInterval) {
-        switch (adConfig.getMediationProvider()) {
-            default:
-                return new CommonAdAdapter(Admob.getInstance().getNativeRepeatAdapter(activity, id, layoutCustomNative, layoutAdPlaceHolder,
-                        originalAdapter, listener, repeatingInterval));
-        }
 
+        return new CommonAdAdapter(Admob.getInstance().getNativeRepeatAdapter(activity, id, layoutCustomNative, layoutAdPlaceHolder,
+                originalAdapter, listener, repeatingInterval));
     }
 
     /**
@@ -1409,10 +1361,8 @@ public class CommonAd {
      */
     public CommonAdAdapter getNativeFixedPositionAdapter(Activity activity, String id, int layoutCustomNative, int layoutAdPlaceHolder, RecyclerView.Adapter originalAdapter,
                                                          CommonAdPlacer.Listener listener, int position) {
-        switch (adConfig.getMediationProvider()) {
-            default:
-                return new CommonAdAdapter(Admob.getInstance().getNativeFixedPositionAdapter(activity, id, layoutCustomNative, layoutAdPlaceHolder,
-                        originalAdapter, listener, position));
-        }
+
+        return new CommonAdAdapter(Admob.getInstance().getNativeFixedPositionAdapter(activity, id, layoutCustomNative, layoutAdPlaceHolder,
+                originalAdapter, listener, position));
     }
 }

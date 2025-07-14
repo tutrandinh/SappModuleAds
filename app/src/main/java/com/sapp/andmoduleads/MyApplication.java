@@ -22,10 +22,10 @@ public class MyApplication extends AdsMultiDexApplication {
         context = this;
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
         Admob.getInstance().setNumToShowAds(0);
-        initAds();
+        //initAds();
     }
 
-    private void initAds() {
+    public void initAds() {
 
         CommonProcess.getInstance().setBranch("develop");
         CommonProcess.getInstance().setToken("somethings");

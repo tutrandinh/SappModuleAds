@@ -1,7 +1,11 @@
 package com.sapp.andmoduleads.activity;
 
+import static com.ads.sapp.util.GoogleMobileAdsConsentManager.getConsentResult;
+
+import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +18,9 @@ import com.ads.sapp.ads.CommonAdConfig;
 import com.ads.sapp.funtion.AdCallback;
 import com.ads.sapp.funtion.BannerCallback;
 import com.ads.sapp.util.CheckAds;
+import com.ads.sapp.util.GoogleMobileAdsConsentManager;
 import com.sapp.andmoduleads.BuildConfig;
+import com.sapp.andmoduleads.MyApplication;
 import com.sapp.andmoduleads.R;
 import com.ads.sapp.call.api.CommonProcess;
 
@@ -22,23 +28,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SplashActivity extends AppCompatActivity {
-//    private CommonAdCallback adCallback  = null;
+
     private AdCallback adCallback  = null;
     private CommonAdCallback commonAdCallback = null;
     private static final String TAG = "SplashActivity";
     private List<String> list = new ArrayList<>();
     private String idAdSplash;
+    boolean isInit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
-        if (CommonAd.getInstance().getMediationProvider() == CommonAdConfig.PROVIDER_ADMOB)
-            idAdSplash = BuildConfig.ad_interstitial_splash;
-        else
-            idAdSplash = getString(R.string.applovin_test_inter);
-
 
         // Inter
         commonAdCallback = new CommonAdCallback() {
@@ -101,7 +102,35 @@ public class SplashActivity extends AppCompatActivity {
         arrayList.add("f51641f27b218873");
         //arrayList.add("a7bae6fe8bf277ae");
 
-        Admob.getInstance().loadBannerSplash(this, listIDAdsBannerSplash, arrayList, bannerCallback,5000);
+        //Call consent
+        GoogleMobileAdsConsentManager googleMobileAdsConsentManager;
+        googleMobileAdsConsentManager = GoogleMobileAdsConsentManager.getInstance(getApplicationContext());
+        googleMobileAdsConsentManager.setSetTagForUnderAge(false);
+        googleMobileAdsConsentManager.setTestDebug(true);
+        googleMobileAdsConsentManager.setCanReset(true);
+        googleMobileAdsConsentManager.setDeviceHashedId("10A66C168A2774EF76E1455DF9097313");
+        googleMobileAdsConsentManager.gatherConsent(this, complete -> {
+            if (complete && googleMobileAdsConsentManager.canRequestAds()) {
+                if (!isInit) {
+                    isInit = true;
+
+                    Application application = getApplication();
+                    ((MyApplication) application).initAds();
+
+                    if (CommonAd.getInstance().getMediationProvider() == CommonAdConfig.PROVIDER_ADMOB)
+                        idAdSplash = BuildConfig.ad_interstitial_splash;
+                    else
+                        idAdSplash = getString(R.string.applovin_test_inter);
+                }
+            }
+
+            if (getConsentResult(this) && googleMobileAdsConsentManager.canRequestAds()) {
+                Admob.getInstance().loadBannerSplash(this, listIDAdsBannerSplash, arrayList, bannerCallback,5000);
+
+            } else {
+                startMain();
+            }
+        });
 
         ArrayList<String> list = new ArrayList<>();
         //list.add(getString(R.string.inter_splash));
@@ -165,4 +194,5 @@ public class SplashActivity extends AppCompatActivity {
         AppOpenManager.getInstance().removeFullScreenContentCallback();
         super.onDestroy();
     }
+
 }

@@ -151,31 +151,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "onInterstitialShow");
                     }
                 }, true);
-
-//                CommonAd.getInstance().forceShowInterstitialByTimeMax(this, mInterstitialAd, new CommonAdCallback() {
-//                    @Override
-//                    public void onAdClosedByTime() {
-//                        super.onAdClosedByTime();
-//                    }
-//
-//                    @Override
-//                    public void onNextAction() {
-//                        Log.i(TAG, "onAdClosed: start content and finish main");
-//                        startActivity(new Intent(MainActivity.this, SimpleListActivity.class));
-//                    }
-//
-//                    @Override
-//                    public void onAdFailedToShow(@Nullable ApAdError adError) {
-//                        super.onAdFailedToShow(adError);
-//                        Log.i(TAG, "onAdFailedToShow:" + adError.getMessage());
-//                    }
-//
-//                    @Override
-//                    public void onInterstitialShow() {
-//                        super.onInterstitialShow();
-//                        Log.d(TAG, "onInterstitialShow");
-//                    }
-//                }, true);
             } else {
 
                 loadAdInterstitial();
@@ -186,17 +161,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void configMediationProvider() {
-        if (CommonAd.getInstance().getMediationProvider() == CommonAdConfig.PROVIDER_ADMOB) {
-            idBanner = BuildConfig.ad_banner_collap;
-            idNative = BuildConfig.ad_native;
-            idInter = BuildConfig.ad_interstitial_splash;
-            layoutNativeCustom = com.ads.sapp.R.layout.custom_native_admob_free_size;
-        } else {
-            idBanner = getString(R.string.applovin_test_banner);
-            idNative = getString(R.string.applovin_test_native);
-            idInter = getString(R.string.applovin_test_inter);
-            layoutNativeCustom = com.ads.sapp.R.layout.custom_native_max_medium;
-        }
+        idBanner = BuildConfig.ad_banner_collap;
+        idNative = BuildConfig.ad_native;
+        idInter = BuildConfig.ad_interstitial_splash;
+        layoutNativeCustom = com.ads.sapp.R.layout.custom_native_admob_free_size;
+//        if (CommonAd.getInstance().getMediationProvider() == CommonAdConfig.PROVIDER_ADMOB) {
+//            idBanner = BuildConfig.ad_banner_collap;
+//            idNative = BuildConfig.ad_native;
+//            idInter = BuildConfig.ad_interstitial_splash;
+//            layoutNativeCustom = com.ads.sapp.R.layout.custom_native_admob_free_size;
+//        } else {
+//            idBanner = getString(R.string.applovin_test_banner);
+//            idNative = getString(R.string.applovin_test_native);
+//            idInter = getString(R.string.applovin_test_inter);
+//            layoutNativeCustom = com.ads.sapp.R.layout.custom_native_max_medium;
+//        }
     }
 
     private void loadAdInterstitial() {
