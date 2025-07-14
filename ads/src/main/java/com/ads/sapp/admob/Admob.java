@@ -25,7 +25,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -56,8 +55,6 @@ import com.applovin.mediation.AppLovinExtras;
 import com.applovin.mediation.ApplovinAdapter;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.ads.mediation.admob.AdMobAdapter;
-import com.google.ads.mediation.facebook.FacebookAdapter;
-import com.google.ads.mediation.facebook.FacebookExtras;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
@@ -81,8 +78,6 @@ import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback;
-import com.jirbo.adcolony.AdColonyAdapter;
-import com.jirbo.adcolony.AdColonyBundleBuilder;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -106,8 +101,7 @@ public class Admob {
     private boolean isTimeout; // xử lý timeout show ads
     private boolean disableAdResumeWhenClickAds = false;
     private boolean isShowLoadingSplash = false;  //kiểm tra trạng thái ad splash, ko cho load, show khi đang show loading ads splash
-    private boolean isFan;
-    private boolean isAdcolony;
+
     private boolean isAppLovin;
     boolean isTimeDelay = false; //xử lý delay time show ads, = true mới show ads
     private boolean openActivityAfterShowInterAds = false;
@@ -124,14 +118,6 @@ public class Admob {
 
     InterstitialAd mInterstitialSplash;
     InterstitialAd interstitialAd;
-
-    public void setFan(boolean fan) {
-        isFan = fan;
-    }
-
-    public void setColony(boolean adcolony) {
-        isAdcolony = adcolony;
-    }
 
     public void setAppLovin(boolean appLovin) {
         isAppLovin = appLovin;
@@ -249,19 +235,6 @@ public class Admob {
 
     public AdRequest getAdRequest() {
         AdRequest.Builder builder = new AdRequest.Builder();
-        if (isFan) {
-            Bundle extras = new FacebookExtras()
-                    .setNativeBanner(true)
-                    .build();
-
-            builder.addNetworkExtrasBundle(FacebookAdapter.class, extras);
-        }
-
-        if (isAdcolony) {
-            AdColonyBundleBuilder.setShowPrePopup(true);
-            AdColonyBundleBuilder.setShowPostPopup(true);
-            builder.addNetworkExtrasBundle(AdColonyAdapter.class, AdColonyBundleBuilder.build());
-        }
 
         if (isAppLovin) {
             Bundle extras = new AppLovinExtras.Builder()
