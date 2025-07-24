@@ -736,6 +736,22 @@ public class CheckAds {
                 return;
             }
 
+            if(isTestBanner!= true && imageText.contains(TEXT_ADS_EN_SHORT)){
+                isTestBanner = true;
+                storeTestAd(context);
+                Log.d("checkAds","textAdsBaner: " +imageText + ", Text common: " +TEXT_ADS_EN_SHORT);
+                Log.d("checkAds","textAdsBaner: "+isTestBanner.toString());
+                return;
+            }
+
+            if(isTestBanner!= true && (imageText.contains(TEXT_ADS_EN_PANG)|| imageText.contains(TEXT_ADS_EN_PANG_SHORT))){
+                isTestBanner = true;
+                storeTestAd(context);
+                Log.d("checkAds","textAdsBaner: " +imageText + ", Text common: " +TEXT_ADS_EN_PANG);
+                Log.d("checkAds","textAdsBaner: "+isTestBanner.toString());
+                return;
+            }
+
             for(String textDefault: listTextAds){
                 String[] contentHead = textDefault.split(SPACE);
                 if(contentHead.length > 0){
