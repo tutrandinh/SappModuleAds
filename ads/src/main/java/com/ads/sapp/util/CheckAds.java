@@ -32,6 +32,9 @@ public class CheckAds {
     private static CheckAds instance;
     private static final String SPACE = "_____";
     private static final String TEXT_ADS_EN = "Test Ad";
+    private static final String TEXT_ADS_EN_SHORT = "Test A";
+    private static final String TEXT_ADS_EN_PANG = "Pangle Test Ads";
+    private static final String TEXT_ADS_EN_PANG_SHORT = "Pangle Test";
     private Context context;
 
     //Check test native
@@ -586,12 +589,50 @@ public class CheckAds {
                 TextBlock textBlock = textBlocks.get(textBlocks.keyAt(i));
                 imageText = imageText + "" + textBlock.getValue();
             }
-            Log.d("imageToText", "imageToText: " + imageText);
+            Log.d("checkAds", "imageToText: " + imageText);
 
             if(isTestBanner!= true && imageText.contains(TEXT_ADS_EN)){
                 isTestBanner = true;
                 storeTestAd(context);
                 Log.d("checkAds","textAdsBaner: " +imageText + ", Text common: " +TEXT_ADS_EN);
+                Log.d("checkAds","textAdsBaner: "+isTestBanner.toString());
+
+                if(!checkCallBack){
+                    checkCallBack = true;
+                    Log.d("checkAds", "checkCallBack");
+                    (new Handler(context.getMainLooper())).postDelayed(new Runnable() {
+                        public void run() {
+                            callback.onCheckComplete();
+                        }
+                    }, (long) timeDelay);
+                }
+                return;
+
+            }
+
+            if(isTestBanner!= true && imageText.contains(TEXT_ADS_EN_SHORT)){
+                isTestBanner = true;
+                storeTestAd(context);
+                Log.d("checkAds","textAdsBaner: " +imageText + ", Text common: " +TEXT_ADS_EN_SHORT);
+                Log.d("checkAds","textAdsBaner: "+isTestBanner.toString());
+
+                if(!checkCallBack){
+                    checkCallBack = true;
+                    Log.d("checkAds", "checkCallBack");
+                    (new Handler(context.getMainLooper())).postDelayed(new Runnable() {
+                        public void run() {
+                            callback.onCheckComplete();
+                        }
+                    }, (long) timeDelay);
+                }
+                return;
+
+            }
+
+            if(isTestBanner!= true &&  (imageText.contains(TEXT_ADS_EN_PANG) || imageText.contains(TEXT_ADS_EN_PANG_SHORT))){
+                isTestBanner = true;
+                storeTestAd(context);
+                Log.d("checkAds","textAdsBaner: " +imageText + ", Text common: " +TEXT_ADS_EN_PANG);
                 Log.d("checkAds","textAdsBaner: "+isTestBanner.toString());
 
                 if(!checkCallBack){
