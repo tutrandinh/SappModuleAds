@@ -10,9 +10,11 @@
     <com.ads.sapp.ads.nativeAds.CommonNativeAdView
         android:layout_width="match_parent"
         android:id="@+id/commonNativeAds"
+        android:visibility="gone"
 
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />
+
 
 <!--    <include
         app:layoutLoading="@layout/layout_native_medium"
@@ -46,8 +48,25 @@
             android:layout_below="@+id/btShowAds"
             android:layout_centerHorizontal="true"
             android:text="Click 1 lần hiện full" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
 
+    </androidx.appcompat.widget.LinearLayoutCompat>
+    <RelativeLayout
+        android:id="@+id/native_ad_large"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_3sdp"
+        android:background="@drawable/bg_radius_16"
+        android:backgroundTint="#FFF5F6"
+        tools:ignore="MissingConstraints">
+
+        <FrameLayout
+            android:id="@+id/fr_ads_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/layout_native_load_large" />
+        </FrameLayout>
+    </RelativeLayout>
     <include
         android:id="@+id/include"
         layout="@layout/layout_banner_control"

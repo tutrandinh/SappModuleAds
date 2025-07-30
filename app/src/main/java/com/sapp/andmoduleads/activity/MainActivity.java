@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,9 +18,11 @@ import com.ads.sapp.ads.nativeAds.CommonNativeAdView;
 import com.ads.sapp.ads.wrapper.ApAdError;
 import com.ads.sapp.ads.wrapper.ApInterstitialAd;
 import com.ads.sapp.dialog.DialogExitApp1;
+import com.ads.sapp.funtion.AdCallback;
 import com.ads.sapp.funtion.BannerCommonCallback;
 import com.ads.sapp.funtion.DialogExitListener;
 import com.ads.sapp.manager.BannerCommon;
+import com.ads.sapp.manager.NativeCommon;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.sapp.andmoduleads.BuildConfig;
@@ -41,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private int layoutNativeCustom;
     private CommonNativeAdView commonNativeAdView;
 
+    private RelativeLayout relativeLayoutAds;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,10 +66,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         //CommonAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom);
-        commonNativeAdView.setLayoutLoading(com.ads.sapp.R.layout.loading_native_medium);
-        commonNativeAdView.setLayoutCustomNativeAd(layoutNativeCustom);
-        commonNativeAdView.loadNativeAd(this, idNative);
+//        commonNativeAdView.setLayoutLoading(com.ads.sapp.R.layout.loading_native_medium);
+//        commonNativeAdView.setLayoutCustomNativeAd(layoutNativeCustom);
+//        commonNativeAdView.loadNativeAd(this, idNative);
+
+        ArrayList<String> listNative = new ArrayList<>();
+        listNative.add("1");
+        listNative.add("2");
+        listNative.add("2");
+        listNative.add("2");
+        listNative.add(BuildConfig.ad_native);
+
+        //Load native auto reload
+        NativeCommon nativeCommon = new NativeCommon(
+                this,
+                findViewById(R.id.native_ad_large),
+                this,
+                listNative,
+                R.layout.layout_native_show_large,
+                R.layout.layout_native_load_large,
+                new AdCallback());
+        nativeCommon.setTimeIntervalReload(10000);
+        nativeCommon.setReloadAdsOnResume(true);
 
         //CommonAd.getInstance().loadBanner(this, idBanner);
         //Using API Gup
@@ -81,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Load banner new, time and auto reload
         BannerCommon bannerCommon = new BannerCommon(this, this, list, new BannerCommonCallback());
-        bannerCommon.setTimeIntervalReload(4000);
+        bannerCommon.setTimeIntervalReload(6000);
         bannerCommon.setReloadAdsOnResume(true);
 
         ArrayList<String> listID = new ArrayList<>();

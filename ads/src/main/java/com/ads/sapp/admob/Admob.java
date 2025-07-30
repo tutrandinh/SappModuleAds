@@ -48,6 +48,7 @@ import com.ads.sapp.funtion.AdmodHelper;
 import com.ads.sapp.funtion.BannerCallback;
 import com.ads.sapp.funtion.BannerCommonCallback;
 import com.ads.sapp.funtion.BannerIntervelCallBack;
+import com.ads.sapp.funtion.NativeCommonCallback;
 import com.ads.sapp.funtion.RewardCallback;
 import com.ads.sapp.util.AppUtil;
 import com.ads.sapp.util.CheckAds;
@@ -3105,10 +3106,108 @@ public class Admob {
                             }
                             CommonLogEventManager.logClickAdsEvent(context, listID.get(0));
                         }
+
+                        @Override
+                        public void onAdImpression() {
+                            super.onAdImpression();
+                            callback.onAdImpression();
+                        }
+
+                        @Override
+                        public void onAdLoaded() {
+                            super.onAdLoaded();
+                            callback.onAdLoaded();
+                        }
                     })
                     .withNativeAdOptions(adOptions)
                     .build();
             adLoader.loadAd(getAdRequest());
+        }
+    }
+
+    public void loadNativeAd(Context context, ArrayList<String> listID, final AdCallback callback,final NativeCommonCallback nativeCommonCallback) {
+        if(listID.size() > 0 ){
+
+            if (Arrays.asList(context.getResources().getStringArray(R.array.list_id_test)).contains(listID.get(0))) {
+                showTestIdAlert(context, NATIVE_ADS, listID.get(0));
+            }
+            VideoOptions videoOptions = new VideoOptions.Builder()
+                    .setStartMuted(true)
+                    .build();
+
+            com.google.android.gms.ads.nativead.NativeAdOptions adOptions = new com.google.android.gms.ads.nativead.NativeAdOptions.Builder()
+                    .setVideoOptions(videoOptions)
+                    .build();
+            AdLoader adLoader = new AdLoader.Builder(context, listID.get(0))
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+
+                        @Override
+                        public void onNativeAdLoaded(@NonNull NativeAd nativeAd) {
+                            nativeCommonCallback.onUnifiedNativeAdLoaded(nativeAd);
+                            try{
+                                nativeAd.setOnPaidEventListener(adValue -> {
+                                    Log.d(TAG +"NativeAd", "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
+                                    //Log revenu adjust
+                                    trackRevenue(nativeAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                                    //Log firebase
+                                    CommonLogEventManager.logPaidAdImpression(context,
+                                            adValue,
+                                            listID.get(0),
+                                            nativeAd.getResponseInfo().getMediationAdapterClassName(), AdType.NATIVE);
+                                });
+                                Log.d(TAG +"NativeAd", "NativeAd onNativeAdLoaded: " + listID.get(0));
+                            }catch (Exception e){
+                                Log.d(TAG +"NativeAd", "NativeAd onNativeAdLoaded: Exception");
+                            }
+                        }
+                    })
+                    .withAdListener(new AdListener() {
+                        @Override
+                        public void onAdFailedToLoad(LoadAdError error) {
+                            Log.d(TAG +"NativeAd", "NativeAd onAdFailedToLoad: " + error.getMessage());
+                            if(listID.size() > 0){
+                                Log.e(TAG +"NativeAd", "NativeAd onAdFailedToLoad ID: " + listID.get(0));
+                                listID.remove(0);
+                                loadNativeAd(context,listID,callback,nativeCommonCallback);
+                            }
+                            if(listID.size() == 0){
+                                callback.onAdFailedToLoad(error);
+                                nativeCommonCallback.onAdFailedToLoad();
+                            }
+                        }
+
+                        @Override
+                        public void onAdClicked() {
+                            super.onAdClicked();
+                            if (disableAdResumeWhenClickAds)
+                                AppOpenManager.getInstance().disableAdResumeByClickAction();
+                            if (callback != null) {
+                                callback.onAdClicked();
+                                nativeCommonCallback.onAdClicked();
+                                Log.d(TAG +"NativeAd", "onAdClicked");
+                            }
+                            CommonLogEventManager.logClickAdsEvent(context, listID.get(0));
+                        }
+
+                        @Override
+                        public void onAdImpression() {
+                            super.onAdImpression();
+                            callback.onAdImpression();
+                            nativeCommonCallback.onAdImpression();
+                        }
+
+                        @Override
+                        public void onAdLoaded() {
+                            super.onAdLoaded();
+                            callback.onAdLoaded();
+                            nativeCommonCallback.onAdLoaded();
+                        }
+                    })
+                    .withNativeAdOptions(adOptions)
+                    .build();
+            adLoader.loadAd(getAdRequest());
+        }else {
+            nativeCommonCallback.onAdFailedToLoad();
         }
     }
 
