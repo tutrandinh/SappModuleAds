@@ -124,12 +124,16 @@ public class NativeCommon implements LifecycleEventObserver {
             Log.d(TAG,"loadNativeInterval: loadNativeInterval");
 
             if(!CheckAds.getInstance().isShowAds(activity)){
-                viewGroup.removeAllViews();
+                if(viewGroup != null){
+                    viewGroup.removeAllViews();
+                }
                 return;
             }
 
             if(isRm){
-                viewGroup.removeAllViews();
+                if(viewGroup != null){
+                    viewGroup.removeAllViews();
+                }
             }
 
             //Show loading Shimmer
@@ -137,7 +141,9 @@ public class NativeCommon implements LifecycleEventObserver {
                 Log.d(TAG,"loadNativeInterval: isShimmer");
 
                 @SuppressLint("InflateParams") NativeAdView adViewLoad = (NativeAdView) LayoutInflater.from(activity).inflate(layoutIdSimmer, null);
-                viewGroup.removeAllViews();
+                if(viewGroup != null){
+                    viewGroup.removeAllViews();
+                }
                 viewGroup.addView(adViewLoad);
                 viewGroup.setVisibility(View.VISIBLE);
             }
@@ -154,7 +160,9 @@ public class NativeCommon implements LifecycleEventObserver {
                 @Override
                 public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
                     @SuppressLint("InflateParams") NativeAdView adView = (NativeAdView) LayoutInflater.from(activity).inflate(layoutId, null);
-                    viewGroup.removeAllViews();
+                    if(viewGroup != null){
+                        viewGroup.removeAllViews();
+                    }
                     viewGroup.addView(adView);
                     Admob.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, adView);
                     CheckAds.getInstance().checkAds(adView, CheckAds.OT);
@@ -191,7 +199,9 @@ public class NativeCommon implements LifecycleEventObserver {
             });
 
         }catch (Exception e){
-            viewGroup.removeAllViews();
+            if(viewGroup != null){
+                viewGroup.removeAllViews();
+            }
         }
     }
 
