@@ -235,7 +235,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             AppOpenManager.this.appResumeAd = ad;
                             AppOpenManager.this.appResumeAd.setOnPaidEventListener(adValue -> {
                                 //Log revenue adjust
-                                trackRevenue(AppOpenManager.this.appResumeAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                                trackRevenue(ad.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                                 //Log firebase
                                 CommonLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
@@ -248,7 +248,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             AppOpenManager.this.splashAd = ad;
                             AppOpenManager.this.splashAd.setOnPaidEventListener(adValue -> {
                                 //Log revenue adjust
-                                trackRevenue(AppOpenManager.this.splashAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                                trackRevenue(ad.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                                 //Log firebase
                                 CommonLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
@@ -820,7 +820,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                     AppOpenManager.this.splashAd.setOnPaidEventListener((adValue) -> {
                         //log value
                         //Log revenue adjust
-                        trackRevenue(AppOpenManager.this.splashAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                        trackRevenue(appOpenAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                     });
                     if (isShowAdIfReady) {
                         long elapsedTime = System.currentTimeMillis() - currentTimeMillis;
@@ -955,7 +955,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         AppOpenManager.this.splashAd.setOnPaidEventListener((adValue) -> {
                             //log value
                             //Log revenue adjust
-                            trackRevenue(AppOpenManager.this.splashAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                            trackRevenue(appOpenAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                         });
                         if (isShowAdIfReady) {
                             AppOpenManager.this.showAppOpenSplash(context, adCallback);
