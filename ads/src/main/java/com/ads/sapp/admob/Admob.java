@@ -469,11 +469,6 @@ public class Admob {
                     adListener.onAdFailedToLoad(i);
                 }
             }
-
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-            }
         });
 
     }
