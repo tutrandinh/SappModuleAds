@@ -39,6 +39,8 @@ public class MyApplication extends AdsMultiDexApplication {
         commonAdConfig.setListDeviceTest(listTestDevice);
 
         CommonAd.getInstance().init(this, commonAdConfig, false);
+        Admob.getInstance().setAdjustAdEvent("Test");
+        AppOpenManager.getInstance().setAdjustAdEvent("Event Appopen");
         Admob.getInstance().setOpenActivityAfterShowInterAds(true);
         Admob.getInstance().setDisableAdResumeWhenClickAds(true);
 

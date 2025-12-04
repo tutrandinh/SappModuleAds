@@ -20,6 +20,7 @@ import androidx.lifecycle.ProcessLifecycleOwner;
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAdRevenue;
 import com.adjust.sdk.AdjustConfig;
+import com.adjust.sdk.AdjustEvent;
 import com.ads.sapp.R;
 import com.ads.sapp.dialog.PrepareLoadingAdsDialog;
 import com.ads.sapp.dialog.ResumeLoadingDialog;
@@ -75,6 +76,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
     private boolean isTimeout = false;
     private static final int TIMEOUT_MSG = 11;
+
+    //Adjust event
+    private String adjustAdEvent = "";
 
     private Handler timeoutHandler;
 //            = new Handler(msg -> {
@@ -891,7 +895,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         AppOpenManager.this.splashAd.setOnPaidEventListener((adValue) -> {
                             //log value
                             //Log revenue adjust
-                            trackRevenue(AppOpenManager.this.splashAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                            trackRevenue(appOpenAd.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                         });
                         if (isShowAdIfReady) {
                             AppOpenManager.this.showAppOpenSplash(context, adCallback);
@@ -994,9 +998,35 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             adRevenue.setRevenue(valueMicros, adValue.getCurrencyCode());
             adRevenue.setAdRevenueNetwork(adName);
             Adjust.trackAdRevenue(adRevenue);
+
+            // Log event adjust Revenue
+            if (adjustAdEvent == null ) {
+                Log.d("AdjustRevenue", "Adjust event null");
+                Log.d("checkAds","Adjust event null");
+
+            }else {
+                if(adjustAdEvent.isEmpty()){
+                    Log.d("AdjustRevenue", "Adjust event isEmpty");
+                    Log.d("checkAds","Adjust event isEmpty");
+                }else {
+                    AdjustEvent adjustEvent = new AdjustEvent(adjustAdEvent);
+                    adjustEvent.setRevenue(valueMicros, adValue.getCurrencyCode());
+                    Adjust.trackEvent(adjustEvent);
+                    Log.d("checkAds","Adjust event:" + adjustAdEvent);
+
+                }
+            }
         }catch (Exception ex){
             Log.d("AdjustRevenue", "Exception: trackRevenue");
         }
+    }
+
+    public String getAdjustAdEvent() {
+        return adjustAdEvent;
+    }
+
+    public void setAdjustAdEvent(String adjustAdEvent) {
+        this.adjustAdEvent = adjustAdEvent;
     }
 }
 

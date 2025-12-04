@@ -36,6 +36,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAdRevenue;
 import com.adjust.sdk.AdjustConfig;
+import com.adjust.sdk.AdjustEvent;
 import com.ads.sapp.R;
 import com.ads.sapp.ads.nativeAds.AdmobRecyclerAdapter;
 import com.ads.sapp.ads.nativeAds.CommonAdPlacer;
@@ -119,6 +120,9 @@ public class Admob {
 
     InterstitialAd mInterstitialSplash;
     InterstitialAd interstitialAd;
+
+    //Adjust event
+    private String adjustAdEvent = "";
 
     public void setAppLovin(boolean appLovin) {
         isAppLovin = appLovin;
@@ -464,6 +468,11 @@ public class Admob {
                         Log.e(TAG, "loadSplashInterstitalAds: load fail " + i.getMessage());
                     adListener.onAdFailedToLoad(i);
                 }
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
             }
         });
 
@@ -2043,7 +2052,7 @@ public class Admob {
                     if (adView != null) {
                         adView.setOnPaidEventListener(adValue -> {
                             //Log revenu adjust
-                            //trackRevenue(adView.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                            trackRevenue(adView.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                             //Log firebase
                             CommonLogEventManager.logPaidAdImpression(context,
                                     adValue,
@@ -4041,9 +4050,35 @@ public class Admob {
             adRevenue.setRevenue(valueMicros, adValue.getCurrencyCode());
             adRevenue.setAdRevenueNetwork(adName);
             Adjust.trackAdRevenue(adRevenue);
+
+            // Log event adjust Revenue
+            if (adjustAdEvent == null ) {
+                Log.d("AdjustRevenue", "Adjust event null");
+                Log.d("checkAds","Adjust event null");
+
+            }else {
+                if(adjustAdEvent.isEmpty()){
+                    Log.d("AdjustRevenue", "Adjust event isEmpty");
+                    Log.d("checkAds","Adjust event isEmpty");
+                }else {
+                    AdjustEvent adjustEvent = new AdjustEvent(adjustAdEvent);
+                    adjustEvent.setRevenue(valueMicros, adValue.getCurrencyCode());
+                    Adjust.trackEvent(adjustEvent);
+                    Log.d("checkAds","Adjust event:" + adjustAdEvent);
+
+                }
+            }
+
         }catch (Exception ex){
             Log.d("AdjustRevenue", "Exception: trackRevenue");
         }
     }
 
+    public String getAdjustAdEvent() {
+        return adjustAdEvent;
+    }
+
+    public void setAdjustAdEvent(String adjustAdEvent) {
+        this.adjustAdEvent = adjustAdEvent;
+    }
 }
