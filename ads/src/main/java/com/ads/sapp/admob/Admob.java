@@ -2129,7 +2129,7 @@ public class Admob {
                     if (adView != null) {
                         adView.setOnPaidEventListener(adValue -> {
                             //Log revenu adjust
-                            //trackRevenue(adView.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                            trackRevenue(adView.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                             //Log firebase
                             CommonLogEventManager.logPaidAdImpression(context,
                                     adValue,
@@ -2222,7 +2222,7 @@ public class Admob {
                     if (adView != null) {
                         adView.setOnPaidEventListener(adValue -> {
                             //Log revenu adjust
-                            //trackRevenue(adView.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
+                            trackRevenue(adView.getResponseInfo().getLoadedAdapterResponseInfo(), adValue);
                             //Log firebase
                             CommonLogEventManager.logPaidAdImpression(context,
                                     adValue,
