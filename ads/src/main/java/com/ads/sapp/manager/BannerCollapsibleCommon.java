@@ -49,6 +49,8 @@ public class BannerCollapsibleCommon implements LifecycleEventObserver {
     private ArrayList listID = new ArrayList();
     private BannerCommonCallback bannerCommonCallback;
 
+    private String bannerGravity = BannerGravity.bottom;
+
     public BannerCollapsibleCommon(Activity activity, LifecycleOwner lifecycleOwner, ArrayList listID, final BannerCommonCallback bannerCommonCallback) {
         this.listID = listID;
         this.reloadAds = true;
@@ -130,7 +132,19 @@ public class BannerCollapsibleCommon implements LifecycleEventObserver {
                 adView.destroy();
             }
 
-            Admob.getInstance().loadCollapsibleBannerFloorCheck(activity, listID, BannerGravity.bottom, bannerCommonCallback, new BannerIntervelCallBack(){
+            if(bannerGravity == null){
+                bannerGravity = BannerGravity.bottom;
+            }
+
+            if(bannerGravity.equals("")){
+                bannerGravity = BannerGravity.bottom;
+            }
+
+            if(!bannerGravity.equals(BannerGravity.bottom) && !bannerGravity.equals(BannerGravity.top)){
+                bannerGravity = BannerGravity.bottom;
+            }
+
+            Admob.getInstance().loadCollapsibleBannerFloorCheck(activity, listID, bannerGravity, bannerCommonCallback, new BannerIntervelCallBack(){
                 @Override
                 public void onStartReload() {
                     super.onStartReload();
@@ -224,4 +238,11 @@ public class BannerCollapsibleCommon implements LifecycleEventObserver {
         this.totalLoadMax = totalLoadMax;
     }
 
+    public String getBannerGravity() {
+        return bannerGravity;
+    }
+
+    public void setBannerGravity(String bannerGravity) {
+        this.bannerGravity = bannerGravity;
+    }
 }
