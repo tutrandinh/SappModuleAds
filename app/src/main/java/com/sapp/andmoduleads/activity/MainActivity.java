@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ads.sapp.admob.Admob;
 import com.ads.sapp.admob.AppOpenManager;
 import com.ads.sapp.ads.CommonAd;
 import com.ads.sapp.ads.CommonAdCallback;
@@ -23,6 +24,9 @@ import com.ads.sapp.funtion.BannerCommonCallback;
 import com.ads.sapp.funtion.DialogExitListener;
 import com.ads.sapp.manager.BannerCommon;
 import com.ads.sapp.manager.NativeCommon;
+import com.ads.sapp.ui.NativeFullActivity;
+import com.ads.sapp.util.nativefull.NativeFullConfig;
+import com.ads.sapp.util.nativefull.NativeIntentKey;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.sapp.andmoduleads.BuildConfig;
@@ -154,7 +158,27 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onNextAction() {
                         Log.i(TAG, "onAdClosed: start content and finish main");
-                        startActivity(new Intent(MainActivity.this, SimpleListActivity.class));
+                       // startActivity(new Intent(MainActivity.this, SimpleListActivity.class));
+
+                        Intent nextIntent = new Intent(MainActivity.this, SimpleListActivity.class);
+                        nextIntent.putExtra("user_id", 123);
+                        nextIntent.putExtra("from", "ActivityA");
+
+                        ArrayList<String> adIds = new ArrayList<>();
+                        adIds.add("a");
+                        adIds.add("ca-app-pub-3940256099942544/2247696110");
+
+                        NativeFullConfig config = new NativeFullConfig(
+                                true,
+                                adIds,
+                                com.ads.sapp.R.layout.layout_native_full_load,
+                                com.ads.sapp.R.layout.layout_native_full_show,
+                                50000,
+                                true,
+                                10000
+                        );
+                        Admob.getInstance().setOpenActivityAfterShowInterAds(false);
+                        CommonAd.getInstance().startNativeFull(MainActivity.this, config, nextIntent);
                     }
 
                     @Override
@@ -175,6 +199,28 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, SimpleListActivity.class));
             }
 
+        });
+
+        findViewById(R.id.btNativeFull).setOnClickListener(v -> {
+            Intent nextIntent = new Intent(MainActivity.this, SimpleListActivity.class);
+            nextIntent.putExtra("user_id", 123);
+            nextIntent.putExtra("from", "ActivityA");
+
+            ArrayList<String> adIds = new ArrayList<>();
+            adIds.add("a");
+            adIds.add("ca-app-pub-3940256099942544/2247696110");
+
+            NativeFullConfig config = new NativeFullConfig(
+                    true,
+                    adIds,
+                    com.ads.sapp.R.layout.layout_native_full_load,
+                    com.ads.sapp.R.layout.layout_native_full_show,
+                    50000,
+                    true,
+                    0
+            );
+            Admob.getInstance().setOpenActivityAfterShowInterAds(false);
+            CommonAd.getInstance().startNativeFull(MainActivity.this, config, nextIntent);
         });
     }
 

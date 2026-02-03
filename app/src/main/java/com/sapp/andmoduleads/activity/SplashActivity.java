@@ -86,7 +86,7 @@ public class SplashActivity extends AppCompatActivity {
 
                 ArrayList<String> listID = new ArrayList<>();
                 listID.add("ca-app-pub-3940256099942544/9257395921");
-                //CheckAds.checkAd = false; When show only
+                CheckAds.checkAd = false;// When show only
                 AppOpenManager.getInstance().loadOpenAppAdSplashFloorCheck(
                         SplashActivity.this,
                         listID,

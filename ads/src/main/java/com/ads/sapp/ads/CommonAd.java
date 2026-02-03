@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,8 +27,11 @@ import com.ads.sapp.ads.wrapper.ApRewardAd;
 import com.ads.sapp.ads.wrapper.ApRewardItem;
 import com.ads.sapp.funtion.AdCallback;
 import com.ads.sapp.funtion.RewardCallback;
+import com.ads.sapp.ui.NativeFullActivity;
 import com.ads.sapp.util.AppUtil;
 import com.ads.sapp.util.CheckAds;
+import com.ads.sapp.util.nativefull.NativeFullConfig;
+import com.ads.sapp.util.nativefull.NativeIntentKey;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.LoadAdError;
@@ -1364,5 +1368,16 @@ public class CommonAd {
 
         return new CommonAdAdapter(Admob.getInstance().getNativeFixedPositionAdapter(activity, id, layoutCustomNative, layoutAdPlaceHolder,
                 originalAdapter, listener, position));
+    }
+
+    public void startNativeFull(
+            @NonNull Context fromActivity,
+            @NonNull NativeFullConfig config,
+            @NonNull Intent nextIntent
+    ) {
+        Intent intent = new Intent(fromActivity, NativeFullActivity.class);
+        intent.putExtra(NativeIntentKey.NATIVE_FULL_CONFIG, config);
+        intent.putExtra(NativeIntentKey.EXT_ACTIVITY_NATIVE_FULL, nextIntent);
+        fromActivity.startActivity(intent);
     }
 }
