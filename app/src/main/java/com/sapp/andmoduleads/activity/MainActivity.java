@@ -244,10 +244,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadAdInterstitial() {
         ArrayList<String> list = new ArrayList<>();
-        //list.add(getString(R.string.inter_splash));
+        //list.add(getString(R.string.inter_splash));s
         //list.add(getString(R.string.inter_splash1));
-        //list.add(getString(R.string.inter_splash2));
-        list.add(getString(R.string.inter_splash3));
+        list.add("22");
+        //list.add(getString(R.string.inter_splash3));
         mInterstitialAd = CommonAd.getInstance().getInterstitialAdsCheck(this, list);
 //        mInterstitialAd = CommonProcess.getInstance().getInterstitialAdsInterIntro(this);
         //mInterstitialAd = CommonProcess.getInstance().getInterstitialAdsInterByName(this,"inter_all");

@@ -1375,6 +1375,16 @@ public class CommonAd {
             @NonNull NativeFullConfig config,
             @NonNull Intent nextIntent
     ) {
+        if (config == null) {
+            fromActivity.startActivity(nextIntent);
+            return;
+        }
+
+        if (!config.isShowAdsOnly) {
+            fromActivity.startActivity(nextIntent);
+            return;
+        }
+
         Intent intent = new Intent(fromActivity, NativeFullActivity.class);
         intent.putExtra(NativeIntentKey.NATIVE_FULL_CONFIG, config);
         intent.putExtra(NativeIntentKey.EXT_ACTIVITY_NATIVE_FULL, nextIntent);

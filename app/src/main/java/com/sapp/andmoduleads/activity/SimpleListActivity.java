@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -58,6 +59,17 @@ public class SimpleListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_simple_list);
         swRefresh = findViewById(R.id.swRefresh);
         addSampleData();
+
+        Intent intent = getIntent();
+        if (intent == null) return;
+
+        int userId = intent.getIntExtra("user_id", -1);
+        String from = intent.getStringExtra("from");
+
+        // Check nhanh xem có nhận được hay không
+        Log.d("SimpleListActivity",
+                "user_id = " + userId + ", from = " + from);
+
         // init adapter origin
         originalAdapter = new ListSimpleAdapter(new ListSimpleAdapter.Listener() {
             @Override
