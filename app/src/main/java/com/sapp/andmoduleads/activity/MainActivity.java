@@ -158,8 +158,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onNextAction() {
                         Log.i(TAG, "onAdClosed: start content and finish main");
-                       // startActivity(new Intent(MainActivity.this, SimpleListActivity.class));
-
                         Intent nextIntent = new Intent(MainActivity.this, SimpleListActivity.class);
                         nextIntent.putExtra("user_id", 123);
                         nextIntent.putExtra("from", "ActivityA");
@@ -173,9 +171,9 @@ public class MainActivity extends AppCompatActivity {
                                 adIds,
                                 com.ads.sapp.R.layout.layout_native_full_load,
                                 com.ads.sapp.R.layout.layout_native_full_show,
-                                50000,
+                                10000,
                                 true,
-                                10000
+                                0
                         );
                         Admob.getInstance().setOpenActivityAfterShowInterAds(false);
                         CommonAd.getInstance().startNativeFull(MainActivity.this, config, nextIntent);
@@ -247,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
         //list.add(getString(R.string.inter_splash));s
         //list.add(getString(R.string.inter_splash1));
         list.add("22");
-        //list.add(getString(R.string.inter_splash3));
+        list.add(getString(R.string.inter_splash3));
         mInterstitialAd = CommonAd.getInstance().getInterstitialAdsCheck(this, list);
 //        mInterstitialAd = CommonProcess.getInstance().getInterstitialAdsInterIntro(this);
         //mInterstitialAd = CommonProcess.getInstance().getInterstitialAdsInterByName(this,"inter_all");

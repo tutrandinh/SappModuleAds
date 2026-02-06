@@ -36,10 +36,10 @@ public class NativeFullActivity extends AppCompatActivity {
     FrameLayout frAds;
     ImageView btnClose;
 
-    // Khai báo Handler và Runnable để có thể hủy khi xong việc
-    private Handler timeoutHandler = new Handler(Looper.getMainLooper());
+    // Quản lý Handler để tránh lỗi timeout chạy ngầm
+    private final Handler timeoutHandler = new Handler(Looper.getMainLooper());
     private Runnable timeoutRunnable;
-    private Handler closeButtonHandler = new Handler(Looper.getMainLooper());
+    private final Handler closeButtonHandler = new Handler(Looper.getMainLooper());
     private Runnable closeButtonRunnable;
 
     @Override
@@ -124,7 +124,7 @@ public class NativeFullActivity extends AppCompatActivity {
                 }
             });
 
-            // Gán logic vào runnable để quản lý
+            // Khởi tạo logic Timeout
             timeoutRunnable = () -> {
                 if (!isHandled) {
                     Log.d("NativeFullActivity"," timeout native full ads");
@@ -133,12 +133,15 @@ public class NativeFullActivity extends AppCompatActivity {
             };
             timeoutHandler.postDelayed(timeoutRunnable, config.timeout);
 
-        }catch (Exception e){
+        } catch (Exception e){
             Log.d("NativeFullActivity"," exception: " + e.getMessage());
             finish();
         }
     }
 
+    /**
+     * Hàm chuyển sang Activity tiếp theo và dọn dẹp tài nguyên
+     */
     private void goNext() {
         if (isHandled) {
             Log.d("NativeFullActivity"," already handled");
@@ -147,7 +150,7 @@ public class NativeFullActivity extends AppCompatActivity {
         Log.d("NativeFullActivity"," goNext to nextIntent");
         isHandled = true;
 
-        // Quan trọng: Hủy các lệnh callback đang chờ để không bị nhảy Log timeout
+        // 1. Hủy bỏ các bộ đếm thời gian đang chạy
         if (timeoutHandler != null && timeoutRunnable != null) {
             timeoutHandler.removeCallbacks(timeoutRunnable);
         }
@@ -155,14 +158,22 @@ public class NativeFullActivity extends AppCompatActivity {
             closeButtonHandler.removeCallbacks(closeButtonRunnable);
         }
 
-        startActivity(nextIntent);
+        if (nextIntent != null) {
+            // 2. Sửa lỗi Back: Chuyển tiếp Result từ màn hình D về lại màn hình A
+            nextIntent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+
+            // 3. Đảm bảo stack hoạt động ổn định
+            nextIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+            startActivity(nextIntent);
+        }
+
         finish();
     }
 
     private void showLoading(@NonNull NativeFullConfig config) {
         try {
             frAds.removeAllViews();
-
             int layout = config.layoutLoading != 0
                     ? config.layoutLoading
                     : R.layout.layout_native_full_load;
@@ -171,8 +182,7 @@ public class NativeFullActivity extends AppCompatActivity {
                     .inflate(layout, frAds, false);
             frAds.addView(loadingView);
             Log.d("NativeFullActivity", " show loading view");
-
-        }catch (Exception ex){
+        } catch (Exception ex){
             finish();
         }
     }
@@ -198,14 +208,14 @@ public class NativeFullActivity extends AppCompatActivity {
             };
             closeButtonHandler.postDelayed(closeButtonRunnable, config.closeButtonDelay);
 
-        }catch (Exception ex){
+        } catch (Exception ex){
             finish();
         }
     }
 
     @Override
     protected void onDestroy() {
-        // Giải phóng bộ nhớ và tránh rò rỉ (Memory leak)
+        // Luôn dọn dẹp Handler khi Activity bị hủy để tránh Memory Leak
         if (timeoutHandler != null && timeoutRunnable != null) {
             timeoutHandler.removeCallbacks(timeoutRunnable);
         }
