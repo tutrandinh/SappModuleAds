@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -38,6 +39,8 @@ public class NativeFullActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("NativeFullActivity"," onCreate");
+
         setContentView(R.layout.activity_native_full);
 
         context = this;
@@ -53,16 +56,19 @@ public class NativeFullActivity extends AppCompatActivity {
                     getIntent().getParcelableExtra(NativeIntentKey.EXT_ACTIVITY_NATIVE_FULL);
 
             if (nextIntent == null) {
+                Log.d("NativeFullActivity"," nextIntent is null");
                 finish();
                 return;
             }
 
             if (config == null) {
+                Log.d("NativeFullActivity"," config is null");
                 goNext();
                 return;
             }
 
             if (!config.isShowAdsOnly) {
+                Log.d("NativeFullActivity"," isShowAdsOnly is false");
                 goNext();
                 return;
             }
@@ -94,34 +100,47 @@ public class NativeFullActivity extends AppCompatActivity {
 
                     Admob.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, adView);
                     CheckAds.checkAds(adView, CheckAds.OT);
+                    Log.d("NativeFullActivity"," show native full ads");
+
                 }
 
                 @Override
                 public void onAdFailedToLoad(@Nullable LoadAdError error) {
                     super.onAdFailedToLoad(error);
+                    Log.d("NativeFullActivity"," load native full ads failed: " + error);
+
                     goNext();
                 }
 
                 @Override
                 public void onAdFailedToShow(@Nullable AdError adError) {
                     super.onAdFailedToShow(adError);
+                    Log.d("NativeFullActivity"," show native full ads failed: " + adError);
+
                     goNext();
                 }
             });
 
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 if (!isHandled) {
+                    Log.d("NativeFullActivity"," timeout native full ads");
                     goNext();
                 }
             }, config.timeout);
 
         }catch (Exception e){
+            Log.d("NativeFullActivity"," exception: " + e.getMessage());
+
             finish();
         }
     }
 
     private void goNext() {
-        if (isHandled) return;
+        if (isHandled) {
+            Log.d("NativeFullActivity"," already handled");
+            return;
+        }
+        Log.d("NativeFullActivity"," goNext to nextIntent");
         isHandled = true;
         startActivity(nextIntent);
         finish();
@@ -138,6 +157,8 @@ public class NativeFullActivity extends AppCompatActivity {
             View loadingView = LayoutInflater.from(this)
                     .inflate(layout, frAds, false);
             frAds.addView(loadingView);
+            Log.d("NativeFullActivity", " show loading view");
+
         }catch (Exception ex){
             finish();
         }
