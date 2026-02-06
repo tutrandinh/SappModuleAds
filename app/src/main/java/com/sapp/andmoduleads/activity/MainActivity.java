@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
                     adIds,
                     com.ads.sapp.R.layout.layout_native_full_load,
                     com.ads.sapp.R.layout.layout_native_full_show,
-                    50000,
+                    10000,
                     true,
                     0
             );
