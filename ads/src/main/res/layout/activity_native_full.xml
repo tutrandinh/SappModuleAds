@@ -9,15 +9,26 @@
         android:layout_height="match_parent">
     </FrameLayout>
     <ImageView
-        android:id="@+id/btnClose"
+        android:id="@+id/btnCloseRight"
         android:visibility="gone"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:contentDescription="TODO"
-        android:src="@drawable/ic_ads_close"
+        android:src="@drawable/ic_ads_close_right"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"/>
+    <ImageView
+        android:id="@+id/btnCloseLeft"
+        android:visibility="gone"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:contentDescription="TODO"
+        android:src="@drawable/ic_ads_close_left"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"/>
 
 </RelativeLayout>

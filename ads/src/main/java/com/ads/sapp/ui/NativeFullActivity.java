@@ -34,7 +34,8 @@ public class NativeFullActivity extends AppCompatActivity {
     private boolean isHandled = false;
 
     FrameLayout frAds;
-    ImageView btnClose;
+    ImageView btnCloseRight;
+    ImageView btnCloseLeft;
 
     // Quản lý Handler để tránh lỗi timeout chạy ngầm
     private final Handler timeoutHandler = new Handler(Looper.getMainLooper());
@@ -51,7 +52,8 @@ public class NativeFullActivity extends AppCompatActivity {
 
         context = this;
         frAds = findViewById(R.id.frAds);
-        btnClose = findViewById(R.id.btnClose);
+        btnCloseRight = findViewById(R.id.btnCloseRight);
+        btnCloseLeft = findViewById(R.id.btnCloseLeft);
 
         try {
             NativeFullConfig config =
@@ -79,7 +81,9 @@ public class NativeFullActivity extends AppCompatActivity {
                 return;
             }
 
-            btnClose.setOnClickListener(v -> goNext());
+            btnCloseRight.setOnClickListener(v -> goNext());
+
+            btnCloseLeft.setOnClickListener(v -> goNext());
 
             showLoading(config);
 
@@ -190,20 +194,40 @@ public class NativeFullActivity extends AppCompatActivity {
     private void handleCloseButton(@NonNull NativeFullConfig config) {
         try {
             if (!config.showCloseButton) {
-                btnClose.setVisibility(View.GONE);
+                btnCloseRight.setVisibility(View.GONE);
+                btnCloseLeft.setVisibility(View.GONE);
                 return;
             }
 
             if (config.closeButtonDelay <= 0) {
-                btnClose.setVisibility(View.VISIBLE);
+                if(config.showCloseButtonRight){
+                    btnCloseRight.setVisibility(View.VISIBLE);
+                } else {
+                    btnCloseRight.setVisibility(View.GONE);
+                }
+                if(config.showCloseButtonLeft){
+                    btnCloseLeft.setVisibility(View.VISIBLE);
+                } else {
+                    btnCloseLeft.setVisibility(View.GONE);
+                }
                 return;
             }
 
-            btnClose.setVisibility(View.GONE);
+            btnCloseRight.setVisibility(View.GONE);
+            btnCloseLeft.setVisibility(View.GONE);
 
             closeButtonRunnable = () -> {
                 if (!isHandled) {
-                    btnClose.setVisibility(View.VISIBLE);
+                    if(config.showCloseButtonRight){
+                        btnCloseRight.setVisibility(View.VISIBLE);
+                    } else {
+                        btnCloseRight.setVisibility(View.GONE);
+                    }
+                    if(config.showCloseButtonLeft){
+                        btnCloseLeft.setVisibility(View.VISIBLE);
+                    } else {
+                        btnCloseLeft.setVisibility(View.GONE);
+                    }
                 }
             };
             closeButtonHandler.postDelayed(closeButtonRunnable, config.closeButtonDelay);

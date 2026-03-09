@@ -215,6 +215,8 @@ public class MainActivity extends AppCompatActivity {
                     com.ads.sapp.R.layout.layout_native_full_show,
                     10000,
                     true,
+                    true,
+                    false,
                     0
             );
             Admob.getInstance().setOpenActivityAfterShowInterAds(false);
